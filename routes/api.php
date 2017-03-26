@@ -14,6 +14,10 @@ use Illuminate\Http\Request;
 */
 
 //Route::group(['middleware' => 'auth'], function () {
-    Route::resource('photo', 'PhotoController',
+
+    Route::post('user/create', 'Api\AuthController@create');
+    Route::post('user/login', 'Api\AuthController@login');
+
+    Route::resource('photo', 'Api\PhotoController',
         ['only' => ['index', 'store', 'update', 'destroy', 'show']]);
 //});

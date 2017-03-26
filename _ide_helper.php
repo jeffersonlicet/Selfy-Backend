@@ -1617,7 +1617,7 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
-         * Attempt to authenticate using HTTP Basic Auth.
+         * Attempt to authenticate using HTTP Basic AuthController.
          *
          * @param string $field
          * @param array $extraConditions

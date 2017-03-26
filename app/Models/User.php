@@ -24,10 +24,10 @@ namespace App\Models;
  * @property string $reset_password_token
  * @property string $reset_password_sent_at
  * @property UserGroup $userGroup
- * @property Face $face
+ * @property UserFace $face
  * @property Photo[] $photos
  * @property ChallengeCompleted[] $ChallengeCompleted
- * @property TodoChallenge[] $ChallengeTodo
+ * @property ChallengeTodo[] $ChallengeTodo
  */
 
 use Illuminate\Notifications\Notifiable;
@@ -36,6 +36,18 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable
 {
     use Notifiable;
+
+    protected static $createRules = array(
+        'username'              =>	'required|unique:users,username',
+        'firstname'				=>	'required',
+        'lastname'				=>	'required',
+        'password'				=>	'required|min:6|confirmed',
+        'password_confirmation'	=>	'required|min:6',
+        'email'					=>	'required|email|unique:users,email',
+    );
+
+    public static function getCreateRules() { return self::$createRules; }
+
     /**
      * @var array
      */
