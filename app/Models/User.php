@@ -2,37 +2,38 @@
 
 namespace App\Models;
 
-/**
- * @property integer $user_id
- * @property integer $user_group
- * @property string $username
- * @property string $email
- * @property string $password
- * @property string $firstname
- * @property string $lastname
- * @property string $bio
- * @property string $firebase_token
- * @property string $created_at
- * @property string $updated_at
- * @property integer $user_locale
- * @property integer $spot_completed
- * @property integer $duo_completed
- * @property integer $play_completed
- * @property integer $spot_todo
- * @property integer $duo_todo
- * @property integer $play_todo
- * @property string $reset_password_token
- * @property string $reset_password_sent_at
- * @property UserGroup $userGroup
- * @property UserFace $face
- * @property Photo[] $photos
- * @property ChallengeCompleted[] $ChallengeCompleted
- * @property ChallengeTodo[] $ChallengeTodo
- */
+
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
+/**
+ * @property integer user_id
+ * @property integer user_group
+ * @property string username
+ * @property string email
+ * @property string password
+ * @property string firstname
+ * @property string lastname
+ * @property string bio
+ * @property string firebase_token
+ * @property string created_at
+ * @property string updated_at
+ * @property integer user_locale
+ * @property integer spot_completed
+ * @property integer duo_completed
+ * @property integer play_completed
+ * @property integer spot_todo
+ * @property integer duo_todo
+ * @property integer play_todo
+ * @property string reset_password_token
+ * @property string reset_password_sent_at
+ * @property UserGroup userGroup
+ * @property UserFace face
+ * @property Photo[] photos
+ * @property ChallengeCompleted[] ChallengeCompleted
+ * @property ChallengeTodo[] ChallengeTodo
+ */
 class User extends Authenticatable
 {
     use Notifiable;
