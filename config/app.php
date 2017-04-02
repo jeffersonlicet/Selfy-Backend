@@ -234,4 +234,8 @@ return [
 
     'foursquare_client' => env('FOURSQUARE_CLIENT_ID'),
     'foursquare_secret' => env('FOURSQUARE_CLIENT_SECRET'),
+
+    'oxford_0' => env('OXFORD_0'),
+    'oxford_1' => env('OXFORD_1'),
+    'oxford_available_keys' => 2,
 ];

@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class ChallengeTodo extends Model
 {
+    protected $table = 'todo_challenges';
     /**
      * @var array
      */

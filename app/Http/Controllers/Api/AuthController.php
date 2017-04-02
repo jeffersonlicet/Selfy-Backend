@@ -91,7 +91,6 @@ class AuthController extends Controller
     {
         try
         {
-
             $input = $request->all();
 
             $validator = Validator::make($input, [

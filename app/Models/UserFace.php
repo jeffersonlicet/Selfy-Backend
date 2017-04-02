@@ -20,6 +20,13 @@ class UserFace extends Model
     protected $table = 'faces';
 
     /**
+     * The primary key of the model.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'face_id';
+
+    /**
      * @var array
      */
     protected $fillable = ['user_id', 'url'];

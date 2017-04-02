@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property integer $recognition_id
  * @property integer $face_id
  * @property string $face_external_id
- * @property string $date_recognition
+ * @property string $updated_at
+ * @property string $created_at
  * @property UserFace $face
  */
 class UserFaceRecognition extends Model
@@ -21,9 +22,16 @@ class UserFaceRecognition extends Model
     protected $table = 'face_recognitions';
 
     /**
+     * The primary key of the model.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'recognition_id';
+
+    /**
      * @var array
      */
-    protected $fillable = ['face_id', 'face_external_id', 'date_recognition'];
+    protected $fillable = ['face_id', 'face_external_id', 'created_at'. 'updated_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property User[] $users
  * @property string $object_type
  * @property int $object_id
+ * @property User|Place Object
  */
 class Challenge extends Model
 {

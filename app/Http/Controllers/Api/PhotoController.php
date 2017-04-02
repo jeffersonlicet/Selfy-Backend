@@ -3,13 +3,24 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\CheckDuo;
 use App\Jobs\CheckSpot;
+use App\Models\ChallengeCompleted;
 use App\Models\Photo;
+use App\Models\User;
+use App\Models\UserFaceRecognition;
+use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Validator;
+use GuzzleHttp\Client as GuzzleClient;
+use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
+use GuzzleHttp\Psr7\Request as GuzzleRequest;
 
 class PhotoController extends Controller
 {
+    private $headers;
+
     /**
      * Show a list of photos
      *
@@ -59,8 +70,11 @@ class PhotoController extends Controller
 
             if($request->has("latitude") && $request->has("latitude"))
             {
-                $this->dispatch(new CheckSpot($photo, [floatval($input['latitude']), floatval($input['longitude'])]));
+               $this->dispatch(new CheckSpot($photo, [floatval($input['latitude']), floatval($input['longitude'])]));
             }
+
+           $this->dispatch(new CheckDuo($photo, rand(0, config('app.oxford_available_keys') - 1)));
+
             return response()->json([
                 'status' => TRUE,
                 'report' => 'photo_uploaded'
@@ -117,4 +131,5 @@ class PhotoController extends Controller
     {
         //
     }
+
 }

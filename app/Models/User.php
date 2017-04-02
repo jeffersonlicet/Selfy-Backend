@@ -29,11 +29,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property string reset_password_token
  * @property string reset_password_sent_at
  * @property UserGroup userGroup
- * @property UserFace face
+ * @property UserFace $Face
  * @property UserToken token
  * @property Photo[] photos
- * @property ChallengeCompleted[] ChallengeCompleted
- * @property ChallengeTodo[] ChallengeTodo
+ * @property ChallengeCompleted[] $Completed
+ * @property ChallengeTodo[] $Todo
+ * @property UserFaceRecognition[] FaceDescriptors
  */
 class User extends Authenticatable
 {
@@ -76,7 +77,15 @@ class User extends Authenticatable
      */
     public function Face()
     {
-        return $this->hasOne('App\Models\Face', 'id_face', 'user_id');
+        return $this->hasOne('App\Models\UserFace', 'user_id', 'user_id');
+    }
+
+    public function FaceDescriptors()
+    {
+        return $this->hasManyThrough(
+            'App\Models\UserFaceRecognition',
+            'App\Models\UserFace',
+            'user_id', 'face_id', 'user_id');
     }
 
     /**
@@ -116,6 +125,6 @@ class User extends Authenticatable
      */
     public function Todo()
     {
-        return $this->hasMany('App\Models\TodoChallenge', 'user_id', 'user_id');
+        return $this->hasMany('App\Models\ChallengeTodo', 'user_id', 'user_id');
     }
 }

@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property integer $views_count
  * @property string $created_at
  * @property string $updated_at
- * @property User; $user
+ * @property User $User
  * @property Place $place
  * @property PhotoGroup $photoGroup
  */
