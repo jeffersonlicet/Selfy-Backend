@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Gibbo\Foursquare\Client\Entity\Venue\Venue;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -9,8 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $place_external_id
  * @property string $name
  * @property string $category
- * @property string $category_icon_prefix
- * @property string $category_icon_suffix
+ * @property string $category_icon
  * @property string $country
  * @property string $state
  * @property string $city
@@ -19,13 +19,21 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $last_update
  * @property Photo[] $photos
  * @property PlacePhoto[] $placePhotos
+ * @property string address
  */
 class Place extends Model
 {
     /**
+     * The primary key of the model.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'place_id';
+
+    /**
      * @var array
      */
-    protected $fillable = ['place_external_id', 'name', 'category', 'category_icon_prefix', 'category_icon_suffix', 'country', 'state', 'city', 'latitude', 'longitude', 'last_update'];
+    protected $fillable = ['place_external_id', 'name', 'category', 'category_icon_prefix', 'category_icon_suffix', 'country', 'state', 'city', 'latitude', 'longitude', 'updated_at', 'created_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -49,5 +57,19 @@ class Place extends Model
     public function Photos()
     {
         return $this->hasMany('App\Models\PlacePhoto', 'place_id', 'place_id');
+    }
+
+    public function fillFromVenue(Venue $venue, $coordinates)
+    {
+        $this->place_external_id   = $venue->getIdentifier();
+        $this->name                = $venue->getName();
+        $this->category            = $venue->getPrimaryCategory()->getName();
+        $this->category_icon       = $venue->getPrimaryCategory()->getIconUrl();
+        $this->country             = $venue->getLocation()->getCountry();
+        $this->state               = $venue->getLocation()->getState();
+        $this->city                = $venue->getLocation()->getCity();
+        $this->address             = $venue->getLocation()->getAddress();
+        $this->latitude            = $coordinates[0];
+        $this->longitude           = $coordinates[1];
     }
 }

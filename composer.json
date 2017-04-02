@@ -6,8 +6,10 @@
     "type": "project",
     "require": {
         "php": ">=5.6.4",
+        "ben-gibson/foursquare-venue-client": "^0.0.6",
         "laravel/framework": "5.4.*",
         "laravel/tinker": "~1.0",
+        "php-http/guzzle6-adapter": "^1.1",
         "tymon/jwt-auth": "0.5.*",
         "vluzrmos/language-detector": "^1.0"
     },

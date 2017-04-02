@@ -14,10 +14,12 @@ use Illuminate\Database\Eloquent\Model;
  */
 class ChallengeCompleted extends Model
 {
+    protected $table = 'completed_challenges';
+
     /**
      * @var array
      */
-    protected $fillable = ['photo_id', 'challenge_id', 'user_id'];
+    protected $fillable = ['photo_id', 'challenge_id', 'user_id', 'created_at', 'updated_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

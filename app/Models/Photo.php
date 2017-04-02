@@ -23,6 +23,13 @@ use Illuminate\Database\Eloquent\Model;
 class Photo extends Model
 {
     /**
+     * The primary key of the model.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'photo_id';
+
+    /**
      * @var array
      */
     protected $fillable = ['user_id', 'place_id', 'photo_group', 'caption', 'url', 'likes_count', 'comments_count', 'views_count', 'created_at', 'updated_at'];

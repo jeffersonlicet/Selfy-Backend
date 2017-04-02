@@ -7,15 +7,22 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property integer $challenge_id
- * @property integer $challenge_type
  * @property string $created_at
  * @property string $updated_at
  * @property integer $completed_count
  * @property ChallengeCompleted[] $completedChallenges
  * @property User[] $users
+ * @property string $object_type
+ * @property int $object_id
  */
 class Challenge extends Model
 {
+    /**
+     * The primary key of the model.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'challenge_id';
     /**
      * @var array
      */

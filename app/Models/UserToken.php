@@ -23,6 +23,20 @@ class UserToken extends Model
     protected $table = 'tokens';
 
     /**
+     * The primary key of the model.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'token_id';
+
+    /**
+     * Inject timestamps
+     *
+     * @var boolean
+     */
+    public $timestamps = FALSE;
+
+    /**
      * @var array
      */
     protected $fillable = ['user_id', 'public_key', 'device_id', 'device_os', 'private_key'];
@@ -30,7 +44,7 @@ class UserToken extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function user()
+    public function User()
     {
         return $this->belongsTo('App\Models\User', 'user_id', 'user_id');
     }

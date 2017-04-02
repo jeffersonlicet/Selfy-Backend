@@ -19,7 +19,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property string firebase_token
  * @property string created_at
  * @property string updated_at
- * @property integer user_locale
+ * @property string user_locale
  * @property integer spot_completed
  * @property integer duo_completed
  * @property integer play_completed
@@ -30,6 +30,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property string reset_password_sent_at
  * @property UserGroup userGroup
  * @property UserFace face
+ * @property UserToken token
  * @property Photo[] photos
  * @property ChallengeCompleted[] ChallengeCompleted
  * @property ChallengeTodo[] ChallengeTodo
@@ -37,15 +38,16 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable
 {
     use Notifiable;
+    protected $primaryKey = 'user_id';
 
-    protected static $createRules = array(
+    protected static $createRules = [
         'username'              =>	'required|unique:users,username',
         'firstname'				=>	'required',
         'lastname'				=>	'required',
         'password'				=>	'required|min:6|confirmed',
         'password_confirmation'	=>	'required|min:6',
         'email'					=>	'required|email|unique:users,email',
-    );
+    ];
 
     public static function getCreateRules() { return self::$createRules; }
 
@@ -75,6 +77,14 @@ class User extends Authenticatable
     public function Face()
     {
         return $this->hasOne('App\Models\Face', 'id_face', 'user_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany|\Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function Token()
+    {
+        return $this->hasOne('App\Models\UserToken', 'user_id', 'user_id');
     }
 
     /**

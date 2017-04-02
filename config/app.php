@@ -232,4 +232,6 @@ return [
         'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
     ],
 
+    'foursquare_client' => env('FOURSQUARE_CLIENT_ID'),
+    'foursquare_secret' => env('FOURSQUARE_CLIENT_SECRET'),
 ];

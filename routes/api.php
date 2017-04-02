@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -13,11 +11,22 @@ use Illuminate\Http\Request;
 |
 */
 
-//Route::group(['middleware' => 'auth'], function () {
+/* Auth not required */
+Route::post('user/create', 'Api\AuthController@create');
+Route::post('user/login', 'Api\AuthController@login');
+Route::post('user/refresh', 'Api\AuthController@refresh');
 
-    Route::post('user/create', 'Api\AuthController@create');
-    Route::post('user/login', 'Api\AuthController@login');
-
+/* Auth required */
+Route::group(['middleware' => 'ApiAuth'], function () {
     Route::resource('photo', 'Api\PhotoController',
-        ['only' => ['index', 'store', 'update', 'destroy', 'show']]);
-//});
+        [
+            'only' =>
+                [
+                    'index',
+                    'store',
+                    'update',
+                    'destroy',
+                    'show'
+                ]
+        ]);
+});

@@ -3,28 +3,31 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\CheckSpot;
+use App\Models\Photo;
 use Illuminate\Http\Request;
+use Validator;
 
 class PhotoController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Show a list of photos
      *
+     * @param int $id
+     * @param int $page
+     * @param int $limit
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id = 0, $page = 0, $limit = 5)
     {
-        print("Get photos");
-    }
+        if($id == 0)
+        {
+            $id = \Auth::user()->user_id;
+        }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $photos = Photo::where('user_id', $id);
+        var_dump($photos);
+        return null;
     }
 
     /**
@@ -35,7 +38,39 @@ class PhotoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $input = $request->all();
+
+        $validator = Validator::make($input, [
+            'url' => 'required'
+        ]);
+
+        if($validator->passes())
+        {
+            $photo = new Photo();
+            $photo->user_id = \Auth::user()->user_id;
+            $photo->url = $input['url'];
+
+            if($request->has("caption"))
+            {
+                $photo->caption = $input['caption'];
+            }
+
+            $photo->saveOrFail();
+
+            if($request->has("latitude") && $request->has("latitude"))
+            {
+                $this->dispatch(new CheckSpot($photo, [floatval($input['latitude']), floatval($input['longitude'])]));
+            }
+            return response()->json([
+                'status' => TRUE,
+                'report' => 'photo_uploaded'
+            ]);
+        }
+
+        return response()->json([
+            'status' => FALSE,
+            'report' => $validator->messages()->toArray()
+        ]);
     }
 
     /**
