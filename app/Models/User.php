@@ -35,6 +35,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property ChallengeCompleted[] $Completed
  * @property ChallengeTodo[] $Todo
  * @property UserFaceRecognition[] FaceDescriptors
+ * @property User[] $Following
  */
 class User extends Authenticatable
 {
@@ -61,7 +62,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token', 'firebase_token'
+        'password', 'reset_password_token', 'firebase_token', 'email', 'reset_password_sent_at'
     ];
 
     /**
@@ -126,5 +127,13 @@ class User extends Authenticatable
     public function Todo()
     {
         return $this->hasMany('App\Models\ChallengeTodo', 'user_id', 'user_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function Following()
+    {
+        return $this->hasMany('App\Models\UserFollower', 'follower_id', 'user_id');
     }
 }

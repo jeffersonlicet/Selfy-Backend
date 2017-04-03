@@ -24,6 +24,10 @@ class Challenge extends Model
      * @var string
      */
     protected $primaryKey = 'challenge_id';
+
+    protected $hidden = [
+        'object_id', 'photo_id'
+    ];
     /**
      * @var array
      */

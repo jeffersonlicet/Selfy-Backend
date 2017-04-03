@@ -17,11 +17,24 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $created_at
  * @property string $updated_at
  * @property User $User
- * @property Place $place
- * @property PhotoGroup $photoGroup
+ * @property Place $Place
+ * @property PhotoGroup $Group
  */
 class Photo extends Model
 {
+    /**
+     * The attributes that should be visible in arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'user_id', 'place_id'
+    ];
+
+    protected $appends = array('like_enabled', 'delete_enabled');
+
+
+
     /**
      * The primary key of the model.
      *
@@ -67,5 +80,79 @@ class Photo extends Model
             'App\Models\Challenge',
             'App\Models\ChallengeCompleted',
             'photo_id', 'challenge_id', 'photo_id');
+    }
+
+    /**
+     *  Append property
+     *  Return if the user can perform a like action
+     * @return bool
+     */
+    public function getLikeEnabledAttribute()
+    {
+        /** @noinspection PhpUndefinedMethodInspection */
+        return !boolval(count(UserLike::where(['user_id' => \Auth::user()->user_id, 'photo_id' => $this->photo_id])->first()));
+        /** @noinspection end */
+    }
+
+    /**
+     *  Append property
+     *  Return if the user can perform a delete action
+     * @return bool
+     */
+    public function getDeleteEnabledAttribute()
+    {
+        /** @noinspection PhpUndefinedMethodInspection */
+        return \Auth::user()->user_id == $this->user_id;
+        /** @noinspection end */
+    }
+
+    /**
+     * @param User $user
+     * @param $id
+     * @param $limit
+     * @param $offset
+     * @return Photo
+     */
+    public static function collection(User $user, $id, $limit, $offset)
+    {
+        /** @noinspection PhpUndefinedMethodInspection */
+            return Photo::definition($user, $id)->with('User', 'Place', 'Challenges', 'Challenges.Object')->offset($offset)->limit($limit)->get();
+        /** @noinspection end */
+    }
+
+    public static function single($id = 0)
+    {
+        /** @noinspection PhpUndefinedMethodInspection */
+        return Photo::with('User', 'Place', 'Challenges', 'Challenges.Object')->find($id);
+        /** @noinspection end */
+    }
+
+    /**
+     *
+     * Creates a definition to know if is a general feed or a user/profile feed
+     *
+     * @param $query
+     * @param User $user
+     * @param $requested_id
+     * @return mixed
+     */
+    public function scopeDefinition($query, User $user, $requested_id)
+    {
+        switch ($requested_id)
+        {
+            case 0:
+                /** @noinspection PhpUndefinedMethodInspection */
+                $following = $user->Following->pluck('user_id');
+                $following[] = $user->user_id;
+
+                return $query->whereIn('user_id', $following);
+                /** @noinspection end */
+                break;
+            default:
+                /** @noinspection PhpUndefinedMethodInspection */
+                return $query->where('user_id', $requested_id);
+                /** @noinspection end */
+                break;
+        }
     }
 }

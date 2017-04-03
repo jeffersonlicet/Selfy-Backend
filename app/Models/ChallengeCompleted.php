@@ -17,6 +17,13 @@ class ChallengeCompleted extends Model
     protected $table = 'completed_challenges';
 
     /**
+     * The primary key of the model.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'challenge_id';
+
+    /**
      * @var array
      */
     protected $fillable = ['photo_id', 'challenge_id', 'user_id', 'created_at', 'updated_at'];
@@ -35,13 +42,5 @@ class ChallengeCompleted extends Model
     public function Challenge()
     {
         return $this->belongsTo('App\Models\Challenge', 'challenge_id', 'challenge_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function User()
-    {
-        return $this->belongsTo('App\Models\User', 'user_id', 'user_id');
     }
 }

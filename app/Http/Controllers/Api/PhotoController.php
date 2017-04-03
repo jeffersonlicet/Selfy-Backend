@@ -5,44 +5,53 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Jobs\CheckDuo;
 use App\Jobs\CheckSpot;
-use App\Models\ChallengeCompleted;
 use App\Models\Photo;
-use App\Models\User;
-use App\Models\UserFaceRecognition;
-use Carbon\Carbon;
-use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
+use Mockery\Exception;
 use Validator;
-use GuzzleHttp\Client as GuzzleClient;
-use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
-use GuzzleHttp\Psr7\Request as GuzzleRequest;
+
 
 class PhotoController extends Controller
 {
-    private $headers;
-
     /**
-     * Show a list of photos
+     * Show the photo feed
      *
-     * @param int $id
-     * @param int $page
-     * @param int $limit
      * @return \Illuminate\Http\Response
      */
-    public function index($id = 0, $page = 0, $limit = 5)
+    public function index()
     {
-        if($id == 0)
+        try
         {
-            $id = \Auth::user()->user_id;
-        }
+            $id = Input::get('id', 0);
+            $page = Input::get('page', 0);
+            $limit = Input::get('limit', config('app.photos_per_page'));
 
-        $photos = Photo::where('user_id', $id);
-        var_dump($photos);
-        return null;
+            if($limit < 1 or $limit > 20)
+            {
+                throw new Exception('invalid limit range');
+            }
+
+            $result = Photo::collection(\Auth::user(), $id, $limit, $page * $limit);
+
+            /** @noinspection PhpUndefinedMethodInspection */
+            return response()->json([
+                'status' => TRUE,
+                'photos' => $result->isEmpty() ?  [] : $result->toArray()
+            ]);
+
+        }
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a photo
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -88,25 +97,33 @@ class PhotoController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display a specific photo
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        //
-    }
+        try {
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+            /** @noinspection PhpUndefinedMethodInspection */
+            if ($result = Photo::single($id))
+            {
+                return response()->json([
+                    'status' => TRUE,
+                    'photos' => Photo::single($id)->toArray()
+                ]);
+            }
+
+            throw new Exception('resource_not_found');
+        }
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
     }
 
     /**

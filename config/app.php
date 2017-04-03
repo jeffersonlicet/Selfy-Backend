@@ -238,4 +238,6 @@ return [
     'oxford_0' => env('OXFORD_0'),
     'oxford_1' => env('OXFORD_1'),
     'oxford_available_keys' => 2,
+
+    'photos_per_page' => 7
 ];
