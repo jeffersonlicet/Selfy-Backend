@@ -115,7 +115,6 @@ class CheckSpot implements ShouldQueue
 
             $completed = new ChallengeCompleted();
             $completed->photo_id        = $this->photo->photo_id;
-            $completed->user_id         = $this->photo->user_id;
             $completed->challenge_id    = $challenge->challenge_id;
             $completed->saveOrFail();
         }

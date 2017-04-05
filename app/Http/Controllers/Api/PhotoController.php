@@ -8,6 +8,7 @@ use App\Jobs\CheckSpot;
 use App\Models\Photo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Validation\Rule;
 use Mockery\Exception;
 use Validator;
 
@@ -23,16 +24,25 @@ class PhotoController extends Controller
     {
         try
         {
-            $id = Input::get('id', 0);
-            $page = Input::get('page', 0);
-            $limit = Input::get('limit', config('app.photos_per_page'));
+            $user_id    = Input::get('user_id', 0);
+            $page       = Input::get('page', 0);
+            $limit      = Input::get('limit', config('app.photos_per_page'));
 
-            if($limit < 1 or $limit > 20)
+            $validator =
+                Validator::make(
+                    ['user_id' => $user_id, 'limit' => $limit, 'page'=> $page],
+                    ['user_id' => ['required', 'numeric'], 'limit' => ['required', 'numeric', 'between:1,20'], 'page' => ['required', 'numeric']]
+                );
+
+            if(!$validator->passes())
             {
-                throw new Exception('invalid limit range');
+                return response()->json([
+                    'status' => TRUE,
+                    'likes' => $validator->messages()->toArray()
+                ]);
             }
 
-            $result = Photo::collection(\Auth::user(), $id, $limit, $page * $limit);
+            $result = Photo::collection(\Auth::user(), $user_id, $limit, $page * $limit);
 
             /** @noinspection PhpUndefinedMethodInspection */
             return response()->json([
@@ -104,14 +114,35 @@ class PhotoController extends Controller
      */
     public function show($id)
     {
-        try {
+        try
+        {
+            $validator =
+                Validator::make(
+                    ['id' => $id],
+                    ['id' => ['required', 'numeric']]
+                );
+
+            if(!$validator->passes())
+            {
+                return response()->json([
+                    'status' => TRUE,
+                    'likes' => $validator->messages()->toArray()
+                ]);
+            }
 
             /** @noinspection PhpUndefinedMethodInspection */
             if ($result = Photo::single($id))
             {
+
+                if($result->user_id != \Auth::user()->user_id)
+                {
+                    $result->views_count++;
+                    $result->save();
+                }
+
                 return response()->json([
                     'status' => TRUE,
-                    'photos' => Photo::single($id)->toArray()
+                    'photos' => $result->toArray()
                 ]);
             }
 
@@ -135,7 +166,61 @@ class PhotoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try
+        {
+            $validator =
+                Validator::make(
+                    ['id' => $id],
+                    ['id' => ['required', 'numeric']]
+                );
+
+            if(!$validator->passes())
+            {
+                return response()->json([
+                    'status' => TRUE,
+                    'report' => $validator->messages()->toArray()
+                ]);
+            }
+
+            if ($request->has('caption'))
+            {
+                $input = $request->all();
+
+                /** @noinspection PhpUndefinedMethodInspection */
+                $photo = Photo::find($id);
+
+                if(!$photo)
+                {
+                    throw new Exception("resource_deleted");
+                }
+
+                if($photo->user_id == \Auth::user()->user_id)
+                {
+                    $photo->caption = $input['caption'];
+                    /** @noinspection PhpUndefinedMethodInspection */
+                    $photo->touch();
+                    /** @noinspection PhpUndefinedMethodInspection */
+                    $photo->save();
+
+                    return response()->json([
+                        'status' => true,
+                        'report' => 'resource_updated'
+                    ]);
+                }
+
+                throw new Exception("access_denied");
+
+            }
+
+            throw new Exception("invalid_request");
+        }
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
     }
 
     /**
@@ -146,7 +231,225 @@ class PhotoController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try
+        {
+            $validator =
+                Validator::make(
+                    ['id' => $id],
+                    ['id' => ['required', 'numeric']]
+                );
+
+            if(!$validator->passes())
+            {
+                return response()->json([
+                    'status' => TRUE,
+                    'report' => $validator->messages()->toArray()
+                ]);
+            }
+            /** @noinspection PhpUndefinedMethodInspection */
+            $photo = Photo::find($id);
+
+            if(!$photo)
+            {
+                throw new Exception("resource_not_found");
+            }
+
+            if($photo->user_id == \Auth::user()->user_id)
+            {
+                /** @noinspection PhpUndefinedMethodInspection */
+               $photo->delete();
+
+                return response()->json([
+                    'status' => true,
+                    'report' => 'resource_deleted'
+                ]);
+
+            }
+
+            throw new Exception("access_denied");
+        }
+
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
     }
 
+    /**
+     * Generate photo borders
+     *  Given B, we generate A , C
+     * @param $photo_id
+     * @return \Illuminate\Http\JsonResponse
+     * @internal param $id
+     */
+    public function borders($photo_id)
+    {
+        try
+        {
+            $user_id    = Input::get('user_id', \Auth::user()->user_id);
+            $type       = Input::get('type', 'both');
+
+            $validator =
+                Validator::make(
+                    [   'id' => $photo_id,
+                        'user_id' => $user_id,
+                        'type' =>$type
+                    ],
+                    ['id' => ['required', 'numeric'], 'user_id' => ['required', 'numeric'], 'type' => ['required', Rule::in(['both', 'top', 'bottom'])]]
+                );
+
+            if(!$validator->passes())
+            {
+                return response()->json([
+                    'status' => TRUE,
+                    'report' => $validator->messages()->toArray()
+                ]);
+            }
+
+
+            $top    = [];
+            $bottom = [];
+
+            switch ($type)
+            {
+                case 'both':
+                    $result_top = Photo::related($photo_id, $user_id, '>', config('app.photos_per_border'));
+                    $result_bottom = Photo::related($photo_id, $user_id, '<' , config('app.photos_per_border'));
+                    $top[]      =  $result_top->isEmpty() ?  [] : $result_top->toArray();
+                    $bottom[]   =  $result_bottom->isEmpty() ?  [] : $result_bottom->toArray();
+                    break;
+
+                case 'top':
+                    $result_top = Photo::related($photo_id, $user_id, '>', config('app.photos_per_border'));
+                    $top[]      =  $result_top->isEmpty() ?  [] : $result_top->toArray();
+                    break;
+
+                case 'bottom':
+                    $result_bottom = Photo::related($photo_id, $user_id, '<' , config('app.photos_per_border'));
+                    $bottom[]   =  $result_bottom->isEmpty() ?  [] : $result_bottom->toArray();
+                    break;
+            }
+
+            return response()->json([
+                'status' => TRUE,
+                'top' => $top,
+                'bottom' => $bottom
+            ]);
+        }
+
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => TRUE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * Get the best photos
+     *
+     * @param $user_id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function bests($user_id)
+    {
+        try
+        {
+            $user_id = $user_id == 0 ? \Auth::user()->user_id  : $user_id;
+            $limit   = Input::get('limit', config('app.photos_best_per_page'));
+            $page    = Input::get('page', 0);
+
+            $validator =
+                Validator::make(
+                    ['user_id' => $user_id, 'limit' => $limit, 'page'=> $page],
+                    ['user_id' => ['required', 'numeric'], 'limit' => ['required', 'numeric', 'between:1,20'], 'page' => ['required', 'numeric']]
+                );
+
+            if(!$validator->passes())
+            {
+                return response()->json([
+                    'status' => TRUE,
+                    'report' => $validator->messages()->toArray()
+                ]);
+            }
+
+            /** @noinspection PhpUndefinedMethodInspection */
+            $result = Photo::where('user_id', $user_id)->with('Challenges', 'Challenges.Object')->orderBy('likes_count', 'desc')->orderBy('views_count', 'desc')->orderBy('comments_count', 'desc')->get();
+
+            /** @noinspection PhpUndefinedMethodInspection */
+            return response()->json([
+                'status' => TRUE,
+                'photos' => $result->isEmpty() ?  [] : $result->toArray()
+            ]);
+
+        }
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * Report a photo
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function report($id)
+    {
+        try
+        {
+            $validator =
+                Validator::make(
+                    ['id' => $id],
+                    ['id' => ['required', 'numeric']]
+                );
+
+            if(!$validator->passes())
+            {
+                return response()->json([
+                    'status' => TRUE,
+                    'report' => $validator->messages()->toArray()
+                ]);
+            }
+
+            /** @noinspection PhpUndefinedMethodInspection */
+            $photo = Photo::find($id);
+
+            if(!$photo)
+            {
+                throw new Exception("resource_not_found");
+            }
+
+            if($photo->user_id == \Auth::user()->user_id)
+            {
+                throw new Exception('invalid_action');
+            }
+
+            $photo->reports_count++;
+            /** @noinspection PhpUndefinedMethodInspection */
+            $photo->save();
+
+            return response()->json([
+                'status' => true,
+                'report' => 'resource_reported'
+            ]);
+
+        }
+
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
 }

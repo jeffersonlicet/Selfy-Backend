@@ -14,11 +14,14 @@ use Illuminate\Database\Eloquent\Model;
  * @property integer $likes_count
  * @property integer $comments_count
  * @property integer $views_count
+ * @property integer $reports_count
  * @property string $created_at
  * @property string $updated_at
  * @property User $User
  * @property Place $Place
  * @property PhotoGroup $Group
+ * @property UserLike[] $UserLikes
+
  */
 class Photo extends Model
 {
@@ -28,12 +31,10 @@ class Photo extends Model
      * @var array
      */
     protected $hidden = [
-        'user_id', 'place_id'
+        'user_id', 'place_id', 'reports_count'
     ];
 
     protected $appends = array('like_enabled', 'delete_enabled');
-
-
 
     /**
      * The primary key of the model.
@@ -83,6 +84,20 @@ class Photo extends Model
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function UserLikes()
+    {
+        return $this->hasMany('App\Models\UserLike', 'photo_id', 'photo_id');
+    }
+
+    public function DiscreteLikes($offset, $limit)
+    {
+        return $this->hasMany('App\Models\UserLike', 'photo_id', 'photo_id')->limit();
+
+    }
+
+    /**
      *  Append property
      *  Return if the user can perform a like action
      * @return bool
@@ -107,23 +122,49 @@ class Photo extends Model
     }
 
     /**
+     * Return a collection of photos
+     *
      * @param User $user
-     * @param $id
+     * @param $user_id
      * @param $limit
      * @param $offset
      * @return Photo
+     * @internal param $id
      */
-    public static function collection(User $user, $id, $limit, $offset)
+    public static function collection(User $user, $user_id, $limit, $offset)
     {
         /** @noinspection PhpUndefinedMethodInspection */
-            return Photo::definition($user, $id)->with('User', 'Place', 'Challenges', 'Challenges.Object')->offset($offset)->limit($limit)->get();
+            return Photo::definition($user, $user_id)->with('User', 'Place', 'Challenges', 'Challenges.Object')->offset($offset)->limit($limit)->orderBy('photo_id', 'desc')->get();
         /** @noinspection end */
     }
 
-    public static function single($id = 0)
+    /**
+     * Return a single photo
+     *
+     * @param $id
+     * @return \Illuminate\Database\Eloquent\Collection|Model|null|static|static[]
+     */
+    public static function single($id)
     {
         /** @noinspection PhpUndefinedMethodInspection */
         return Photo::with('User', 'Place', 'Challenges', 'Challenges.Object')->find($id);
+        /** @noinspection end */
+    }
+
+
+    /**
+     * Return a collection of photos related by date
+     *
+     * @param $photo_id
+     * @param $user_id
+     * @param $relation
+     * @param $limit
+     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     */
+    public static function related($photo_id, $user_id, $relation, $limit)
+    {
+        /** @noinspection PhpUndefinedMethodInspection */
+        return Photo::with('User', 'Place', 'Challenges', 'Challenges.Object')->where(['user_id'=> $user_id, ['photo_id', $relation, $photo_id]])->limit($limit)->orderBy('photo_id', 'desc')->get();
         /** @noinspection end */
     }
 

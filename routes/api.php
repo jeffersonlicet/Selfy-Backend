@@ -18,15 +18,17 @@ Route::post('user/refresh', 'Api\AuthController@refresh');
 
 /* Auth required */
 Route::group(['middleware' => 'ApiAuth'], function () {
+
+    Route::get('photo/borders/{photo_id}', 'Api\PhotoController@borders');
+    Route::get('photo/bests/{user_id}', 'Api\PhotoController@best');
+    Route::get('photo/report/{photo_id}', 'Api\PhotoController@report');
+
     Route::resource('photo', 'Api\PhotoController',
-        [
-            'only' =>
-                [
-                    'index',
-                    'store',
-                    'update',
-                    'destroy',
-                    'show'
-                ]
-        ]);
+        ['only' => ['index','store','update','destroy','show']]);
+
+    Route::resource('comment', 'Api\CommentController',
+        ['only' => ['index' ,'store','update','destroy','show']]);
+
+    Route::resource('like', 'Api\LikeController',
+        ['only' => ['store','destroy','index']]);
 });

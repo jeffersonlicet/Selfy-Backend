@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @property integer $photo_id
  * @property integer $challenge_id
- * @property integer $user_id
  * @property Photo $photo
  * @property Challenge $challenge
  * @property User $user
@@ -26,7 +25,7 @@ class ChallengeCompleted extends Model
     /**
      * @var array
      */
-    protected $fillable = ['photo_id', 'challenge_id', 'user_id', 'created_at', 'updated_at'];
+    protected $fillable = ['photo_id', 'challenge_id', 'created_at', 'updated_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

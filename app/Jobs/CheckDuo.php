@@ -158,7 +158,6 @@ class CheckDuo implements ShouldQueue
                                     $completed = new ChallengeCompleted();
                                     $completed->challenge_id = $single->challenge->challenge_id;
                                     $completed->photo_id = $this->photo->photo_id;
-                                    $completed->user_id = $creator->user_id;
                                     $completed->save();
 
                                     $single->challenge->completed_count++;
