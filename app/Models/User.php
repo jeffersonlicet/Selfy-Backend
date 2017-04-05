@@ -42,6 +42,8 @@ class User extends Authenticatable
     use Notifiable;
     protected $primaryKey = 'user_id';
 
+    protected $appends = array('follow_enabled', 'edit_enabled');
+
     protected static $createRules = [
         'username'              =>	'required|unique:users,username',
         'firstname'				=>	'required',
@@ -62,7 +64,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'reset_password_token', 'firebase_token', 'email', 'reset_password_sent_at'
+        'password', 'reset_password_token', 'firebase_token', 'email', 'reset_password_sent_at', 'created_at', 'updated_at'
     ];
 
     /**
@@ -135,5 +137,27 @@ class User extends Authenticatable
     public function Following()
     {
         return $this->hasMany('App\Models\UserFollower', 'follower_id', 'user_id');
+    }
+
+    /**
+     *  Append property
+     *  Return if the user can perform a like action
+     * @return bool
+     */
+    public function getEditEnabledAttribute()
+    {
+        return \Auth::user()->user_id == $this->user_id ;
+    }
+
+    /**
+     *  Append property
+     *  Return if the user can perform a like action
+     * @return bool
+     */
+    public function getFollowEnabledAttribute()
+    {
+        /** @noinspection PhpUndefinedMethodInspection */
+        return \Auth::user()->user_id != $this->user_id && !boolval(count(UserFollower::where(['follower_id' => \Auth::user()->user_id, 'following_id' => $this->user_id])->first()));
+        /** @noinspection end */
     }
 }

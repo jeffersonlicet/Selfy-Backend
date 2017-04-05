@@ -31,4 +31,7 @@ Route::group(['middleware' => 'ApiAuth'], function () {
 
     Route::resource('like', 'Api\LikeController',
         ['only' => ['store','destroy','index']]);
+
+    Route::resource('user', 'Api\UserController',
+        ['only' => ['destroy','update', 'show']]);
 });
