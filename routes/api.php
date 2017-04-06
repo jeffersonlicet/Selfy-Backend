@@ -21,6 +21,7 @@ Route::group(['middleware' => 'ApiAuth'], function () {
 
     Route::resource('photo', 'Api\PhotoController',
         ['only' => ['index','store','update','destroy','show']]);
+
     Route::get('photo/borders/{photo_id}', 'Api\PhotoController@borders');
     Route::get('photo/bests/{user_id}', 'Api\PhotoController@best');
     Route::get('photo/report/{photo_id}', 'Api\PhotoController@report');
@@ -42,6 +43,12 @@ Route::group(['middleware' => 'ApiAuth'], function () {
 
     Route::resource('user', 'Api\UserController',
         ['only' => ['destroy','update', 'show']]);
+
+    Route::get('challenges/todo', 'Api\ChallengesController@todo');
+    Route::get('challenges/completed', 'Api\ChallengesController@completed');
+    Route::resource('challenge', 'Api\ChallengesController',
+        ['only' => ['store','destroy']]);
+
 
 
 

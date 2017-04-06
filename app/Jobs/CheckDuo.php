@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Models\ChallengeCompleted;
 use App\Models\Photo;
 use App\Models\UserFaceRecognition;
+use App\Notifications\DuoNotification;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Bus\Queueable;
@@ -121,10 +122,10 @@ class CheckDuo implements ShouldQueue
                         /* Check every candidate */
                         foreach($creator->Todo as $single)
                         {
-                            if($single->challenge->object_type != config('constants.CHALLENGE_TYPES_STR.DUO') or $single->challenge->Object->Face == null)
+                            if($single->Challenge->object_type != config('constants.CHALLENGE_TYPES_STR.DUO') or $single->Challenge->Object->Face == null)
                                 continue;
 
-                            $friend = $single->challenge->Object;
+                            $friend = $single->Challenge->Object;
 
                             if (count($friend->FaceDescriptors) == 0 or (count($friend->FaceDescriptors) > 0 && $friend->FaceDescriptors[0]->updated_at < Carbon::now()->subHours(23)))
                             {
@@ -150,18 +151,21 @@ class CheckDuo implements ShouldQueue
                             if($identification['status_code'] == 200 and $identification['identical'])
                             {
                                 /** @noinspection PhpUndefinedMethodInspection */
-                                if(!$completed = ChallengeCompleted::where(['photo_id' => $this->photo->photo_id, 'challenge_id' => $single->challenge->challenge_id])->first())
+                                if(!$completed = ChallengeCompleted::where(['photo_id' => $this->photo->photo_id, 'challenge_id' => $single->Challenge->challenge_id])->first())
                                  /** @noinspection end */
                                 {
-                                    /* TODO NOTIFY USER */
+
 
                                     $completed = new ChallengeCompleted();
-                                    $completed->challenge_id = $single->challenge->challenge_id;
+                                    $completed->challenge_id = $single->Challenge->challenge_id;
                                     $completed->photo_id = $this->photo->photo_id;
+                                    $completed->user_id = $creator->user_id;
                                     $completed->save();
 
-                                    $single->challenge->completed_count++;
-                                    $single->challenge->save();
+                                    $single->Challenge->completed_count++;
+                                    $single->Challenge->save();
+
+                                    $creator->notify(new DuoNotification($this->photo->photo_id));
                                     break;
                                 }
                             }

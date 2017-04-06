@@ -73,31 +73,6 @@ class Photo extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\hasManyThrough
-     */
-    public function Challenges()
-    {
-        return $this->hasManyThrough(
-            'App\Models\Challenge',
-            'App\Models\ChallengeCompleted',
-            'photo_id', 'challenge_id', 'photo_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function UserLikes()
-    {
-        return $this->hasMany('App\Models\UserLike', 'photo_id', 'photo_id');
-    }
-
-    public function DiscreteLikes($offset, $limit)
-    {
-        return $this->hasMany('App\Models\UserLike', 'photo_id', 'photo_id')->limit();
-
-    }
-
-    /**
      *  Append property
      *  Return if the user can perform a like action
      * @return bool
@@ -183,7 +158,7 @@ class Photo extends Model
         {
             case 0:
                 /** @noinspection PhpUndefinedMethodInspection */
-                $following = $user->Following->pluck('user_id');
+                $following = $user->Following->pluck('following_id');
                 $following[] = $user->user_id;
 
                 return $query->whereIn('user_id', $following);

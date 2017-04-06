@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Photo;
 use App\Models\UserLike;
+use App\Notifications\LikeNotification;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
@@ -44,16 +45,10 @@ class LikeController extends Controller
             /** @noinspection PhpUndefinedMethodInspection */
             $likes = UserLike::with('User')->where('photo_id', $photo_id)->offset($page*$limit)->limit($limit)->orderBy('like_id', 'desc')->get();
 
-            if(!$likes->isEmpty())
-            {
-               return response()->json([
-                   'status' => TRUE,
-                   'likes' => $likes->toArray()
-               ]);
-
-            }
-
-            throw new Exception('resource_not_found');
+           return response()->json([
+               'status' => TRUE,
+               'likes' => $likes->isEmpty() ? [] : $likes->toArray()
+           ]);
 
         }
         catch (\Exception $e)
@@ -110,7 +105,13 @@ class LikeController extends Controller
 
             $photo->likes_count++;
             /** @noinspection PhpUndefinedMethodInspection */
+
             $photo->save();
+
+            if($photo->User->user_id != \Auth::user()->user_id)
+            {
+                $photo->User->notify(new LikeNotification($photo->User, $photo->photo_id));
+            }
 
             return response()->json([
                 'status' => true,

@@ -8,6 +8,7 @@ use App\Jobs\CheckSpot;
 use App\Models\Photo;
 use App\Models\UserComment;
 use App\Models\UserLike;
+use App\Notifications\CommentNotification;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
@@ -116,6 +117,10 @@ class CommentController extends Controller
             /** @noinspection PhpUndefinedMethodInspection */
             $photo->save();
 
+            if($photo->User->user_id != \Auth::user()->user_id)
+            {
+                $photo->User->notify(new CommentNotification($photo->User, $photo->photo_id));
+            }
             return response()->json([
                 'status' => true,
                 'report' => 'action_done'
@@ -133,7 +138,7 @@ class CommentController extends Controller
     }
 
     /**
-     * Dislike a photo
+     * Delete a comment
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response

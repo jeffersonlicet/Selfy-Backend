@@ -105,46 +105,6 @@ class User extends Authenticatable
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function Photos()
-    {
-        return $this->hasMany('App\Models\Photo', 'user_id', 'user_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function Completed()
-    {
-        return $this->hasMany('App\Models\ChallengeCompleted', 'user_id', 'user_id');
-    }
-
-    /**
-     * Get all of the post's comments.
-     */
-    public function Duos()
-    {
-        return $this->morphMany('App\Models\Challenges', 'object');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function Todo()
-    {
-        return $this->hasMany('App\Models\ChallengeTodo', 'user_id', 'user_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function Following()
-    {
-        return $this->hasMany('App\Models\UserFollower', 'follower_id', 'user_id');
-    }
-
-    /**
      *  Append property
      *  Return if the user can perform a like action
      * @return bool

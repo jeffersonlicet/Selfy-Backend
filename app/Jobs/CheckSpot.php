@@ -6,6 +6,7 @@ use App\Models\Challenge;
 use App\Models\ChallengeCompleted;
 use App\Models\Photo;
 use App\Models\Place;
+use App\Notifications\SpotNotification;
 use Gibbo\Foursquare\Client\Client;
 use Gibbo\Foursquare\Client\Configuration;
 use Gibbo\Foursquare\Client\Entity\Coordinates;
@@ -63,7 +64,9 @@ class CheckSpot implements ShouldQueue
     {
         try
         {
-            if(!$place = Place::where(['latitude' => $this->coordinates[0], 'longitude' => $this->coordinates[1]])->first())
+            /** @noinspection PhpUndefinedMethodInspection */
+            $place = Place::where(['latitude' => $this->coordinates[0], 'longitude' => $this->coordinates[1]])->first();
+            if(!$place)
             {
                 $client = Client::simple(new Configuration( config('app.foursquare_client'), config('app.foursquare_secret')), VenueFactory::simple());
 
@@ -83,10 +86,23 @@ class CheckSpot implements ShouldQueue
 
            elseif(strtotime($place->updated_at) < strtotime('-30 days'))
             {
-                $place->fillFromVenue($venues[0]);
-                $place->save();
-            }
+                $client = Client::simple(new Configuration( config('app.foursquare_client'), config('app.foursquare_secret')), VenueFactory::simple());
 
+                $options = Search::coordinates(new Coordinates($this->coordinates[0], $this->coordinates[1]))
+                    ->limit(1)
+                    ->radius(15);
+
+                $venues = $client->search($options);
+
+                if(isset($venues[0]))
+                {
+                    /** @noinspection PhpUndefinedMethodInspection */
+                    $place->fillFromVenue($venues[0]);
+                    /** @noinspection PhpUndefinedMethodInspection */
+                    $place->save();
+                }
+
+            }
             $this->place = $place;
         }
         catch (\Exception $e)
@@ -116,7 +132,12 @@ class CheckSpot implements ShouldQueue
             $completed = new ChallengeCompleted();
             $completed->photo_id        = $this->photo->photo_id;
             $completed->challenge_id    = $challenge->challenge_id;
+            $completed->user_id = $this->photo->User->user_id;
             $completed->saveOrFail();
+
+            $this->photo->User->notify(new SpotNotification($this->photo->photo_id));
+
+
         }
 
         catch(\Exception $e)

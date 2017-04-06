@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\User;
 use App\Models\UserFollower;
 use App\Models\UserFollowing;
+use App\Notifications\FollowNotification;
 use Exception;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -197,6 +198,8 @@ class UserController extends Controller
                     $connection->follower_id = \Auth::user()->user_id;
                     $connection->following_id = $user->user_id;
                     $connection->save();
+
+                    $user->notify(new FollowNotification($user));
 
                     return response()->json([
                         'status' => TRUE,

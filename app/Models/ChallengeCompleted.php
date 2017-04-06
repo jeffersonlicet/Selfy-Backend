@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @property integer $photo_id
  * @property integer $challenge_id
+ * @property integer $user_id
  * @property Photo $photo
  * @property Challenge $challenge
  * @property User $user
@@ -14,13 +15,13 @@ use Illuminate\Database\Eloquent\Model;
 class ChallengeCompleted extends Model
 {
     protected $table = 'completed_challenges';
+    protected $primaryKey = 'completed_id';
 
     /**
      * The primary key of the model.
      *
      * @var string
      */
-    protected $primaryKey = 'challenge_id';
 
     /**
      * @var array
