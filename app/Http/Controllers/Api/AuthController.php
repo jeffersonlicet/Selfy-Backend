@@ -64,6 +64,7 @@ class AuthController extends Controller
                         'status' => TRUE,
                         'public_key' => $public,
                         'private_key' => $private,
+                        'user' => $user->toArray()
                     ]);
                 }
             }
@@ -102,7 +103,7 @@ class AuthController extends Controller
 
             if ($validator->passes())
             {
-                $user = User::withTrashed()->where('username', $input['username'])->firstOrFail();
+                $user = User::withTrashed()->with('Face')->where('username', $input['username'])->firstOrFail();
 
                 if (Hash::check($input['password'], $user->password))
                 {
@@ -124,10 +125,18 @@ class AuthController extends Controller
 
                     $token->save();
 
+                    if($request->has('firebase_token'))
+                    {
+                        $user->firebase_token = $input['firebase_token'];
+                        $user->save();
+
+                    }
+
                     return response()->json([
                         'status' => TRUE,
                         'public_key' => $public,
                         'private_key' => $private,
+                        'user' => $user->toArray()
                     ]);
                 }
                 else

@@ -19,6 +19,8 @@ class UserFace extends Model
      */
     protected $table = 'faces';
 
+    protected $hidden = ['user_id', 'url'];
+
     /**
      * The primary key of the model.
      *
