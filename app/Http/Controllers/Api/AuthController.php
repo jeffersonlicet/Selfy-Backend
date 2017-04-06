@@ -103,44 +103,47 @@ class AuthController extends Controller
 
             if ($validator->passes())
             {
-                $user = User::withTrashed()->with('Face')->where('username', $input['username'])->firstOrFail();
-
-                if (Hash::check($input['password'], $user->password))
+                if($user = User::withTrashed()->with('Face')->where('username', $input['username'])->firstOrFail())
                 {
-                    $user->token->delete();
+                    if (Hash::check($input['password'], $user->password)) {
+                        $user->token->delete();
 
-                    $public = JWTAuth::fromUser($user);
-                    $private = str_random(50);
+                        $public = JWTAuth::fromUser($user);
+                        $private = str_random(50);
 
-                    $token = new App\Models\UserToken();
-                    $token->public_key = $public;
-                    $token->private_key = $private;
-                    $token->user_id = $user->user_id;
+                        $token = new App\Models\UserToken();
+                        $token->public_key = $public;
+                        $token->private_key = $private;
+                        $token->user_id = $user->user_id;
 
-                    if ($request->has('device_os'))
-                        $token->device_os = $input['device_os'];
+                        if ($request->has('device_os'))
+                            $token->device_os = $input['device_os'];
 
-                    if ($request->has('device_id'))
-                        $token->device_id = $input['device_id'];
+                        if ($request->has('device_id'))
+                            $token->device_id = $input['device_id'];
 
-                    $token->save();
+                        $token->save();
 
-                    unset($user->token);
+                        unset($user->token);
 
-                    return response()->json([
-                        'status' => TRUE,
-                        'public_key' => $public,
-                        'private_key' => $private,
-                        'user' => $user->toArray()
-                    ]);
+                        return response()->json([
+                            'status' => TRUE,
+                            'public_key' => $public,
+                            'private_key' => $private,
+                            'user' => $user->toArray()
+                        ]);
+                    } else {
+                        return response()->json([
+                            'status' => FALSE,
+                            'report' => "Invalid password"
+                        ]);
+                    }
                 }
-                else
-                {
-                    return response()->json([
-                        'status' => FALSE,
-                        'report' => "Invalid password"
-                    ]);
-                }
+
+                return response()->json([
+                    'status' => FALSE,
+                    'report' => 'user_not_found'
+                ]);
             }
 
             return response()->json([
