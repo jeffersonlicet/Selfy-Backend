@@ -242,5 +242,6 @@ return [
     'photos_per_page' => 7,
     'photos_per_border' => 3,
     'photos_best_per_page' => 3,
-    'likes_per_page' => 10
+    'likes_per_page' => 10,
+    'connections_per_page' => 10,
 ];

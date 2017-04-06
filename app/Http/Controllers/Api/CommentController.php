@@ -19,13 +19,14 @@ use Validator;
 class CommentController extends Controller
 {
     /**
-     * Display a list of likes
+     * Display a list of comments
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        try {
+        try
+        {
 
             $photo_id = Input::get('photo_id');
             $page = Input::get('page', 0);
@@ -48,16 +49,12 @@ class CommentController extends Controller
             /** @noinspection PhpUndefinedMethodInspection */
             $comments = UserComment::with('User')->where('photo_id', $photo_id)->offset($page*$limit)->limit($limit)->orderBy('comment_id', 'desc')->get();
 
-            if(!$comments->isEmpty())
-            {
-               return response()->json([
-                   'status' => TRUE,
-                   'comments' => $comments->toArray()
-               ]);
 
-            }
+            return response()->json([
+               'status' => TRUE,
+               'comments' => $comments->isEmpty() ? [] : $comments->toArray()
+            ]);
 
-            throw new Exception('resource_not_found');
 
         }
         catch (\Exception $e)

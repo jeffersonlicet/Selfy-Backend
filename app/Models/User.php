@@ -4,6 +4,7 @@ namespace App\Models;
 
 
 
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -26,6 +27,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property integer spot_todo
  * @property integer duo_todo
  * @property integer play_todo
+ * @property integer followers_count
+ * @property integer following_count
  * @property string reset_password_token
  * @property string reset_password_sent_at
  * @property UserGroup userGroup
@@ -40,6 +43,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable
 {
     use Notifiable;
+    use SoftDeletes;
+
     protected $primaryKey = 'user_id';
 
     protected $appends = array('follow_enabled', 'edit_enabled');

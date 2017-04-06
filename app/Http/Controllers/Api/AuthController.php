@@ -15,6 +15,7 @@ class AuthController extends Controller
 {
     /**
      * Create an user account
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
@@ -84,6 +85,7 @@ class AuthController extends Controller
 
     /**
      * Login a user using credentials
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
@@ -100,7 +102,7 @@ class AuthController extends Controller
 
             if ($validator->passes())
             {
-                $user = User::where('username', $input['username'])->firstOrFail();
+                $user = User::withTrashed()->where('username', $input['username'])->firstOrFail();
 
                 if (Hash::check($input['password'], $user->password))
                 {
@@ -152,6 +154,12 @@ class AuthController extends Controller
         }
     }
 
+    /**
+     *  Refresh a public token
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public  function refresh(Request $request)
     {
         try

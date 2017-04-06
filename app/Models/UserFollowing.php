@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property User $Follower
  * @property User $Following
  */
-class UserFollower extends Model
+class UserFollowing extends Model
 {
     /**
      * The table associated with the model.
@@ -36,7 +36,6 @@ class UserFollower extends Model
      */
     public function User()
     {
-        return $this->belongsTo('App\Models\User', 'follower_id', 'user_id');
+        return $this->belongsTo('App\Models\User', 'following_id', 'user_id');
     }
-
 }
