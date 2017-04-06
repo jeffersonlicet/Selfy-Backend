@@ -142,7 +142,7 @@ class AuthController extends Controller
 
                 return response()->json([
                     'status' => FALSE,
-                    'report' => 'user_not_found'
+                    'report' => 'User not found'
                 ]);
             }
 
