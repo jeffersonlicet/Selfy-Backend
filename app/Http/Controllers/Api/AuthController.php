@@ -75,7 +75,7 @@ class AuthController extends Controller
 
             return response()->json([
                 'status' => FALSE,
-                'report' => $validator->messages()->toArray()
+                'report' => $validator->messages()->first()
             ]);
         }
 
@@ -152,7 +152,7 @@ class AuthController extends Controller
 
             return response()->json([
                 'status' => FALSE,
-                'report' => $validator->messages()->to
+                'report' => $validator->messages()->first()
             ]);
 
         }
@@ -212,7 +212,7 @@ class AuthController extends Controller
 
             return response()->json([
                 'status' => FALSE,
-                'report' => $validator->messages()->toArray()
+                'report' => $validator->messages()->first()
             ]);
 
         }

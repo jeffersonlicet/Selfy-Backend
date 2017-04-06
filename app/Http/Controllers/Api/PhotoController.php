@@ -38,7 +38,7 @@ class PhotoController extends Controller
             {
                 return response()->json([
                     'status' => TRUE,
-                    'likes' => $validator->messages()->toArray()
+                    'likes' => $validator->messages()->first()
                 ]);
             }
 
@@ -102,7 +102,7 @@ class PhotoController extends Controller
 
         return response()->json([
             'status' => FALSE,
-            'report' => $validator->messages()->toArray()
+            'report' => $validator->messages()->first()
         ]);
     }
 
@@ -126,7 +126,7 @@ class PhotoController extends Controller
             {
                 return response()->json([
                     'status' => TRUE,
-                    'likes' => $validator->messages()->toArray()
+                    'likes' => $validator->messages()->first()
                 ]);
             }
 
@@ -178,7 +178,7 @@ class PhotoController extends Controller
             {
                 return response()->json([
                     'status' => TRUE,
-                    'report' => $validator->messages()->toArray()
+                    'report' => $validator->messages()->first()
                 ]);
             }
 
@@ -243,7 +243,7 @@ class PhotoController extends Controller
             {
                 return response()->json([
                     'status' => TRUE,
-                    'report' => $validator->messages()->toArray()
+                    'report' => $validator->messages()->first()
                 ]);
             }
             /** @noinspection PhpUndefinedMethodInspection */
@@ -305,7 +305,7 @@ class PhotoController extends Controller
             {
                 return response()->json([
                     'status' => TRUE,
-                    'report' => $validator->messages()->toArray()
+                    'report' => $validator->messages()->first()
                 ]);
             }
 
@@ -373,7 +373,7 @@ class PhotoController extends Controller
             {
                 return response()->json([
                     'status' => TRUE,
-                    'report' => $validator->messages()->toArray()
+                    'report' => $validator->messages()->first()
                 ]);
             }
 
@@ -416,7 +416,7 @@ class PhotoController extends Controller
             {
                 return response()->json([
                     'status' => TRUE,
-                    'report' => $validator->messages()->toArray()
+                    'report' => $validator->messages()->first()
                 ]);
             }
 

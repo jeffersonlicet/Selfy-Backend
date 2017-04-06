@@ -35,7 +35,7 @@ class UserController extends Controller
             {
                 return response()->json([
                     'status' => TRUE,
-                    'report' => $validator->messages()->toArray()
+                    'report' => $validator->messages()->first()
                 ]);
             }
 
@@ -78,7 +78,7 @@ class UserController extends Controller
             {
                 return response()->json([
                     'status' => TRUE,
-                    'report' => $validator->messages()->toArray()
+                    'report' => $validator->messages()->first()
                 ]);
             }
 
@@ -98,7 +98,7 @@ class UserController extends Controller
                 {
                     return response()->json([
                         'status' => TRUE,
-                        'report' => $validator->messages()->toArray()
+                        'report' => $validator->messages()->first()
                     ]);
                 }
 
@@ -177,7 +177,7 @@ class UserController extends Controller
             {
                 return response()->json([
                     'status' => TRUE,
-                    'report' => $validator->messages()->toArray()
+                    'report' => $validator->messages()->first()
                 ]);
             }
 
@@ -244,7 +244,7 @@ class UserController extends Controller
             {
                 return response()->json([
                     'status' => TRUE,
-                    'report' => $validator->messages()->toArray()
+                    'report' => $validator->messages()->first()
                 ]);
             }
 
@@ -306,7 +306,7 @@ class UserController extends Controller
             {
                 return response()->json([
                     'status' => TRUE,
-                    'report' => $validator->messages()->toArray()
+                    'report' => $validator->messages()->first()
                 ]);
             }
 
@@ -345,7 +345,7 @@ class UserController extends Controller
             {
                 return response()->json([
                     'status' => TRUE,
-                    'report' => $validator->messages()->toArray()
+                    'report' => $validator->messages()->first()
                 ]);
             }
 

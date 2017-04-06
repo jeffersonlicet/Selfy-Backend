@@ -34,7 +34,7 @@ class ChallengesController extends Controller
             {
                 return response()->json([
                     'status' => TRUE,
-                    'report' => $validator->messages()->toArray()
+                    'report' => $validator->messages()->first()
                 ]);
             }
 
@@ -152,7 +152,7 @@ class ChallengesController extends Controller
             {
                 return response()->json([
                     'status' => TRUE,
-                    'report' => $validator->messages()->toArray()
+                    'report' => $validator->messages()->first()
                 ]);
             }
 
@@ -199,7 +199,7 @@ class ChallengesController extends Controller
             {
                 return response()->json([
                     'status' => TRUE,
-                    'report' => $validator->messages()->toArray()
+                    'report' => $validator->messages()->first()
                 ]);
             }
 
