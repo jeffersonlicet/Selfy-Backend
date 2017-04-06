@@ -30,15 +30,17 @@ class AuthController extends Controller
             if ($validator->passes())
             {
                 $user = new User();
-
-                $user->email = $input['email'];
                 $user->username = $input['username'];
+
+
+                if ($request->has('email'))
+                    $user->email = $input['email'];
 
                 if ($request->has('firstname'))
                     $user->firstname = $input['firstname'];
 
                 if ($request->has('lastname'))
-                $user->lastname = $input['lastname'];
+                    $user->lastname = $input['lastname'];
 
                 if ($request->has('firebase_token'))
                     $user->firebase_token = $input['firebase_token'];
