@@ -80,7 +80,7 @@ class Photo extends Model
     public function getLikeEnabledAttribute()
     {
         /** @noinspection PhpUndefinedMethodInspection */
-        return !boolval(count(UserLike::where(['user_id' => \Auth::user()->user_id, 'photo_id' => $this->photo_id])->first()));
+        return !\Auth::guest() && !boolval(count(UserLike::where(['user_id' => \Auth::user()->user_id, 'photo_id' => $this->photo_id])->first()));
         /** @noinspection end */
     }
 

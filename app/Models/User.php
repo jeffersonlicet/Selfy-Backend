@@ -110,7 +110,7 @@ class User extends Authenticatable
      */
     public function getEditEnabledAttribute()
     {
-        return \Auth::user()->user_id == $this->user_id ;
+        return !\Auth::guest() && \Auth::user()->user_id == $this->user_id ;
     }
 
     /**
@@ -121,7 +121,7 @@ class User extends Authenticatable
     public function getFollowEnabledAttribute()
     {
         /** @noinspection PhpUndefinedMethodInspection */
-        return \Auth::user()->user_id != $this->user_id && !boolval(count(UserFollower::where(['follower_id' => \Auth::user()->user_id, 'following_id' => $this->user_id])->first()));
+        return !\Auth::guest() && \Auth::user()->user_id != $this->user_id && !boolval(count(UserFollower::where(['follower_id' => \Auth::user()->user_id, 'following_id' => $this->user_id])->first()));
         /** @noinspection end */
     }
 }

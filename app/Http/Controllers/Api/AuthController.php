@@ -125,12 +125,7 @@ class AuthController extends Controller
 
                     $token->save();
 
-                    if($request->has('firebase_token'))
-                    {
-                        $user->firebase_token = $input['firebase_token'];
-                        $user->save();
-
-                    }
+                    unset($user->token);
 
                     return response()->json([
                         'status' => TRUE,
