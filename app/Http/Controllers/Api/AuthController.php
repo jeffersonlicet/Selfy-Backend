@@ -33,7 +33,11 @@ class AuthController extends Controller
 
                 $user->email = $input['email'];
                 $user->username = $input['username'];
-                $user->firstname = $input['firstname'];
+
+                if ($request->has('firstname'))
+                    $user->firstname = $input['firstname'];
+
+                if ($request->has('lastname'))
                 $user->lastname = $input['lastname'];
 
                 if ($request->has('firebase_token'))
@@ -148,7 +152,7 @@ class AuthController extends Controller
 
             return response()->json([
                 'status' => FALSE,
-                'report' => $validator->messages()->toArray()
+                'report' => $validator->messages()->to
             ]);
 
         }
