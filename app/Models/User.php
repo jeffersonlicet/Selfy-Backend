@@ -52,7 +52,7 @@ class User extends Authenticatable
 
     protected static $createRules = [
         'username'              =>	'required|unique:users,username',
-        'password'				=>	'required|min:4|confirmed',
+        'password'				=>	'required|min:4',
     ];
 
     public static function getCreateRules() { return self::$createRules; }
