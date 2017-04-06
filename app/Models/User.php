@@ -17,6 +17,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property string firstname
  * @property string lastname
  * @property string bio
+ * @property string avatar
  * @property string firebase_token
  * @property string created_at
  * @property string updated_at
@@ -68,7 +69,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'reset_password_token', 'firebase_token', 'email', 'reset_password_sent_at', 'created_at', 'updated_at'
+       'deleted_at', 'password', 'reset_password_token', 'firebase_token', 'email', 'reset_password_sent_at', 'created_at', 'updated_at'
     ];
 
     /**
