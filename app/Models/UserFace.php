@@ -21,6 +21,8 @@ class UserFace extends Model
 
     protected $hidden = ['user_id', 'url'];
 
+    public $timestamps = false;
+
     /**
      * The primary key of the model.
      *

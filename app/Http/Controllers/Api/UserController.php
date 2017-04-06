@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\User;
+use App\Models\UserFace;
 use App\Models\UserFollower;
 use App\Models\UserFollowing;
 use App\Notifications\FollowNotification;
@@ -59,6 +60,7 @@ class UserController extends Controller
         }
     }
 
+
     /**
      * @param Request $request
      * @param $id
@@ -84,7 +86,8 @@ class UserController extends Controller
 
             if($id == \Auth::user()->user_id)
             {
-                $values = $request->only(['bio', 'firstname' , 'lastname']);
+                $values = $request->only(['bio', 'firstname' , 'lastname', 'face_url']);
+
                 $validator = Validator::make(
                         $values,
                         [
@@ -106,6 +109,7 @@ class UserController extends Controller
                 \Auth::user()->touch();
                 \Auth::user()->save();
 
+
                 return response()->json([
                     'status' => TRUE,
                     'report' => 'resource_updated'
@@ -115,6 +119,59 @@ class UserController extends Controller
 
             throw new Exception("invalid_request");
         }
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * Edit user face reference url
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function face(Request $request)
+    {
+        try
+        {
+            $input = $request->all();
+
+            $validator =
+                Validator::make(
+                    $input,
+                    ['face_url' => ['required', 'string']]
+                );
+
+            if(!$validator->passes())
+            {
+                return response()->json([
+                    'status' => TRUE,
+                    'report' => $validator->messages()->first()
+                ]);
+            }
+
+            if(\Auth::user()->Face == null)
+            {
+                $face = new UserFace();
+                $face->user_id = \Auth::user()->user_id;
+                $face->url = $input['face_url'];
+                $face->save();
+            }
+            else{
+                \Auth::user()->Face->url = $input['face_url'];
+                \Auth::user()->Face->save();
+            }
+                return response()->json([
+                    'status' => TRUE,
+                    'report' => 'resource_updated'
+                ]);
+
+            }
+
         catch (\Exception $e)
         {
             return response()->json([
