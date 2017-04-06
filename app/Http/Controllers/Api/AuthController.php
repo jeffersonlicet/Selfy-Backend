@@ -103,7 +103,7 @@ class AuthController extends Controller
 
             if ($validator->passes())
             {
-                if($user = User::withTrashed()->with('Face')->where('username', $input['username'])->firstOrFail())
+                if($user = User::withTrashed()->with('Face')->where('username', $input['username'])->first())
                 {
                     if (Hash::check($input['password'], $user->password)) {
                         $user->token->delete();
