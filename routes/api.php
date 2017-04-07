@@ -36,7 +36,7 @@ Route::group(['middleware' => 'ApiAuth'], function () {
         ['only' => ['store','destroy']]);
     Route::get('likes', 'Api\LikeController@index');
 
-    Route::put('user/face', 'Api\UserController@face');
+    Route::post('user/face', 'Api\UserController@face');
     Route::post('user/follow', 'Api\UserController@follow');
     Route::post('user/unfollow', 'Api\UserController@unfollow');
     Route::get('user/followers', 'Api\UserController@followers');
