@@ -7,6 +7,7 @@ use App\Models\ChallengeCompleted;
 use App\Models\Photo;
 use App\Models\Place;
 use App\Notifications\SpotNotification;
+use Carbon\Carbon;
 use Gibbo\Foursquare\Client\Client;
 use Gibbo\Foursquare\Client\Configuration;
 use Gibbo\Foursquare\Client\Entity\Coordinates;
@@ -103,6 +104,7 @@ class CheckSpot implements ShouldQueue
                 }
 
             }
+
             $this->place = $place;
         }
         catch (\Exception $e)
@@ -124,15 +126,29 @@ class CheckSpot implements ShouldQueue
             $this->photo->place_id = $this->place->place_id;
             $this->photo->saveOrFail();
 
-            $challenge = new Challenge();
-            $challenge->object_type = config('constants.CHALLENGE_TYPES_STR.SPOT');
-            $challenge->object_id   = $this->place->place_id;
-            $challenge->saveOrFail();
+            /** @noinspection PhpUndefinedMethodInspection */
+            $challenge = Challenge::where(['object_id' => $this->place->place_id, 'object_type' => config('constants.CHALLENGE_TYPES_STR.SPOT')])->first();
+
+            if(!$challenge)
+            {
+                $challenge = new Challenge();
+                $challenge->object_type = config('constants.CHALLENGE_TYPES_STR.SPOT');
+                $challenge->object_id   = $this->place->place_id;
+                $challenge->completed_count = 1;
+                $challenge->saveOrFail();
+            }
+
+            else
+            {
+                $challenge->completed_count++;
+                $challenge->save();
+            }
 
             $completed = new ChallengeCompleted();
             $completed->photo_id        = $this->photo->photo_id;
             $completed->challenge_id    = $challenge->challenge_id;
             $completed->user_id = $this->photo->User->user_id;
+            $completed->created_at = Carbon::now();
             $completed->saveOrFail();
 
             $this->photo->User->notify(new SpotNotification($this->photo->photo_id));

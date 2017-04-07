@@ -20,30 +20,31 @@ Route::post('user/refresh', 'Api\AuthController@refresh');
 Route::group(['middleware' => 'ApiAuth'], function () {
 
     Route::resource('photo', 'Api\PhotoController',
-        ['only' => ['index','store','update','destroy','show']]);
+        ['only' => ['store','update','destroy','show']]);
+    Route::get('photos', 'Api\PhotoController@index');
 
     Route::get('photo/borders/{photo_id}', 'Api\PhotoController@borders');
     Route::get('photo/bests/{user_id}', 'Api\PhotoController@best');
     Route::get('photo/report/{photo_id}', 'Api\PhotoController@report');
 
-
     Route::resource('comment', 'Api\CommentController',
         ['only' => ['store','update','destroy']]);
     Route::get('comments', 'Api\CommentController@index');
-
 
     Route::resource('like', 'Api\LikeController',
         ['only' => ['store','destroy']]);
     Route::get('likes', 'Api\LikeController@index');
 
     Route::post('user/face', 'Api\UserController@face');
+    Route::post('user/update', 'Api\UserController@update');
+
     Route::post('user/follow', 'Api\UserController@follow');
     Route::post('user/unfollow', 'Api\UserController@unfollow');
     Route::get('user/followers', 'Api\UserController@followers');
     Route::get('user/following', 'Api\UserController@following');
 
     Route::resource('user', 'Api\UserController',
-        ['only' => ['destroy','update', 'show']]);
+        ['only' => ['destroy', 'show']]);
 
     Route::get('challenges/todo', 'Api\ChallengesController@todo');
     Route::get('challenges/completed', 'Api\ChallengesController@completed');

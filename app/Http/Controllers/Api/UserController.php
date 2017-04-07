@@ -41,7 +41,7 @@ class UserController extends Controller
             }
 
             /** @noinspection PhpUndefinedMethodInspection */
-            if ($result = User::find($id))
+            if ($result = User::with('Face')->find($id))
             {
                 return response()->json([
                     'status' => TRUE,
@@ -63,17 +63,21 @@ class UserController extends Controller
 
     /**
      * @param Request $request
-     * @param $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
         try
         {
-            $validator =
-                Validator::make(
-                    ['id' => $id],
-                    ['id' => ['required', 'numeric']]
+            $values = $request->only(['bio', 'firstname' , 'lastname', 'face_url']);
+
+            $validator = Validator::make(
+                    $values,
+                    [
+                        'firstname'				=>	'required|string',
+                        'lastname'				=>	'required|string',
+                        'bio'				=>	'string',
+                    ]
                 );
 
             if(!$validator->passes())
@@ -84,40 +88,15 @@ class UserController extends Controller
                 ]);
             }
 
-            if($id == \Auth::user()->user_id)
-            {
-                $values = $request->only(['bio', 'firstname' , 'lastname', 'face_url']);
-
-                $validator = Validator::make(
-                        $values,
-                        [
-                            'firstname'				=>	'required|string',
-                            'lastname'				=>	'required|string',
-                            'bio'				=>	'string',
-                        ]
-                    );
-
-                if(!$validator->passes())
-                {
-                    return response()->json([
-                        'status' => TRUE,
-                        'report' => $validator->messages()->first()
-                    ]);
-                }
-
-                \Auth::user()->update($values);
-                \Auth::user()->touch();
-                \Auth::user()->save();
+            \Auth::user()->update($values);
+            \Auth::user()->touch();
+            \Auth::user()->save();
 
 
-                return response()->json([
-                    'status' => TRUE,
-                    'report' => 'resource_updated'
-                ]);
-
-            }
-
-            throw new Exception("invalid_request");
+            return response()->json([
+                'status' => TRUE,
+                'report' => 'resource_updated'
+            ]);
         }
         catch (\Exception $e)
         {

@@ -11,12 +11,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property Photo $photo
  * @property Challenge $challenge
  * @property User $user
+ * @property string created_at
  */
 class ChallengeCompleted extends Model
 {
     protected $table = 'completed_challenges';
     protected $primaryKey = 'completed_id';
-
+    public $timestamps = false;
     /**
      * The primary key of the model.
      *

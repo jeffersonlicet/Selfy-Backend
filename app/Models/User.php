@@ -78,6 +78,14 @@ class User extends Authenticatable
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany|\Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function Todo()
+    {
+        return $this->hasMany('App\Models\ChallengeTodo', 'user_id', 'user_id');
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany|\Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function Face()

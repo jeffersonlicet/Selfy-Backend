@@ -16,6 +16,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use GuzzleHttp\Client as GuzzleClient;
 use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
 use GuzzleHttp\Psr7\Request as GuzzleRequest;
+use Log;
 
 
 class CheckDuo implements ShouldQueue
@@ -52,7 +53,6 @@ class CheckDuo implements ShouldQueue
     {
         /** @noinspection PhpUndefinedMethodInspection */
         if(Photo::find($this->photo->photo_id))
-        /** @noinspection end */
         {
             $creator = $this->photo->User;
 
@@ -160,6 +160,7 @@ class CheckDuo implements ShouldQueue
                                     $completed->challenge_id = $single->Challenge->challenge_id;
                                     $completed->photo_id = $this->photo->photo_id;
                                     $completed->user_id = $creator->user_id;
+                                    $completed->created_at = Carbon::now();
                                     $completed->save();
 
                                     $single->Challenge->completed_count++;
@@ -172,8 +173,15 @@ class CheckDuo implements ShouldQueue
                         }
                     }
                 }
-                else { print("The photo does not have 2 faces"); }
+                else {Log::info("JEFF The photo does not have 2 faces"); }
             }
+            else
+            {
+                Log::info("JEFF creator todo empty or no face found");
+            }
+        }
+        else{
+            Log::info("JEFF Photo not found");
         }
     }
 
