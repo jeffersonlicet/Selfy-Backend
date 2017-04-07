@@ -47,7 +47,8 @@ class LikeController extends Controller
 
            return response()->json([
                'status' => TRUE,
-               'likes' => $likes->isEmpty() ? [] : $likes->toArray()
+               'likes' => $likes->isEmpty() ? [] : $likes->toArray(),
+               'total' => Photo::find($photo_id)->likes_count
            ]);
 
         }
