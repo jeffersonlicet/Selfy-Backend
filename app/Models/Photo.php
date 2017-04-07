@@ -36,6 +36,7 @@ class Photo extends Model
 
     protected $appends = array('like_enabled', 'delete_enabled');
 
+
     /**
      * The primary key of the model.
      *
@@ -71,6 +72,20 @@ class Photo extends Model
     {
         return $this->belongsTo('App\Models\PhotoGroup', 'photo_group', 'photo_group_id');
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function Challenges()
+    {
+        return $this->hasManyThrough(
+            'App\Models\Challenge',
+                'App\Models\ChallengeCompleted',
+                'photo_id',
+                'challenge_id',
+                'photo_id');
+    }
+
 
     /**
      *  Append property

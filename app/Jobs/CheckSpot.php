@@ -148,7 +148,6 @@ class CheckSpot implements ShouldQueue
             $completed->photo_id        = $this->photo->photo_id;
             $completed->challenge_id    = $challenge->challenge_id;
             $completed->user_id = $this->photo->User->user_id;
-            $completed->created_at = Carbon::now();
             $completed->saveOrFail();
 
             $this->photo->User->notify(new SpotNotification($this->photo->photo_id));

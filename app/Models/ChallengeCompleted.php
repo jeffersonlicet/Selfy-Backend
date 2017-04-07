@@ -16,8 +16,9 @@ use Illuminate\Database\Eloquent\Model;
 class ChallengeCompleted extends Model
 {
     protected $table = 'completed_challenges';
-    protected $primaryKey = 'completed_id';
+    protected $primaryKey = 'challenge_id';
     public $timestamps = false;
+    protected $dateFormat = 'M j Y h:i:s:000A';
     /**
      * The primary key of the model.
      *

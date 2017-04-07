@@ -110,6 +110,14 @@ class User extends Authenticatable
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany|\Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function Following()
+    {
+        return $this->hasMany('App\Models\UserFollowing', 'follower_id', 'user_id');
+    }
+
+    /**
      *  Append property
      *  Return if the user can perform a like action
      * @return bool
