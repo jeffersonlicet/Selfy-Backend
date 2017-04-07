@@ -49,7 +49,7 @@ Route::group(['middleware' => 'ApiAuth'], function () {
     Route::get('challenges/todo', 'Api\ChallengesController@todo');
     Route::get('challenges/completed', 'Api\ChallengesController@completed');
     Route::resource('challenge', 'Api\ChallengesController',
-        ['only' => ['store','destroy']]);
+        ['only' => ['show','store','destroy']]);
 
 
 

@@ -14,6 +14,44 @@ use Validator;
 
 class ChallengesController extends Controller
 {
+
+    public function show($id)
+    {
+        try
+        {
+            $validator =
+                Validator::make(
+                    ['id' => $id],
+                    ['id' => ['required', 'numeric']]
+                );
+
+            if(!$validator->passes())
+            {
+                return response()->json([
+                    'status' => TRUE,
+                    'likes' => $validator->messages()->first()
+                ]);
+            }
+
+            /** @noinspection PhpUndefinedMethodInspection */
+            if ($result = Challenge::with('Object')->find($id))
+            {
+                return response()->json([
+                    'status' => TRUE,
+                    'challenge' => $result->toArray()
+                ]);
+            }
+
+            throw new Exception('resource_not_found');
+        }
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
     /**
      *  Add challenge to: to do list
      *
