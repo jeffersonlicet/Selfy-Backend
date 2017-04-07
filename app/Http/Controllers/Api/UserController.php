@@ -143,7 +143,7 @@ class UserController extends Controller
             $validator =
                 Validator::make(
                     $input,
-                    ['face_url' => ['required', 'string']]
+                    ['photo_url' => ['required', 'string']]
                 );
 
             if(!$validator->passes())
@@ -158,11 +158,11 @@ class UserController extends Controller
             {
                 $face = new UserFace();
                 $face->user_id = \Auth::user()->user_id;
-                $face->url = $input['face_url'];
+                $face->url = $input['photo_url'];
                 $face->save();
             }
             else{
-                \Auth::user()->Face->url = $input['face_url'];
+                \Auth::user()->Face->url = $input['photo_url'];
                 \Auth::user()->Face->save();
             }
                 return response()->json([
