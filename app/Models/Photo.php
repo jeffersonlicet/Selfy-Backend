@@ -31,10 +31,10 @@ class Photo extends Model
      * @var array
      */
     protected $hidden = [
-        'user_id', 'place_id', 'reports_count', 'url'
+        'user_id', 'place_id', 'reports_count'
     ];
 
-    protected $appends = array('like_enabled', 'delete_enabled', 'thumbnail', 'image');
+    protected $appends = array('like_enabled', 'delete_enabled');
 
 
     /**
@@ -109,50 +109,6 @@ class Photo extends Model
         /** @noinspection PhpUndefinedMethodInspection */
         return \Auth::user()->user_id == $this->user_id;
         /** @noinspection end */
-    }
-
-    /**
-     *  Append property
-     *  Return if the user can perform a delete action
-     * @return bool
-     */
-    public function getThumbnailAttribute()
-    {
-        $extension = ".jpg";
-
-        if(strpos( $this->url, '.jpeg') !== false)
-        {
-            $extension = ".jpeg";
-        }
-
-        elseif(strpos( $this->url, '.png') !== false)
-        {
-            $extension = ".png";
-        }
-
-        return str_replace($extension, 's'.$extension,  $this->url);
-    }
-
-    /**
-     *  Append property
-     *  Return if the user can perform a delete action
-     * @return bool
-     */
-    public function getImageAttribute()
-    {
-        $extension = ".jpg";
-
-        if(strpos( $this->url, '.jpeg') !== false)
-        {
-            $extension = ".jpeg";
-        }
-
-        elseif(strpos( $this->url, '.png') !== false)
-        {
-            $extension = ".png";
-        }
-
-        return str_replace($extension, 'l'.$extension,  $this->url);
     }
 
     /**
