@@ -318,18 +318,18 @@ class PhotoController extends Controller
                 case 'both':
                     $result_top = Photo::related($photo_id, $user_id, '>', config('app.photos_per_border'));
                     $result_bottom = Photo::related($photo_id, $user_id, '<' , config('app.photos_per_border'));
-                    $top[]      =  $result_top->isEmpty() ?  [] : $result_top->toArray();
-                    $bottom[]   =  $result_bottom->isEmpty() ?  [] : $result_bottom->toArray();
+                    $top      =  $result_top->isEmpty() ?  [] : $result_top->toArray();
+                    $bottom   =  $result_bottom->isEmpty() ?  [] : $result_bottom->toArray();
                     break;
 
                 case 'top':
                     $result_top = Photo::related($photo_id, $user_id, '>', config('app.photos_per_border'));
-                    $top[]      =  $result_top->isEmpty() ?  [] : $result_top->toArray();
+                    $top     =  $result_top->isEmpty() ?  [] : $result_top->toArray();
                     break;
 
                 case 'bottom':
                     $result_bottom = Photo::related($photo_id, $user_id, '<' , config('app.photos_per_border'));
-                    $bottom[]   =  $result_bottom->isEmpty() ?  [] : $result_bottom->toArray();
+                    $bottom   =  $result_bottom->isEmpty() ?  [] : $result_bottom->toArray();
                     break;
             }
 
