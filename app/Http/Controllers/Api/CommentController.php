@@ -122,10 +122,12 @@ class CommentController extends Controller
                 $photo->User->notify(new CommentNotification($photo->User, $photo->photo_id));
             }
 
+            $return = $comment->toArray();
+            $return['user'] = $comment->User->toArray();
             return response()->json([
                 'status' => true,
                 'report' => 'action_done',
-                'comments' => [$comment]
+                'comments' => [$return]
             ]);
 
         }

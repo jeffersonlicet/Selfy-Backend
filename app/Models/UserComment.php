@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $body
  * @property string $created_at
  * @property string $updated_at
- * @property User $user
+ * @property User $User
  * @property Photo $Photo
  * @property integer photo_id
  */
@@ -25,7 +25,7 @@ class UserComment extends Model
 
     protected $primaryKey = 'comment_id';
 
-    protected $hidden = ['updated_at', 'photo_id'];
+    protected $hidden = ['updated_at', 'photo_id', 'photo', 'user_id'];
     /**
      * @var array
      */
