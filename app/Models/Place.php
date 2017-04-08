@@ -79,4 +79,5 @@ class Place extends Model
         $this->latitude            = $coordinates[0];
         $this->longitude           = $coordinates[1];
     }
+
 }
