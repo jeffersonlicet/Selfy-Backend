@@ -47,7 +47,7 @@ class PhotoController extends Controller
             /** @noinspection PhpUndefinedMethodInspection */
             return response()->json([
                 'status' => TRUE,
-                'photos' => [$result->isEmpty() ?  [] : $result->toArray()]
+                'photos' => $result->isEmpty() ?  [] : $result->toArray()
             ]);
 
         }
@@ -142,7 +142,7 @@ class PhotoController extends Controller
 
                 return response()->json([
                     'status' => TRUE,
-                    'photos' => $result->toArray()
+                    'photos' => [$result->toArray()]
                 ]);
             }
 
