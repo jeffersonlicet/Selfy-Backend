@@ -30,6 +30,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property integer play_todo
  * @property integer followers_count
  * @property integer following_count
+ * @property integer photos_count
  * @property string reset_password_token
  * @property string reset_password_sent_at
  * @property UserGroup userGroup
