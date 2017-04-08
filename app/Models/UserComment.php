@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $created_at
  * @property string $updated_at
  * @property User $user
+ * @property Photo $Photo
  * @property integer photo_id
  */
 class UserComment extends Model
@@ -30,6 +31,8 @@ class UserComment extends Model
      */
     protected $fillable = ['user_id', 'body', 'created_at', 'updated_at', 'photo_id'];
 
+    protected $appends = ['delete_enabled'];
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -44,5 +47,12 @@ class UserComment extends Model
     public function Photo()
     {
         return $this->belongsTo('App\Models\Photo', 'photo_id', 'photo_id');
+    }
+
+    public function getDeleteEnabledAttribute()
+    {
+        /** @noinspection PhpUndefinedMethodInspection */
+        return \Auth::user()->user_id == $this->user_id || $this->Photo->user_id == \Auth::user()->user_id;
+        /** @noinspection end */
     }
 }
