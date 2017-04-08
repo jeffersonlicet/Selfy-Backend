@@ -175,7 +175,7 @@ class CommentController extends Controller
                 throw new Exception('invalid_action');
             }
 
-            $comment->Photo->likes_count--;
+            $comment->Photo->comments_count--;
             /** @noinspection PhpUndefinedMethodInspection */
             $comment->Photo->save();
             /** @noinspection PhpUndefinedMethodInspection */
