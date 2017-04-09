@@ -111,8 +111,15 @@ class AuthController extends Controller
             {
                 if($user = User::withTrashed()->with('Face')->where('username', $input['username'])->first())
                 {
-                    if (Hash::check($input['password'], $user->password)) {
+                    if (Hash::check($input['password'], $user->password))
+                    {
                         $user->token->delete();
+
+                        if ($request->has('firebase_token'))
+                        {
+                            $user->firebase_token = $input['firebase_token'];
+                            $user->save();
+                        }
 
                         $public = JWTAuth::fromUser($user);
                         $private = str_random(50);

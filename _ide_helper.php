@@ -1,7 +1,7 @@
 <?php
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 5.4.17 on 2017-04-06.
+ * Generated for Laravel 5.4.17 on 2017-04-09.
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  * @see https://github.com/barryvdh/laravel-ide-helper
@@ -11708,6 +11708,61 @@ namespace Tymon\JWTAuth\Facades {
     }         
 }
     
+namespace LaravelFCM\Facades {
+
+    class FCM {
+        
+        /**
+         * send a downstream message to.
+         * 
+         * - a unique device with is registration Token
+         * - or to multiples devices with an array of registrationIds
+         *
+         * @param string|array $to
+         * @param \LaravelFCM\Sender\Options|null $options
+         * @param \LaravelFCM\Sender\PayloadNotification|null $notification
+         * @param \LaravelFCM\Sender\PayloadData|null $data
+         * @return \LaravelFCM\Sender\DownstreamResponse|null 
+         * @static 
+         */
+        public static function sendTo($to, $options = null, $notification = null, $data = null)
+        {
+            return \LaravelFCM\Sender\FCMSender::sendTo($to, $options, $notification, $data);
+        }
+        
+        /**
+         * Send a message to a group of devices identified with them notification key.
+         *
+         * @param $notificationKey
+         * @param \LaravelFCM\Sender\Options|null $options
+         * @param \LaravelFCM\Sender\PayloadNotification|null $notification
+         * @param \LaravelFCM\Sender\PayloadData|null $data
+         * @return \LaravelFCM\Sender\GroupResponse 
+         * @static 
+         */
+        public static function sendToGroup($notificationKey, $options = null, $notification = null, $data = null)
+        {
+            return \LaravelFCM\Sender\FCMSender::sendToGroup($notificationKey, $options, $notification, $data);
+        }
+        
+        /**
+         * Send message devices registered at a or more topics.
+         *
+         * @param \LaravelFCM\Sender\Topics $topics
+         * @param \LaravelFCM\Sender\Options|null $options
+         * @param \LaravelFCM\Sender\PayloadNotification|null $notification
+         * @param \LaravelFCM\Sender\PayloadData|null $data
+         * @return \LaravelFCM\Sender\TopicResponse 
+         * @static 
+         */
+        public static function sendToTopic($topics, $options = null, $notification = null, $data = null)
+        {
+            return \LaravelFCM\Sender\FCMSender::sendToTopic($topics, $options, $notification, $data);
+        }
+        
+    }         
+}
+    
     
 namespace {
 
@@ -13737,6 +13792,8 @@ namespace {
     class JWTAuth extends \Tymon\JWTAuth\Facades\JWTAuth {}
     
     class JWTFactory extends \Tymon\JWTAuth\Facades\JWTFactory {}
+    
+    class FCM extends \LaravelFCM\Facades\FCM {}
     
 }
 
