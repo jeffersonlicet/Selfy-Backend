@@ -235,7 +235,7 @@ class UserController extends Controller
                     $connection->following_id = $user->user_id;
                     $connection->save();
 
-                    $user->notify(new FollowNotification($user));
+                    $user->notify(new FollowNotification(\Auth::user()));
 
                     return response()->json([
                         'status' => TRUE,
