@@ -5,6 +5,7 @@ namespace App\Notifications;
 use App\Models\Photo;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
 
@@ -17,9 +18,10 @@ use Log;
 /**
  * @property Photo photo
  */
-class FollowNotification extends Notification
+class FollowNotification extends Notification implements ShouldQueue
 {
     use Queueable;
+
     private $user;
 
     /**
@@ -59,31 +61,29 @@ class FollowNotification extends Notification
 
     public function toArray($notifiable)
     {
-        Log::info($notifiable->firebase_token);
         if($notifiable->firebase_token != null)
         {
             $optionBuiler = new OptionsBuilder();
-            $optionBuiler->setTimeToLive(60*20);
+            $optionBuiler->setTimeToLive(60*20)->setPriority("high");
 
             $dataBuilder = new PayloadDataBuilder();
-            $dataBuilder->addData(['a_data' => 'my_data']);
-
+            $dataBuilder->addData(['user_id' => $this->user->user_id, 'type' => 'follow']);
             $notificationBuilder = new PayloadNotificationBuilder();
-            $notificationBuilder->setTitle('title')
-                ->setBody('body')
-                ->setSound('sound')
-                ->setBadge('badge');
+            $notificationBuilder->setTitle('Selfy')
+
+                ->setBody($this->user->username.' is following you')
+                ->setSound('clean_selfy');
 
             $option = $optionBuiler->build();
             $notification = $notificationBuilder->build();
             $data = $dataBuilder->build();
 
             $downstreamResponse = FCM::sendTo($notifiable->firebase_token, $option, $notification, $data);
-            Log::info($downstreamResponse->numberSuccess());
+            //Log::info($downstreamResponse->logResponse());
         }
 
         return [
-            'user_id' => \Auth::user()->user_id,
+            'user_id' => $this->user->user_id,
         ];
     }
 }
