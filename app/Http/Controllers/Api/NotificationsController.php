@@ -42,7 +42,7 @@ class NotificationsController extends Controller
                 $notification['notification_id'] = $n->id;
                 $notification['read'] = $n->read_at != null;
                 $notification['type'] = $n->type;
-                $notification['created_at'] = $n->created_at;
+                $notification['created_at'] = $n->created_at->toDateTimeString();
                 switch ($n->type)
                 {
                     case  'App\Notifications\DuoNotification':
