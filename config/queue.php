@@ -41,6 +41,15 @@ return [
             'retry_after' => 90,
         ],
 
+        'azure' => [
+            'driver' => 'azure',
+            'queue' => 'seginusqueue',
+            'protocol' => 'https', // http or https
+            'accountname' => 'seginus',
+            'key' => 'sv7Q10jTkgCFUD/4c5OCZqBP/CaEOkkU71kIkrc1fQp9TsdDtPqDfjuup9YfuQYLNvvCk44KhChBmrSErT5ctQ==',
+            'timeout'       => 60
+        ],
+
         'beanstalkd' => [
             'driver' => 'beanstalkd',
             'host' => 'localhost',
