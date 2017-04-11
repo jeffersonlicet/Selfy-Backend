@@ -67,7 +67,7 @@ class FollowNotification extends Notification implements ShouldQueue
             $optionBuiler->setTimeToLive(60*20)->setPriority("high");
 
             $dataBuilder = new PayloadDataBuilder();
-            $dataBuilder->addData(['user_id' => $this->user->user_id, 'type' => 'follow']);
+            $dataBuilder->addData(['object' => $this->user->user_id, 'type' => 'follow']);
             $notificationBuilder = new PayloadNotificationBuilder();
             $notificationBuilder->setTitle('Selfy')
 

@@ -8,6 +8,7 @@
         "php": ">=5.6.4",
         "ben-gibson/foursquare-venue-client": "^0.0.6",
         "brozot/laravel-fcm": "^1.2",
+        "jeffersonlicet/azure-queue-laravel": "@dev",
         "laravel/framework": "5.4.*",
         "laravel/tinker": "~1.0",
         "php-http/guzzle6-adapter": "^1.1",
@@ -56,4 +57,6 @@
         "preferred-install": "dist",
         "sort-packages": true
     }
+
+
 }

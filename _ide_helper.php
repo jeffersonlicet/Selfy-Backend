@@ -1,7 +1,7 @@
 <?php
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 5.4.17 on 2017-04-09.
+ * Generated for Laravel 5.4.18 on 2017-04-11.
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  * @see https://github.com/barryvdh/laravel-ide-helper
@@ -10610,6 +10610,20 @@ namespace Illuminate\Support\Facades {
         public static function extendImplicit($rule, $extension, $message = null)
         {
             \Illuminate\Validation\Factory::extendImplicit($rule, $extension, $message);
+        }
+        
+        /**
+         * Register a custom implicit validator extension.
+         *
+         * @param string $rule
+         * @param \Closure|string $extension
+         * @param string $message
+         * @return void 
+         * @static 
+         */
+        public static function extendDependent($rule, $extension, $message = null)
+        {
+            \Illuminate\Validation\Factory::extendDependent($rule, $extension, $message);
         }
         
         /**
