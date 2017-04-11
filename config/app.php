@@ -251,4 +251,5 @@ return [
     'photos_best_per_page' => 3,
     'likes_per_page' => 10,
     'connections_per_page' => 10,
+    'notifications_per_page' => 20,
 ];

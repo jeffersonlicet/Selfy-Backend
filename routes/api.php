@@ -52,6 +52,9 @@ Route::group(['middleware' => 'ApiAuth'], function () {
     Route::resource('challenge', 'Api\ChallengesController',
         ['only' => ['show','store','destroy']]);
 
+    Route::get('notifications', 'Api\NotificationsController@index');
+
+
 
 
 
