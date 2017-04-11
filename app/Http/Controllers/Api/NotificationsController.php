@@ -42,13 +42,14 @@ class NotificationsController extends Controller
                 $notification['notification_id'] = $n->id;
                 $notification['read'] = $n->read_at != null;
                 $notification['type'] = $n->type;
+                $notification['created_at'] = $n->created_at;
                 switch ($n->type)
                 {
                     case  'App\Notifications\DuoNotification':
                     case  'App\Notifications\SpotNotification' :
                     case  'App\Notifications\CommentNotification' :
                     case  'App\Notifications\LikeNotification' :
-                        if($photo = Photo::with('User')->find($n->data['photo_id']))
+                        if($photo = Photo::with('User', 'Challenges', 'Challenges.Object')->find($n->data['photo_id']))
                         {
                             $notification['photo'] = $photo->toArray();
                         }
