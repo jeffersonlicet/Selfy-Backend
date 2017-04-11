@@ -3,10 +3,13 @@
 namespace App\Notifications;
 
 use App\Models\Photo;
-use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
+use LaravelFCM\Message\OptionsBuilder;
+use LaravelFCM\Message\PayloadDataBuilder;
+use LaravelFCM\Message\PayloadNotificationBuilder;
+use FCM;
 
 /**
  * @property Photo photo
@@ -53,6 +56,25 @@ class SpotNotification extends Notification
 
     public function toArray($notifiable)
     {
+        if($notifiable->firebase_token != null)
+        {
+            $optionBuiler = new OptionsBuilder();
+            $optionBuiler->setTimeToLive(60*20)->setPriority("high");
+
+            $dataBuilder = new PayloadDataBuilder();
+            $dataBuilder->addData(['object' => $this->photo_id, 'type' => 'spot']);
+            $notificationBuilder = new PayloadNotificationBuilder();
+            $notificationBuilder->setTitle('Selfy')
+                ->setBody('New spot completed')
+                ->setSound('clean_selfy');
+
+            $option = $optionBuiler->build();
+            $notification = $notificationBuilder->build();
+            $data = $dataBuilder->build();
+
+            $downstreamResponse = FCM::sendTo($notifiable->firebase_token, $option, $notification, $data);
+        }
+
         return [
             'photo_id' => $this->photo_id,
         ];

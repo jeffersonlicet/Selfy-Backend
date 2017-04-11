@@ -33,6 +33,7 @@ Route::group(['middleware' => 'ApiAuth'], function () {
 
     Route::resource('like', 'Api\LikeController',
         ['only' => ['store','destroy']]);
+
     Route::get('likes', 'Api\LikeController@index');
 
     Route::post('user/face', 'Api\UserController@face');

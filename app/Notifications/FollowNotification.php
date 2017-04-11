@@ -13,7 +13,7 @@ use LaravelFCM\Message\OptionsBuilder;
 use LaravelFCM\Message\PayloadDataBuilder;
 use LaravelFCM\Message\PayloadNotificationBuilder;
 use FCM;
-use Log;
+
 
 /**
  * @property Photo photo
@@ -70,7 +70,6 @@ class FollowNotification extends Notification implements ShouldQueue
             $dataBuilder->addData(['object' => $this->user->user_id, 'type' => 'follow']);
             $notificationBuilder = new PayloadNotificationBuilder();
             $notificationBuilder->setTitle('Selfy')
-
                 ->setBody($this->user->username.' is following you')
                 ->setSound('clean_selfy');
 
@@ -79,7 +78,6 @@ class FollowNotification extends Notification implements ShouldQueue
             $data = $dataBuilder->build();
 
             $downstreamResponse = FCM::sendTo($notifiable->firebase_token, $option, $notification, $data);
-            //Log::info($downstreamResponse->logResponse());
         }
 
         return [
