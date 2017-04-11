@@ -69,7 +69,7 @@ class LikeNotification extends Notification
             $dataBuilder->addData(['object' => $this->photo_id, 'type' => 'like']);
             $notificationBuilder = new PayloadNotificationBuilder();
             $notificationBuilder->setTitle('Selfy')
-                ->setBody($this->user->username.' likes your photo')
+                ->setBody($this->user->username.' liked your photo')
                 ->setSound('clean_selfy');
 
             $option = $optionBuiler->build();
