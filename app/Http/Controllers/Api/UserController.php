@@ -62,6 +62,39 @@ class UserController extends Controller
 
 
     /**
+     * Return a user information
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function me()
+    {
+        try
+        {
+            /** @noinspection PhpUndefinedMethodInspection */
+            if ($result = User::with('Face')->find(\Auth::user()->user_id))
+            {
+                $user = $result->toArray();
+                $user['unread'] = count($result->unreadNotifications);
+
+                return response()->json([
+                    'status' => TRUE,
+                    'user' => $user
+                ]);
+            }
+
+            throw new Exception('resource_not_found');
+        }
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
+
+
+    /**
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
