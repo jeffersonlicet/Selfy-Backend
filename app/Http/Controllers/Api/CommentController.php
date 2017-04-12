@@ -119,7 +119,7 @@ class CommentController extends Controller
 
             if($photo->User->user_id != \Auth::user()->user_id)
             {
-                $photo->User->notify(new CommentNotification($photo->User, $photo->photo_id));
+                $photo->User->notify(new CommentNotification($photo->User, $photo->photo_id, $comment->comment_id));
             }
 
             $return = $comment->toArray();

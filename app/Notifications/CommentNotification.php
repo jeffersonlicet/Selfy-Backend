@@ -16,6 +16,7 @@ class CommentNotification extends Notification
 
     private $user;
     private $photo_id;
+    private $comment_id;
 
     /**
      * Create a new notification instance.
@@ -24,10 +25,11 @@ class CommentNotification extends Notification
      * @param $photo_id
      * @internal param Photo $photo
      */
-    public function __construct(User $user, $photo_id)
+    public function __construct(User $user, $photo_id, $comment_id)
     {
         $this->user = $user;
         $this->photo_id = $photo_id;
+        $this->comment_id = $comment_id;
     }
 
     /**
@@ -69,7 +71,7 @@ class CommentNotification extends Notification
             $optionBuiler->setTimeToLive(60*20)->setPriority("high");
 
             $dataBuilder = new PayloadDataBuilder();
-            $dataBuilder->addData(['object' => $this->user->user_id, 'type' => 'comment']);
+            $dataBuilder->addData(['object' => $this->photo_id, 'type' => 'comment']);
             $notificationBuilder = new PayloadNotificationBuilder();
             $notificationBuilder->setTitle('Selfy')
                 ->setBody($this->user->username.' commented on your photo')
@@ -84,6 +86,7 @@ class CommentNotification extends Notification
 
         return [
             'user_id' => \Auth::user()->user_id,
+            'comment_id' => $this->comment_id,
             'photo_id' => $this->photo_id,
         ];
     }
