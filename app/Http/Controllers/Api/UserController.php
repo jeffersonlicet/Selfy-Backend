@@ -62,7 +62,7 @@ class UserController extends Controller
 
 
     /**
-     * Return a user information
+     * Return a user information with notifications count
      *
      * @return \Illuminate\Http\JsonResponse
      */
