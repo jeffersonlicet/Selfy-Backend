@@ -193,6 +193,54 @@ class UserController extends Controller
         }
     }
 
+
+    /**
+     * Edit user face firebase token
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function firebase(Request $request)
+    {
+        try
+        {
+            $input = $request->all();
+
+            $validator =
+                Validator::make(
+                    $input,
+                    ['firebase_token' => ['required', 'string']]
+                );
+
+            if(!$validator->passes())
+            {
+                return response()->json([
+                    'status' => TRUE,
+                    'report' => $validator->messages()->first()
+                ]);
+            }
+
+
+
+                \Auth::user()->firebase_token = $input['firebase_token'];
+                \Auth::user()->save();
+
+            return response()->json([
+                'status' => TRUE,
+                'report' => 'resource_updated'
+            ]);
+
+        }
+
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
+
     /**
      *
      * Soft deletes a user

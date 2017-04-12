@@ -38,7 +38,7 @@ Route::group(['middleware' => 'ApiAuth'], function () {
 
     Route::post('user/face', 'Api\UserController@face');
     Route::post('user/update', 'Api\UserController@update');
-
+    Route::post('user/firebase', 'Api\UserController@firebase');
     Route::post('user/follow', 'Api\UserController@follow');
     Route::post('user/unfollow', 'Api\UserController@unfollow');
     Route::get('user/followers', 'Api\UserController@followers');
