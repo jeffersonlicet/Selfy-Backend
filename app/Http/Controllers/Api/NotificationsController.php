@@ -42,7 +42,7 @@ class NotificationsController extends Controller
                 $notification = [];
                 $notification['notification_id'] = $n->id;
                 $notification['read'] = $n->read_at != null;
-                $notification['type'] = $n->type;
+                $notification['type'] = explode("\\", $n->type)[2];
                 $notification['created_at'] = $n->created_at->toDateTimeString();
                 switch ($n->type)
                 {
@@ -58,7 +58,7 @@ class NotificationsController extends Controller
                     break;
 
                     case 'App\Notifications\SpotNotification':
-                    if($photo = Photo::with('Challenges', 'Challenges.Object')->find($n->data['photo_id']))
+                    if($photo = Photo::with('Place')->find($n->data['photo_id']))
                     {
                         $notification['photo'] = $photo->toArray();
                     }
