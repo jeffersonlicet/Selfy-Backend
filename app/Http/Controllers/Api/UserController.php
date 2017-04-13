@@ -475,9 +475,20 @@ class UserController extends Controller
 
             $followers = UserFollower::where('following_id', $user_id)->with('User')->offset($page*$limit)->limit($limit)->orderBy('follow_id', 'desc')->get();
 
+            $parsed = [];
+
+            if (!$followers->isEmpty()) {
+
+                foreach ($followers as $entity)
+                {
+                    $parsed[] = $entity->user;
+                }
+
+            }
+
             return response()->json([
                 'status' => TRUE,
-                'connections' => $followers->isEmpty() ? [] : $followers->toArray()
+                'connections' => $parsed
             ]);
 
         }
@@ -495,31 +506,39 @@ class UserController extends Controller
      */
     public function following()
     {
-        try
-        {
+        try {
             $user_id = Input::get('user_id', 0) == 0 ? \Auth::user()->user_id : Input::get('user_id', 0);
             $page = Input::get('page', 0);
             $limit = Input::get('limit', config('app.connections_per_page'));
 
             $validator =
                 Validator::make(
-                    ['user_id' => $user_id, 'limit' => $limit, 'page'=> $page],
+                    ['user_id' => $user_id, 'limit' => $limit, 'page' => $page],
                     ['user_id' => ['required', 'numeric'], 'limit' => ['required', 'numeric', 'between:1,20'], 'page' => ['required', 'numeric']]
                 );
 
-            if(!$validator->passes())
-            {
+            if (!$validator->passes()) {
                 return response()->json([
                     'status' => TRUE,
                     'report' => $validator->messages()->first()
                 ]);
             }
 
-            $following = UserFollowing::where('follower_id', $user_id)->with('User')->offset($page*$limit)->limit($limit)->orderBy('follow_id', 'desc')->get();
+            $following = UserFollowing::where('follower_id', $user_id)->with('User')->offset($page * $limit)->limit($limit)->orderBy('follow_id', 'desc')->get();
+            $parsed = [];
+
+            if (!$following->isEmpty()) {
+
+                foreach ($following as $entity)
+                {
+                    $parsed[] = $entity->user;
+                }
+
+            }
 
             return response()->json([
                 'status' => TRUE,
-                'connections' => $following->isEmpty() ? [] : $following->toArray()
+                'connections' => $parsed
             ]);
 
         }
