@@ -448,6 +448,9 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function followers()
     {
         try
@@ -487,6 +490,9 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function following()
     {
         try

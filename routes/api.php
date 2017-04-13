@@ -24,7 +24,7 @@ Route::group(['middleware' => 'ApiAuth'], function () {
     Route::get('photos', 'Api\PhotoController@index');
 
     Route::get('photo/borders/{photo_id}', 'Api\PhotoController@borders');
-    Route::get('photo/bests/{user_id}', 'Api\PhotoController@best');
+    Route::get('photo/bests/{user_id}', 'Api\PhotoController@bests');
     Route::get('photo/report/{photo_id}', 'Api\PhotoController@report');
 
     Route::resource('comment', 'Api\CommentController',
