@@ -110,8 +110,8 @@ class UserController extends Controller
                         'firstname'				=>	'required|string',
                         'lastname'				=>	'required|string',
                         'bio'				    =>	'string',
-                        'duo_enabled'           =>	'numeric',
-                        'spot_enabled'           =>	'numeric',
+                        'duo_enabled'           =>	'required|boolean',
+                        'spot_enabled'           =>	'required|boolean',
                     ]
                 );
 
