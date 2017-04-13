@@ -455,7 +455,7 @@ class UserController extends Controller
     {
         try
         {
-            $user_id = Input::get('user_id', \Auth::user()->user_id);
+            $user_id = Input::get('user_id', 0) == 0 ? \Auth::user()->user_id : Input::get('user_id', 0);
             $page = Input::get('page', 0);
             $limit = Input::get('limit', config('app.connections_per_page'));
 
@@ -497,7 +497,7 @@ class UserController extends Controller
     {
         try
         {
-            $user_id = Input::get('user_id', \Auth::user()->user_id);
+            $user_id = Input::get('user_id', 0) == 0 ? \Auth::user()->user_id : Input::get('user_id', 0);
             $page = Input::get('page', 0);
             $limit = Input::get('limit', config('app.connections_per_page'));
 
