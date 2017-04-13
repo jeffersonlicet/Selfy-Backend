@@ -87,12 +87,17 @@ class PhotoController extends Controller
 
             $photo->saveOrFail();
 
-            if($request->has("latitude") && $request->has("latitude"))
+            if($request->has("latitude") && $request->has("latitude") && \Auth::user()->spot_enabled)
             {
                $this->dispatch(new CheckSpot($photo, [floatval($input['latitude']), floatval($input['longitude'])]));
             }
+            if(\Auth::user()->duo_enabled)
+            {
+                $this->dispatch(new CheckDuo($photo, rand(0, config('app.oxford_available_keys') - 1)));
+            }
 
-           $this->dispatch(new CheckDuo($photo, rand(0, config('app.oxford_available_keys') - 1)));
+            \Auth::user()->photos_count++;
+            \Auth::user()->save();
 
             return response()->json([
                 'status' => TRUE,

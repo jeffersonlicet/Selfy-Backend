@@ -9,6 +9,8 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
+ * @property boolean duo_enabled
+ * @property boolean spot_enabled
  * @property integer user_id
  * @property integer user_group
  * @property string username
