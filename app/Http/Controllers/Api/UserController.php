@@ -195,7 +195,50 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Edit user avatar reference url
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function avatar(Request $request)
+    {
+        try
+        {
+            $input = $request->all();
 
+            $validator =
+                Validator::make(
+                    $input,
+                    ['photo_url' => ['required', 'string']]
+                );
+
+            if(!$validator->passes())
+            {
+                return response()->json([
+                    'status' => TRUE,
+                    'report' => $validator->messages()->first()
+                ]);
+            }
+
+            \Auth::user()->avatar = $input['photo_url'];
+            \Auth::user()->save();
+
+            return response()->json([
+                'status' => TRUE,
+                'report' => 'resource_updated'
+            ]);
+
+        }
+
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
     /**
      * Edit user face firebase token
      *

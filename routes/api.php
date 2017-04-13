@@ -35,6 +35,7 @@ Route::group(['middleware' => 'ApiAuth'], function () {
         ['only' => ['store','destroy']]);
 
     Route::get('likes', 'Api\LikeController@index');
+    Route::post('user/avatar', 'Api\UserController@avatar');
 
     Route::post('user/face', 'Api\UserController@face');
     Route::post('user/update', 'Api\UserController@update');
