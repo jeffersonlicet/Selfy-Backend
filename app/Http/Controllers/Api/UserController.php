@@ -103,15 +103,16 @@ class UserController extends Controller
         try
         {
             $values = $request->only(['bio', 'firstname' , 'lastname', 'face_url', 'duo_enabled', 'spot_enabled']);
-
+            $values['duo_enabled'] = boolval($values['duo_enabled']);
+            $values['spot_enabled'] = boolval($values['spot_enabled']);
             $validator = Validator::make(
                     $values,
                     [
                         'firstname'				=>	'required|string',
                         'lastname'				=>	'required|string',
                         'bio'				    =>	'string',
-                        'duo_enabled'           =>	'required|boolean',
-                        'spot_enabled'           =>	'required|boolean',
+                        'duo_enabled'           =>	'required',
+                        'spot_enabled'           =>	'required',
                     ]
                 );
 
