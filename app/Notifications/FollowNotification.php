@@ -70,7 +70,6 @@ class FollowNotification extends Notification implements ShouldQueue
             $dataBuilder->addData(['object' => $this->user->user_id, 'type' => 'follow']);
             $notificationBuilder = new PayloadNotificationBuilder();
             $notificationBuilder->setTitle('Selfy')
-                ->setClickAction("notifications")
                 ->setBody($this->user->username.' is following you')
                 ->setSound('clean_selfy');
 
