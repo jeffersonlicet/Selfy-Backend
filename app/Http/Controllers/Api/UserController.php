@@ -102,14 +102,16 @@ class UserController extends Controller
     {
         try
         {
-            $values = $request->only(['bio', 'firstname' , 'lastname', 'face_url']);
+            $values = $request->only(['bio', 'firstname' , 'lastname', 'face_url', 'duo_enabled', 'spot_enabled']);
 
             $validator = Validator::make(
                     $values,
                     [
                         'firstname'				=>	'required|string',
                         'lastname'				=>	'required|string',
-                        'bio'				=>	'string',
+                        'bio'				    =>	'string',
+                        'duo_enabled'           =>	'numeric',
+                        'spot_enabled'           =>	'numeric',
                     ]
                 );
 
@@ -124,7 +126,6 @@ class UserController extends Controller
             \Auth::user()->update($values);
             \Auth::user()->touch();
             \Auth::user()->save();
-
 
             return response()->json([
                 'status' => TRUE,
@@ -220,10 +221,8 @@ class UserController extends Controller
                 ]);
             }
 
-
-
-                \Auth::user()->firebase_token = $input['firebase_token'];
-                \Auth::user()->save();
+            \Auth::user()->firebase_token = $input['firebase_token'];
+            \Auth::user()->save();
 
             return response()->json([
                 'status' => TRUE,
