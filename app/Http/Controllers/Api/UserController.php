@@ -477,7 +477,7 @@ class UserController extends Controller
 
             return response()->json([
                 'status' => TRUE,
-                'followers' => $followers->isEmpty() ? [] : $followers->toArray()
+                'connections' => $followers->isEmpty() ? [] : $followers->toArray()
             ]);
 
         }
@@ -519,7 +519,7 @@ class UserController extends Controller
 
             return response()->json([
                 'status' => TRUE,
-                'following' => $following->isEmpty() ? [] : $following->toArray()
+                'connections' => $following->isEmpty() ? [] : $following->toArray()
             ]);
 
         }
