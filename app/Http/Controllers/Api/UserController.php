@@ -103,8 +103,8 @@ class UserController extends Controller
         try
         {
             $values = $request->only(['bio', 'firstname' , 'lastname', 'face_url', 'duo_enabled', 'spot_enabled']);
-            $values['duo_enabled'] = $values['duo_enabled'] == "true";
-            $values['spot_enabled'] = $values['spot_enabled'] == "true";
+            $values['duo_enabled'] = $values['duo_enabled'] == "1";
+            $values['spot_enabled'] = $values['spot_enabled'] == "1";
             $validator = Validator::make(
                     $values,
                     [
