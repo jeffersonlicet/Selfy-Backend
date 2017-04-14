@@ -21,6 +21,8 @@ class ChallengeTodo extends Model
      */
     protected $fillable = ['challenge_id', 'user_id'];
 
+
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

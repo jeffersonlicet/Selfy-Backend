@@ -45,6 +45,7 @@ Route::group(['middleware' => 'ApiAuth'], function () {
     Route::get('user/followers', 'Api\UserController@followers');
     Route::get('user/following', 'Api\UserController@following');
     Route::get('user/me', 'Api\UserController@me');
+    Route::get('user/challenges', 'Api\UserController@challenges');
 
     Route::resource('user', 'Api\UserController',
         ['only' => ['destroy', 'show']]);
