@@ -557,88 +557,90 @@ class UserController extends Controller
 
     public function challenges()
     {
-        $limit   = Input::get('limit', config('app.photos_best_per_page'));
-        $page    = Input::get('page', 0);
-        $type    = Input::get('type');
-        $status    = Input::get('status');
-        $curated = [];
 
-        $validator =
-            Validator::make(
-                ['limit' => $limit, 'page'=> $page, 'type' => $type, 'status' => $status],
-                ['limit' => ['required', 'numeric', 'between:1,20'], 'page' => ['required', 'numeric'],
-                    'type' => ['required', Rule::in(['duo', 'spot', 'play'])],
-                    'status' => ['required', Rule::in(['completed', 'todo'])],
-                ]
-            );
+        try {
+            $limit = Input::get('limit', config('app.photos_best_per_page'));
+            $page = Input::get('page', 0);
+            $type = Input::get('type');
+            $status = Input::get('status');
+            $curated = [];
 
-        if(!$validator->passes())
-        {
+            $validator =
+                Validator::make(
+                    ['limit' => $limit, 'page' => $page, 'type' => $type, 'status' => $status],
+                    ['limit' => ['required', 'numeric', 'between:1,20'], 'page' => ['required', 'numeric'],
+                        'type' => ['required', Rule::in(['duo', 'spot', 'play'])],
+                        'status' => ['required', Rule::in(['completed', 'todo'])],
+                    ]
+                );
+
+            if (!$validator->passes()) {
+                return response()->json([
+                    'status' => TRUE,
+                    'report' => $validator->messages()->first()
+                ]);
+            }
+
+            if ($status == "todo") {
+                switch ($type) {
+                    case 'duo':
+                        $challenges = ChallengeTodo::where('user_id', \Auth::user()->user_id)->with(['Challenge' => function ($query) {
+                            $query->where('object_type', 'duo');
+                        }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
+                        break;
+
+                    case 'spot':
+                        $challenges = ChallengeTodo::where('user_id', \Auth::user()->user_id)->with(['Challenge' => function ($query) {
+                            $query->where('object_type', 'spot');
+                        }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
+                        break;
+
+                    case 'play':
+                        $challenges = ChallengeTodo::where('user_id', \Auth::user()->user_id)->with(['Challenge' => function ($query) {
+                            $query->where('object_type', 'play');
+                        }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
+                        break;
+                }
+            } else {
+                switch ($type) {
+                    case 'duo':
+                        $challenges = ChallengeCompleted::where('user_id', \Auth::user()->user_id)->with(['Challenge' => function ($query) {
+                            $query->where('object_type', 'duo');
+                        }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
+                        break;
+
+                    case 'spot':
+                        $challenges = ChallengeCompleted::where('user_id', \Auth::user()->user_id)->with(['Challenge' => function ($query) {
+                            $query->where('object_type', 'spot');
+                        }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
+                        break;
+
+                    case 'play':
+                        $challenges = ChallengeCompleted::where('user_id', \Auth::user()->user_id)->with(['Challenge' => function ($query) {
+                            $query->where('object_type', 'play');
+                        }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
+                        break;
+                }
+            }
+
+            $challenges = $challenges->isEmpty() ? [] : $challenges->toArray();
+
+            foreach ($challenges as $challenge) {
+                if ($challenge['challenge'] != null)
+                    $curated[] = $challenge['challenge'];
+            }
+
             return response()->json([
                 'status' => TRUE,
-                'report' => $validator->messages()->first()
+                'challenges' => $curated
             ]);
         }
-
-        if($status == "todo")
+        catch (\Exception $e)
         {
-            switch ($type)
-            {
-                case 'duo':
-                    $challenges = ChallengeTodo::where('user_id', \Auth::user()->user_id)->with(['Challenge' => function($query) {
-                        $query->where('object_type',  'duo');
-                    }, 'Challenge.object'])->limit($limit)->offset($limit*$page)->get();
-                    break;
-
-                case 'spot':
-                    $challenges = ChallengeTodo::where('user_id', \Auth::user()->user_id)->with(['Challenge' => function($query) {
-                        $query->where('object_type',  'spot');
-                    }, 'Challenge.object'])->limit($limit)->offset($limit*$page)->get();
-                    break;
-
-                case 'play':
-                    $challenges = ChallengeTodo::where('user_id', \Auth::user()->user_id)->with(['Challenge' => function($query) {
-                        $query->where('object_type',  'play');
-                    }, 'Challenge.object'])->limit($limit)->offset($limit*$page)->get();
-                    break;
-            }
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
         }
-
-        else
-        {
-            switch ($type)
-            {
-                case 'duo':
-                    $challenges = ChallengeCompleted::where('user_id', \Auth::user()->user_id)->with(['Challenge' => function($query) {
-                        $query->where('object_type',  'duo');
-                    }, 'Challenge.object'])->limit($limit)->offset($limit*$page)->get();
-                    break;
-
-                case 'spot':
-                    $challenges = ChallengeCompleted::where('user_id', \Auth::user()->user_id)->with(['Challenge' => function($query) {
-                        $query->where('object_type',  'spot');
-                    }, 'Challenge.object'])->limit($limit)->offset($limit*$page)->get();
-                    break;
-
-                case 'play':
-                    $challenges = ChallengeCompleted::where('user_id', \Auth::user()->user_id)->with(['Challenge' => function($query) {
-                        $query->where('object_type',  'play');
-                    }, 'Challenge.object'])->limit($limit)->offset($limit*$page)->get();
-                    break;
-            }
-        }
-
-        $challenges = $challenges->isEmpty() ? [] : $challenges->toArray();
-
-        foreach ($challenges as $challenge)
-        {
-            if($challenge['challenge'] != null)
-             $curated[] = $challenge['challenge'];
-        }
-
-        return response()->json([
-            'status' => TRUE,
-            'challenges' => $curated
-        ]);
     }
 }
