@@ -49,11 +49,13 @@ class NotificationsController extends Controller
                     case  'App\Notifications\DuoNotification':
                         if($photo = Photo::with('Challenges', 'Challenges.Object')->find($n->data['photo_id']))
                         {
+
                             $notification['photo'] = $photo->toArray();
                         }
                         else
                         {
-                            continue;
+
+                            continue 2;
                         }
                     break;
 
@@ -64,7 +66,7 @@ class NotificationsController extends Controller
                     }
                     else
                     {
-                        continue;
+                        continue 2;
                     }
                     break;
 
@@ -75,7 +77,7 @@ class NotificationsController extends Controller
                         }
                         else
                         {
-                            continue;
+                            continue 2;
                         }
 
                         if($user = User::find($n->data['user_id']))
@@ -84,7 +86,7 @@ class NotificationsController extends Controller
                         }
                         else
                         {
-                            continue;
+                            continue 2;
                         }
                         break;
 
@@ -95,7 +97,7 @@ class NotificationsController extends Controller
                         }
                         else
                         {
-                            continue;
+                            continue 2;
                         }
 
                     break;
@@ -107,7 +109,7 @@ class NotificationsController extends Controller
                         }
                         else
                         {
-                            continue;
+                            continue 2;
                         }
 
                         if($comment = UserComment::find($n->data['comment_id']))
@@ -119,7 +121,7 @@ class NotificationsController extends Controller
                         }
                         else
                         {
-                            continue;
+                            continue 2;
                         }
 
                         if($user = User::find($n->data['user_id']))
@@ -128,7 +130,7 @@ class NotificationsController extends Controller
                         }
                         else
                         {
-                            continue;
+                            continue 2;
                         }
                         break;
                 }
