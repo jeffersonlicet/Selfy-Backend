@@ -231,7 +231,7 @@ class ChallengesController extends Controller
 
             return response()->json([
                 'status' => TRUE,
-                'places' => $curated
+                'challenges' => $curated
             ]);
         }
 
