@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\ChallengeCompleted;
 use App\Models\Photo;
+use App\Models\UserFace;
 use App\Models\UserFaceRecognition;
 use App\Notifications\DuoNotification;
 use Carbon\Carbon;
@@ -59,7 +60,7 @@ class CheckDuo implements ShouldQueue
             /*
              *  Be sure the user has to do challenges and a face associated
              */
-            if(count($creator->Todo) > 0 && $creator->Face != null)
+            if(/*count($creator->Todo) > 0 &&*/ $creator->Face != null)
             {
                 /*
                  * Check if the photo has faces
@@ -119,13 +120,15 @@ class CheckDuo implements ShouldQueue
                     if($creatorBelongs)
                     {
 
-                        /* Check every candidate */
-                        foreach($creator->Todo as $single)
-                        {
-                            if($single->Challenge->object_type != config('constants.CHALLENGE_TYPES_STR.DUO') or $single->Challenge->Object->Face == null)
-                                continue;
+                        $users = UserFace::where("user_id", "!=", $creator->user_id)->with(['User' => function($query){
+                            $query->where('duo_enabled', '1');
+                        }])->get();
 
-                            $friend = $single->Challenge->Object;
+                        /* Check every candidate */
+                        foreach($users as $single)
+                        {
+
+                            $friend = $single->User;
 
                             if (count($friend->FaceDescriptors) == 0 or (count($friend->FaceDescriptors) > 0 && $friend->FaceDescriptors[0]->updated_at < Carbon::now()->subHours(23)))
                             {
