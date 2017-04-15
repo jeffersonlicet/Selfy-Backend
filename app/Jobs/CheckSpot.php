@@ -7,7 +7,6 @@ use App\Models\ChallengeCompleted;
 use App\Models\Photo;
 use App\Models\Place;
 use App\Notifications\SpotNotification;
-use Carbon\Carbon;
 use Gibbo\Foursquare\Client\Client;
 use Gibbo\Foursquare\Client\Configuration;
 use Gibbo\Foursquare\Client\Entity\Coordinates;

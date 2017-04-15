@@ -4,13 +4,18 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Challenge;
-use App\Models\ChallengeCompleted;
 use App\Models\ChallengeTodo;
+use App\Models\Place;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Http\Request;
 use Validator;
+use Gibbo\Foursquare\Client\Client;
+use Gibbo\Foursquare\Client\Configuration;
+use Gibbo\Foursquare\Client\Entity\Coordinates;
+use Gibbo\Foursquare\Client\Factory\Venue\VenueFactory;
+use Gibbo\Foursquare\Client\Options\Search;
 
 class ChallengesController extends Controller
 {
@@ -165,26 +170,24 @@ class ChallengesController extends Controller
         }
     }
 
-
     /**
-     * Get To Do challenges
+     * Get near places and challenges
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function todo()
+    public function nearby()
     {
         try
         {
-
-            $user_id = Input::get('user_id', \Auth::user()->user_id);
-            $page = Input::get('page', 0);
-            $limit = Input::get('limit', config('app.likes_per_page'));
+            $latitude    = Input::get('latitude' );
+            $longitude   = Input::get('longitude' );
+            $limit   = Input::get('limit', config('app.photos_best_per_page'));
+            $page    = Input::get('page', 0);
 
             $validator =
                 Validator::make(
-                    ['user_id' => $user_id, 'limit' => $limit, 'page'=> $page],
-                    ['user_id' => ['required', 'numeric'], 'limit' => ['required', 'numeric', 'between:1,20'], 'page' => ['required', 'numeric']]
-                );
+                    ['latitude' => $latitude, 'longitude'=>$longitude,  'limit' => $limit, 'page'=> $page],
+                    ['latitude' => ['required'], 'longitude' => ['required'], 'limit' => ['required', 'numeric', 'between:1,20'], 'page' => ['required', 'numeric']]);
 
             if(!$validator->passes())
             {
@@ -194,63 +197,32 @@ class ChallengesController extends Controller
                 ]);
             }
 
-            /** @noinspection PhpUndefinedMethodInspection */
-            $challenges = ChallengeTodo::where('user_id',$user_id)->offset($page*$limit)->limit($limit)->orderBy('created_at', 'desc')->get();
+            $client = Client::simple(new Configuration( config('app.foursquare_client'), config('app.foursquare_secret')), VenueFactory::simple());
 
-            return response()->json([
-                'status' => TRUE,
-                'challenges' => $challenges->isEmpty() ? [] : $challenges->toArray()
-            ]);
+            $options = Search::coordinates(new Coordinates( floatval($latitude), floatval($longitude)))
+                ->limit(7);
 
+            $venues = $client->search($options);
+            $curated = [];
 
-        }
-        catch (\Exception $e)
-        {
-            return response()->json([
-                'status' => FALSE,
-                'report' => $e->getMessage()
-            ]);
-        }
-    }
-
-    /**
-     * Get completed challenges
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function completed()
-    {
-        try
-        {
-
-            $user_id = Input::get('user_id', \Auth::user()->user_id);
-            $page = Input::get('page', 0);
-            $limit = Input::get('limit', config('app.likes_per_page'));
-
-            $validator =
-                Validator::make(
-                    ['user_id' => $user_id, 'limit' => $limit, 'page'=> $page],
-                    ['user_id' => ['required', 'numeric'], 'limit' => ['required', 'numeric', 'between:1,20'], 'page' => ['required', 'numeric']]
-                );
-
-            if(!$validator->passes())
+            foreach ($venues as $venue)
             {
-                return response()->json([
-                    'status' => TRUE,
-                    'report' => $validator->messages()->first()
-                ]);
+                if(!$place = Place::where('place_external_id', $venue->getIdentifier())->first())
+                {
+                    $place = new Place();
+                    $place->fillFromVenue($venue, [ floatval($latitude), floatval($longitude)]);
+                    $place->save();
+                }
+
+                $curated[] = $place;
             }
 
-            /** @noinspection PhpUndefinedMethodInspection */
-            $challenges = ChallengeCompleted::where('user_id',$user_id)->offset($page*$limit)->limit($limit)->orderBy('created_at', 'desc')->get();
-
             return response()->json([
                 'status' => TRUE,
-                'challenges' => $challenges->isEmpty() ? [] : $challenges->toArray()
+                'places' => $curated
             ]);
-
-
         }
+
         catch (\Exception $e)
         {
             return response()->json([

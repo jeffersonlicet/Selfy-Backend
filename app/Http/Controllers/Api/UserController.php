@@ -63,7 +63,6 @@ class UserController extends Controller
         }
     }
 
-
     /**
      * Return a user information with notifications count
      *
@@ -95,7 +94,6 @@ class UserController extends Controller
             ]);
         }
     }
-
 
     /**
      * @param Request $request
@@ -144,7 +142,6 @@ class UserController extends Controller
             ]);
         }
     }
-
     /**
      * Edit user face reference url
      *
@@ -242,6 +239,7 @@ class UserController extends Controller
             ]);
         }
     }
+
     /**
      * Edit user face firebase token
      *
@@ -288,7 +286,6 @@ class UserController extends Controller
     }
 
     /**
-     *
      * Soft deletes a user
      *
      * @return \Illuminate\Http\JsonResponse
@@ -554,7 +551,9 @@ class UserController extends Controller
         }
     }
 
-
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function challenges()
     {
 
@@ -634,6 +633,99 @@ class UserController extends Controller
                 'status' => TRUE,
                 'challenges' => $curated
             ]);
+        }
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function search()
+    {
+        try
+        {
+            $query    = Input::get('query', 0);
+            $limit   = Input::get('limit', config('app.photos_best_per_page'));
+            $page    = Input::get('page', 0);
+
+
+            $validator =
+                Validator::make(
+                    ['query' => $query, 'limit' => $limit, 'page'=> $page],
+                    ['query' => ['required', 'string'], 'limit' => ['required', 'numeric', 'between:1,20'], 'page' => ['required', 'numeric']]);
+
+            if(!$validator->passes())
+            {
+                return response()->json([
+                    'status' => TRUE,
+                    'report' => $validator->messages()->first()
+                ]);
+            }
+
+            $result = User::where('username', 'LIKE', '%'.$query.'%')->limit($limit)->offset($limit*$page)->get();
+
+            return response()->json([
+                'status' => TRUE,
+                'users' => $result->isEmpty() ? [] : $result->toArray()
+            ]);
+
+        }
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function duo()
+    {
+        try
+        {
+            $limit = Input::get('limit', config('app.photos_best_per_page'));
+            $page = Input::get('page', 0);
+
+            $curated = [];
+
+            $validator =
+                Validator::make(
+                    ['limit' => $limit, 'page' => $page],
+                    ['limit' => ['required', 'numeric', 'between:1,20'], 'page' => ['required', 'numeric']
+
+                    ]
+                );
+
+            if (!$validator->passes()) {
+                return response()->json([
+                    'status' => TRUE,
+                    'report' => $validator->messages()->first()
+                ]);
+            }
+
+
+            $users = UserFace::where("user_id", "!=", \Auth::user()->user_id)->with(['User' => function($query){
+                $query->where('duo_enabled', '1');
+            }])->get();
+
+
+            foreach ($users as $user)
+            {
+                $users =  $user->toArray();
+                $curated[] = $users['user'];
+            }
+
+            return response()->json([
+                'status' => TRUE,
+                'users' => $curated
+            ]);
+
         }
         catch (\Exception $e)
         {
