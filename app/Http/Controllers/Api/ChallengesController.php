@@ -225,8 +225,8 @@ class ChallengesController extends Controller
                     $challenge->completed_count = 0;
                     $challenge->saveOrFail();
                 }
-                $place['challenge'] = $challenge;
-                $curated[] = $place;
+                $challenge['object'] = $place;
+                $curated[] = $challenge;
             }
 
             return response()->json([
