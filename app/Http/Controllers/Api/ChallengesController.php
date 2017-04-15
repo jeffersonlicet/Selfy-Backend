@@ -214,6 +214,18 @@ class ChallengesController extends Controller
                     $place->save();
                 }
 
+
+                $challenge = Challenge::where(['object_id' => $place->place_id, 'object_type' => config('constants.CHALLENGE_TYPES_STR.SPOT')])->first();
+
+                if(!$challenge)
+                {
+                    $challenge = new Challenge();
+                    $challenge->object_type = config('constants.CHALLENGE_TYPES_STR.SPOT');
+                    $challenge->object_id   = $place->place_id;
+                    $challenge->completed_count = 0;
+                    $challenge->saveOrFail();
+                }
+                $place['challenge'] = $challenge;
                 $curated[] = $place;
             }
 
