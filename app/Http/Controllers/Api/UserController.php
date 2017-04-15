@@ -689,7 +689,7 @@ class UserController extends Controller
     {
         try
         {
-            $limit = Input::get('limit', config('app.photos_best_per_page'));
+            $limit = Input::get('limit', config('app.likes_per_page'));
             $page = Input::get('page', 0);
 
             $curated = [];

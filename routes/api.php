@@ -40,7 +40,7 @@ Route::group(/**
     Route::get('likes', 'Api\LikeController@index');
     Route::post('user/avatar', 'Api\UserController@avatar');
 
-    Route::get('user/duo', 'Api\UserController@duo');
+    Route::get('users/duo', 'Api\UserController@duo');
     Route::get('user/search', 'Api\UserController@search');
     Route::post('user/face', 'Api\UserController@face');
     Route::post('user/update', 'Api\UserController@update');
