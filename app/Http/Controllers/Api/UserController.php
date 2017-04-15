@@ -723,7 +723,7 @@ class UserController extends Controller
 
             return response()->json([
                 'status' => TRUE,
-                'connections' => $curated
+                'users' => $curated
             ]);
 
         }
