@@ -41,7 +41,7 @@ Route::group(/**
     Route::post('user/avatar', 'Api\UserController@avatar');
 
     Route::get('users/duo', 'Api\UserController@duo');
-    Route::get('user/search', 'Api\UserController@search');
+    Route::get('users/search', 'Api\UserController@search');
     Route::post('user/face', 'Api\UserController@face');
     Route::post('user/update', 'Api\UserController@update');
     Route::post('user/firebase', 'Api\UserController@firebase');
