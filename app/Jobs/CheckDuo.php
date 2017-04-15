@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\Challenge;
 use App\Models\ChallengeCompleted;
 use App\Models\Photo;
 use App\Models\UserFace;
@@ -154,19 +155,28 @@ class CheckDuo implements ShouldQueue
                             if($identification['status_code'] == 200 and $identification['identical'])
                             {
                                 /** @noinspection PhpUndefinedMethodInspection */
-                                if(!$completed = ChallengeCompleted::where(['photo_id' => $this->photo->photo_id, 'challenge_id' => $single->Challenge->challenge_id])->first())
+                                if(!$normal = Challenge::where(['object_id' => $friend->user_id])->first())
+                                {
+                                    $normal = new Challenge();
+                                    $normal->object_type = config('constants.CHALLENGE_TYPES_STR.DUO');
+                                    $normal->object_id   = $friend->user_id;
+                                    $normal->completed_count = 0;
+                                    $normal->saveOrFail();
+                                }
+
+                                if(!$completed = ChallengeCompleted::where(['photo_id' => $this->photo->photo_id, 'challenge_id' => $normal->challenge_id])->first())
                                  /** @noinspection end */
                                 {
 
 
                                     $completed = new ChallengeCompleted();
-                                    $completed->challenge_id = $single->Challenge->challenge_id;
+                                    $completed->challenge_id = $normal->challenge_id;
                                     $completed->photo_id = $this->photo->photo_id;
                                     $completed->user_id = $creator->user_id;
                                     $completed->save();
 
-                                    $single->Challenge->completed_count++;
-                                    $single->Challenge->save();
+                                    $normal->completed_count++;
+                                    $normal->save();
 
                                     $creator->notify(new DuoNotification($this->photo->photo_id));
                                     break;
