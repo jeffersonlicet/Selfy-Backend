@@ -210,7 +210,7 @@ class ChallengesController extends Controller
                 if(!$place = Place::where('place_external_id', $venue->getIdentifier())->first())
                 {
                     $place = new Place();
-                    $place->fillFromVenue($venue, [ floatval($latitude), floatval($longitude)]);
+                    $place->fillFromVenue($venue, [ floatval($venue->getLocation()->getCoordinates()->getLatitude()), floatval($venue->getLocation()->getCoordinates()->getLongitude())]);
                     $place->save();
                 }
 
