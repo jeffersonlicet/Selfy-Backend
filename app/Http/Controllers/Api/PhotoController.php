@@ -11,7 +11,9 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Validation\Rule;
 use Mockery\Exception;
 use Validator;
-
+use GuzzleHttp\Client as GuzzleClient;
+use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
+use GuzzleHttp\Psr7\Request as GuzzleRequest;
 
 class PhotoController extends Controller
 {
@@ -447,6 +449,66 @@ class PhotoController extends Controller
                 'report' => 'resource_reported'
             ]);
 
+        }
+
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function clothes($id)
+    {
+        try
+        {
+            $validator =
+                Validator::make(
+                    ['id' => $id],
+                    ['id' => ['required', 'numeric']]
+                );
+
+            if(!$validator->passes())
+            {
+                return response()->json([
+                    'status' => TRUE,
+                    'report' => $validator->messages()->first()
+                ]);
+            }
+
+            /** @noinspection PhpUndefinedMethodInspection */
+            $photo = Photo::find($id);
+
+            if(!$photo)
+            {
+                throw new Exception("resource_not_found");
+            }
+
+            $client     = new GuzzleClient(['base_uri' => "https://westus.api.cognitive.microsoft.com/face/api/"]);
+            $adapter    = new GuzzleAdapter($client);
+            $headers = [];
+            $request    = new GuzzleRequest('POST', 'clothes', $headers, json_encode(['photo_url' => $photo->url]));
+            $response   = $adapter->sendRequest($request);
+
+            switch ($response->getStatusCode())
+            {
+                case 200:
+
+                    $content = \GuzzleHttp\json_decode($response->getBody()->getContents());
+
+                    return response()->json([
+                        'status' => true,
+                        'information' => $content
+                    ]);
+
+                    break;
+
+                default:
+                    throw new Exception('header response error '.$response->getStatusCode().' in get clothes info');
+                    break;
+            }
         }
 
         catch (\Exception $e)

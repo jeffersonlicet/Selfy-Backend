@@ -1,7 +1,7 @@
 <?php
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 5.4.18 on 2017-04-11.
+ * Generated for Laravel 5.4.19 on 2017-04-21.
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  * @see https://github.com/barryvdh/laravel-ide-helper
@@ -1913,6 +1913,31 @@ namespace Illuminate\Support\Facades {
         public static function guest()
         {
             return \Illuminate\Auth\SessionGuard::guest();
+        }
+        
+        /**
+         * Register a custom macro.
+         *
+         * @param string $name
+         * @param callable $macro
+         * @return void 
+         * @static 
+         */
+        public static function macro($name, $macro)
+        {
+            \Illuminate\Auth\SessionGuard::macro($name, $macro);
+        }
+        
+        /**
+         * Checks if macro is registered.
+         *
+         * @param string $name
+         * @return bool 
+         * @static 
+         */
+        public static function hasMacro($name)
+        {
+            return \Illuminate\Auth\SessionGuard::hasMacro($name);
         }
         
     }         
@@ -5577,6 +5602,31 @@ namespace Illuminate\Support\Facades {
             return \Illuminate\Mail\Mailer::setQueue($queue);
         }
         
+        /**
+         * Register a custom macro.
+         *
+         * @param string $name
+         * @param callable $macro
+         * @return void 
+         * @static 
+         */
+        public static function macro($name, $macro)
+        {
+            \Illuminate\Mail\Mailer::macro($name, $macro);
+        }
+        
+        /**
+         * Checks if macro is registered.
+         *
+         * @param string $name
+         * @return bool 
+         * @static 
+         */
+        public static function hasMacro($name)
+        {
+            return \Illuminate\Mail\Mailer::hasMacro($name);
+        }
+        
     }         
 
     class Notification {
@@ -5905,29 +5955,17 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
-         * Get the size of the queue.
-         *
-         * @param string $queue
-         * @return int 
-         * @static 
-         */
-        public static function size($queue = null)
-        {
-            return \Illuminate\Queue\DatabaseQueue::size($queue);
-        }
-        
-        /**
          * Push a new job onto the queue.
          *
          * @param string $job
          * @param mixed $data
          * @param string $queue
-         * @return mixed 
+         * @return void 
          * @static 
          */
         public static function push($job, $data = '', $queue = null)
         {
-            return \Illuminate\Queue\DatabaseQueue::push($job, $data, $queue);
+            \Squigg\AzureQueueLaravel\AzureQueue::push($job, $data, $queue);
         }
         
         /**
@@ -5941,7 +5979,7 @@ namespace Illuminate\Support\Facades {
          */
         public static function pushRaw($payload, $queue = null, $options = array())
         {
-            return \Illuminate\Queue\DatabaseQueue::pushRaw($payload, $queue, $options);
+            return \Squigg\AzureQueueLaravel\AzureQueue::pushRaw($payload, $queue, $options);
         }
         
         /**
@@ -5956,71 +5994,65 @@ namespace Illuminate\Support\Facades {
          */
         public static function later($delay, $job, $data = '', $queue = null)
         {
-            \Illuminate\Queue\DatabaseQueue::later($delay, $job, $data, $queue);
-        }
-        
-        /**
-         * Push an array of jobs onto the queue.
-         *
-         * @param array $jobs
-         * @param mixed $data
-         * @param string $queue
-         * @return mixed 
-         * @static 
-         */
-        public static function bulk($jobs, $data = '', $queue = null)
-        {
-            return \Illuminate\Queue\DatabaseQueue::bulk($jobs, $data, $queue);
-        }
-        
-        /**
-         * Release a reserved job back onto the queue.
-         *
-         * @param string $queue
-         * @param \Illuminate\Queue\Jobs\DatabaseJobRecord $job
-         * @param int $delay
-         * @return mixed 
-         * @static 
-         */
-        public static function release($queue, $job, $delay)
-        {
-            return \Illuminate\Queue\DatabaseQueue::release($queue, $job, $delay);
+            \Squigg\AzureQueueLaravel\AzureQueue::later($delay, $job, $data, $queue);
         }
         
         /**
          * Pop the next job off of the queue.
          *
          * @param string $queue
-         * @return \Illuminate\Contracts\Queue\Job|null 
+         * @return \Illuminate\Queue\Jobs\Job|null 
          * @static 
          */
         public static function pop($queue = null)
         {
-            return \Illuminate\Queue\DatabaseQueue::pop($queue);
+            return \Squigg\AzureQueueLaravel\AzureQueue::pop($queue);
         }
         
         /**
-         * Delete a reserved job from the queue.
+         * Get the queue or return the default.
+         *
+         * @param string|null $queue
+         * @return string 
+         * @static 
+         */
+        public static function getQueue($queue)
+        {
+            return \Squigg\AzureQueueLaravel\AzureQueue::getQueue($queue);
+        }
+        
+        /**
+         * Get the visibility timeout for queue messages.
+         *
+         * @return int 
+         * @static 
+         */
+        public static function getVisibilityTimeout()
+        {
+            return \Squigg\AzureQueueLaravel\AzureQueue::getVisibilityTimeout();
+        }
+        
+        /**
+         * Get the underlying Azure IQueue instance.
+         *
+         * @return \Squigg\AzureQueueLaravel\IQueue 
+         * @static 
+         */
+        public static function getAzure()
+        {
+            return \Squigg\AzureQueueLaravel\AzureQueue::getAzure();
+        }
+        
+        /**
+         * Get the approximate size of the queue.
          *
          * @param string $queue
-         * @param string $id
-         * @return void 
+         * @return int 
          * @static 
          */
-        public static function deleteReserved($queue, $id)
+        public static function size($queue = null)
         {
-            \Illuminate\Queue\DatabaseQueue::deleteReserved($queue, $id);
-        }
-        
-        /**
-         * Get the underlying database instance.
-         *
-         * @return \Illuminate\Database\Connection 
-         * @static 
-         */
-        public static function getDatabase()
-        {
-            return \Illuminate\Queue\DatabaseQueue::getDatabase();
+            return \Squigg\AzureQueueLaravel\AzureQueue::size($queue);
         }
         
         /**
@@ -6035,7 +6067,7 @@ namespace Illuminate\Support\Facades {
         public static function pushOn($queue, $job, $data = '')
         {
             //Method inherited from \Illuminate\Queue\Queue            
-            return \Illuminate\Queue\DatabaseQueue::pushOn($queue, $job, $data);
+            return \Squigg\AzureQueueLaravel\AzureQueue::pushOn($queue, $job, $data);
         }
         
         /**
@@ -6051,7 +6083,22 @@ namespace Illuminate\Support\Facades {
         public static function laterOn($queue, $delay, $job, $data = '')
         {
             //Method inherited from \Illuminate\Queue\Queue            
-            return \Illuminate\Queue\DatabaseQueue::laterOn($queue, $delay, $job, $data);
+            return \Squigg\AzureQueueLaravel\AzureQueue::laterOn($queue, $delay, $job, $data);
+        }
+        
+        /**
+         * Push an array of jobs onto the queue.
+         *
+         * @param array $jobs
+         * @param mixed $data
+         * @param string $queue
+         * @return mixed 
+         * @static 
+         */
+        public static function bulk($jobs, $data = '', $queue = null)
+        {
+            //Method inherited from \Illuminate\Queue\Queue            
+            return \Squigg\AzureQueueLaravel\AzureQueue::bulk($jobs, $data, $queue);
         }
         
         /**
@@ -6063,7 +6110,7 @@ namespace Illuminate\Support\Facades {
         public static function getConnectionName()
         {
             //Method inherited from \Illuminate\Queue\Queue            
-            return \Illuminate\Queue\DatabaseQueue::getConnectionName();
+            return \Squigg\AzureQueueLaravel\AzureQueue::getConnectionName();
         }
         
         /**
@@ -6076,7 +6123,7 @@ namespace Illuminate\Support\Facades {
         public static function setConnectionName($name)
         {
             //Method inherited from \Illuminate\Queue\Queue            
-            return \Illuminate\Queue\DatabaseQueue::setConnectionName($name);
+            return \Squigg\AzureQueueLaravel\AzureQueue::setConnectionName($name);
         }
         
         /**
@@ -6089,7 +6136,7 @@ namespace Illuminate\Support\Facades {
         public static function setContainer($container)
         {
             //Method inherited from \Illuminate\Queue\Queue            
-            \Illuminate\Queue\DatabaseQueue::setContainer($container);
+            \Squigg\AzureQueueLaravel\AzureQueue::setContainer($container);
         }
         
     }         
@@ -12262,6 +12309,18 @@ namespace {
         public static function without($relations)
         {
             return \Illuminate\Database\Eloquent\Builder::without($relations);
+        }
+        
+        /**
+         * Create a new instance of the model being queried.
+         *
+         * @param array $attributes
+         * @return \Illuminate\Database\Eloquent\Model 
+         * @static 
+         */
+        public static function newModelInstance($attributes = array())
+        {
+            return \Illuminate\Database\Eloquent\Builder::newModelInstance($attributes);
         }
         
         /**

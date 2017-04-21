@@ -29,6 +29,7 @@ Route::group(/**
     Route::get('photo/borders/{photo_id}', 'Api\PhotoController@borders');
     Route::get('photo/bests/{user_id}', 'Api\PhotoController@bests');
     Route::get('photo/report/{photo_id}', 'Api\PhotoController@report');
+    Route::get('photo/clothes/{photo_id}', 'Api\PhotoController@clothes');
 
     Route::resource('comment', 'Api\CommentController',
         ['only' => ['store','update','destroy']]);
