@@ -486,10 +486,10 @@ class PhotoController extends Controller
                 throw new Exception("resource_not_found");
             }
 
-            $client     = new GuzzleClient(['base_uri' => "https://westus.api.cognitive.microsoft.com/face/api/"]);
+            $client     = new GuzzleClient(['base_uri' => "http://seginusmagic.southcentralus.cloudapp.azure.com/api/"]);
             $adapter    = new GuzzleAdapter($client);
             $headers = [];
-            $request    = new GuzzleRequest('POST', 'clothes', $headers, json_encode(['photo_url' => $photo->url]));
+            $request    = new GuzzleRequest('POST', 'clothes', ["content-type" => 'application/json'], json_encode(['photo_url' => $photo->url]));
             $response   = $adapter->sendRequest($request);
 
             switch ($response->getStatusCode())
@@ -498,10 +498,26 @@ class PhotoController extends Controller
 
                     $content = \GuzzleHttp\json_decode($response->getBody()->getContents());
 
-                    return response()->json([
-                        'status' => true,
-                        'information' => $content
-                    ]);
+                    if($content->status)
+                    {
+                        return response()->json([
+                            'status' => true,
+                            'clothes' => $content->results,
+                            'image' => $content->image
+                        ]);
+                    }
+
+                    else
+                    {
+
+                        return response()->json([
+                            'status' => false,
+                            'clothes' => [],
+                            'image' => ""
+                        ]);
+
+                    }
+
 
                     break;
 
