@@ -462,6 +462,8 @@ class PhotoController extends Controller
 
     public function clothes($id)
     {
+        ini_set('max_execution_time', 100);
+        set_time_limit(60);
         try
         {
             $validator =
