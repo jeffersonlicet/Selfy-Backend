@@ -23,6 +23,7 @@ class CommentNotification extends Notification
      *
      * @param User $user
      * @param $photo_id
+     * @param $comment_id
      * @internal param Photo $photo
      */
     public function __construct(User $user, $photo_id, $comment_id)

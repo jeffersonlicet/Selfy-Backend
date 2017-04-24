@@ -111,7 +111,7 @@ class LikeController extends Controller
 
             if($photo->User->user_id != \Auth::user()->user_id)
             {
-                $photo->User->notify(new LikeNotification($photo->User, $photo->photo_id));
+                $photo->User->notify(new LikeNotification(\Auth::user(), $photo->photo_id));
             }
 
             return response()->json([
