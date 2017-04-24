@@ -149,6 +149,9 @@ class CheckSpot implements ShouldQueue
             $completed->user_id = $this->photo->User->user_id;
             $completed->saveOrFail();
 
+            $this->photo->User->spot_completed++;
+            $this->photo->User->save();
+
             $this->photo->User->notify(new SpotNotification($this->photo->photo_id));
 
 

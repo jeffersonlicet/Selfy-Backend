@@ -175,6 +175,9 @@ class CheckDuo implements ShouldQueue
                                     $completed->user_id = $creator->user_id;
                                     $completed->save();
 
+                                    $creator->duo_completed++;
+                                    $creator->save();
+
                                     $normal->completed_count++;
                                     $normal->save();
 
