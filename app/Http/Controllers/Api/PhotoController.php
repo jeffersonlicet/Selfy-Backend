@@ -488,7 +488,7 @@ class PhotoController extends Controller
                 throw new Exception("resource_not_found");
             }
 
-            $client     = new GuzzleClient(['base_uri' => "http://seginusmagic.southcentralus.cloudapp.azure.com/api/"]);
+            $client     = new GuzzleClient(['base_uri' => "http://starbits.southcentralus.cloudapp.azure.com/api/"]);
             $adapter    = new GuzzleAdapter($client);
             $headers = [];
             $request    = new GuzzleRequest('POST', 'clothes', ["content-type" => 'application/json'], json_encode(['photo_url' => $photo->url]));
