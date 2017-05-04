@@ -34,7 +34,7 @@ class Photo extends Model
         'user_id', 'place_id', 'reports_count'
     ];
 
-    protected $appends = array('like_enabled', 'delete_enabled');
+    protected $appends = array('like_enabled', 'delete_enabled', 'report_enabled');
 
 
     /**
@@ -108,6 +108,18 @@ class Photo extends Model
     {
         /** @noinspection PhpUndefinedMethodInspection */
         return \Auth::user()->user_id == $this->user_id;
+        /** @noinspection end */
+    }
+
+    /**
+     *  Append property
+     *  Return if the user can perform a report action
+     * @return bool
+     */
+    public function getReportEnabledAttribute()
+    {
+        /** @noinspection PhpUndefinedMethodInspection */
+        return !\Auth::guest() && !boolval(count(PhotoReport::where(['user_id' => \Auth::user()->user_id, 'photo_id' => $this->photo_id])->first()));
         /** @noinspection end */
     }
 
