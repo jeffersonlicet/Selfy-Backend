@@ -17,19 +17,18 @@ Route::post('user/login', 'Api\AuthController@login');
 Route::post('user/refresh', 'Api\AuthController@refresh');
 
 /* Auth required */
-Route::group(/**
- *
- */
+Route::group(
     ['middleware' => 'ApiAuth'], function () {
-
-    Route::resource('photo', 'Api\PhotoController',
-        ['only' => ['store','update','destroy','show']]);
-    Route::get('photos', 'Api\PhotoController@index');
 
     Route::get('photo/borders/{photo_id}', 'Api\PhotoController@borders');
     Route::get('photo/bests/{user_id}', 'Api\PhotoController@bests');
     Route::post('photo/report', 'Api\PhotoController@report');
     Route::get('photo/clothes/{photo_id}', 'Api\PhotoController@clothes');
+
+    Route::resource('photo', 'Api\PhotoController',
+        ['only' => ['store','update','destroy','show']]);
+
+    Route::get('photos', 'Api\PhotoController@index');
 
     Route::resource('comment', 'Api\CommentController',
         ['only' => ['store','update','destroy']]);
@@ -43,6 +42,7 @@ Route::group(/**
 
     Route::get('users/duo', 'Api\UserController@duo');
     Route::get('users/search', 'Api\UserController@search');
+
     Route::post('user/face', 'Api\UserController@face');
     Route::post('user/update', 'Api\UserController@update');
     Route::post('user/firebase', 'Api\UserController@firebase');
@@ -59,6 +59,7 @@ Route::group(/**
     Route::get('challenges/nearby', 'Api\ChallengesController@nearby');
     Route::get('challenges/todo', 'Api\ChallengesController@todo');
     Route::get('challenges/completed', 'Api\ChallengesController@completed');
+
     Route::resource('challenge', 'Api\ChallengesController',
         ['only' => ['show','store','destroy']]);
 
