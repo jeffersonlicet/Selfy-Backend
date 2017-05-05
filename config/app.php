@@ -246,10 +246,15 @@ return [
     'oxford_1' => env('OXFORD_1'),
     'oxford_available_keys' => 2,
 
-    'photos_per_page' => 7,
-    'photos_per_border' => 3,
-    'photos_best_per_page' => 3,
-    'likes_per_page' => 10,
-    'connections_per_page' => 10,
-    'notifications_per_page' => 20,
+    'photos_per_page'           => 7,
+    'photos_per_border'         => 3,
+    'photos_best_per_page'      => 3,
+    'likes_per_page'            => 10,
+    'connections_per_page'      => 10,
+    'notifications_per_page'    => 20,
+
+    'challenge_invited'         => 0,
+    'challenge_completed'       => 1,
+    'challenge_accepted'        => 2,
+    'challenge_canceled'        => 3,
 ];

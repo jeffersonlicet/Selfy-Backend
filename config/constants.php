@@ -10,5 +10,12 @@ return [
         'DUO'   => 'duo',
         'SPOT'  => 'spot',
         'PLAY'  => 'play'
+    ],
+
+    'CHALLENGE_STATUS' => [
+        'INVITED'       => 0,
+        'COMPLETED'     => 1,
+        'ACCEPTED'      => 2,
+        'DECLINED'      => 3
     ]
 ];

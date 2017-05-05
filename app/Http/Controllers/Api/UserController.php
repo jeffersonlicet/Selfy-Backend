@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Challenge;
 use App\Models\ChallengeCompleted;
 use App\Models\ChallengeTodo;
 use App\Models\User;
+use App\Models\UserChallenge;
 use App\Models\UserFace;
 use App\Models\UserFollower;
 use App\Models\UserFollowing;
@@ -144,6 +146,7 @@ class UserController extends Controller
             ]);
         }
     }
+
     /**
      * Edit user face reference url
      *
@@ -183,18 +186,7 @@ class UserController extends Controller
                 \Auth::user()->Face->save();
             }
 
-            // Notify friends for make a Duo
-            /** @noinspection PhpUndefinedMethodInspection */
-            $followers = UserFollower::where(['following_id' => \Auth::user()->user_id])->with(['User' => function ($query) {
-                /** @noinspection PhpUndefinedMethodInspection */
-
-                $query->where('duo_enabled', 1);
-            }])->limit(20)->get();
-
-            foreach($followers as $singleton)
-            {
-                $singleton->User->notify(new DuoInvitationNotification(\Auth::user()));
-            }
+            $this->generateBatchDuoInvitation(\Auth::user(), 20, 0);
 
             return response()->json([
                 'status' => TRUE,
@@ -377,7 +369,11 @@ class UserController extends Controller
                     $connection->following_id = $user->user_id;
                     $connection->save();
 
+                    /** @noinspection PhpUndefinedMethodInspection */
                     $user->notify(new FollowNotification(\Auth::user()));
+
+                    $this->makeDuoInvitation($user, \Auth::user());
+                    $this->makeDuoInvitation(\Auth::user(), $user);
 
                     return response()->json([
                         'status' => TRUE,
@@ -727,7 +723,6 @@ class UserController extends Controller
                 ]);
             }
 
-
             $users = UserFace::where("user_id", "!=", \Auth::user()->user_id)->with(['User' => function($query){
                 $query->where('duo_enabled', '1');
             }])->get();
@@ -751,6 +746,59 @@ class UserController extends Controller
                 'status' => FALSE,
                 'report' => $e->getMessage()
             ]);
+        }
+    }
+
+    /**
+     * Create a duo invitation
+     * @param User $from
+     * @param User $to
+     */
+    private function makeDuoInvitation(User $from, User $to)
+    {
+        if($to->duo_enabled)
+        {
+            /* Create a challenge with me */
+            /** @noinspection PhpUndefinedMethodInspection */
+            if(!$challenge = Challenge::where(['object_id' => $to->user_id, 'object_type' => config('constants.CHALLENGE_TYPES_STR.DUO')])->first())
+            {
+                $challenge = new Challenge();
+                $challenge->object_id = $to->user_id;
+                $challenge->object_type = config('constants.CHALLENGE_TYPES_STR.DUO');
+                $challenge->save();
+            }
+
+            $from->notify(new DuoInvitationNotification($to));
+            $invitation = new UserChallenge();
+            $invitation->user_id = $from->user_id;
+            $invitation->challenge_id = $challenge->challenge_id;
+            $invitation->challenge_status = config('constants.CHALLENGE_STATUS.INVITED');
+            $invitation->save();
+        }
+    }
+
+    /**
+     * Generate a batch of duo invitations
+     * @param User $user
+     * @param int $limit
+     * @param int $offset
+     */
+    private function generateBatchDuoInvitation(User $user, $limit = 20, $offset= 0)
+    {
+        if($user == null)
+        {
+            $user = \Auth::user();
+        }
+
+        /** @noinspection PhpUndefinedMethodInspection */
+        $followers = UserFollower::where(['following_id' => $user->user_id])->with(['User' => function ($query) {
+            /** @noinspection PhpUndefinedMethodInspection */
+            $query->where('duo_enabled', 1);
+        }])->limit($limit)->offset($offset)->get();
+
+        foreach($followers as $singleton)
+        {
+           $this->makeDuoInvitation($singleton->User, $user);
         }
     }
 }

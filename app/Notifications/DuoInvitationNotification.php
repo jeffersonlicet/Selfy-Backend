@@ -68,7 +68,7 @@ class DuoInvitationNotification extends Notification implements ShouldQueue
             $dataBuilder->addData(['object' => $this->user->user_id, 'type' => 'duo_invitation']);
             $notificationBuilder = new PayloadNotificationBuilder();
 
-            $notificationBuilder->setTitle('New Duo Challenge')
+            $notificationBuilder->setTitle('New Challenge')
                 ->setBody('Make a Duo with '.$this->user->username)
                 ->setSound('clean_selfy');
 

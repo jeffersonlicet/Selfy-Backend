@@ -37,31 +37,9 @@ class Challenge extends Model
     {
         return $this->morphTo();
     }
-
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\belongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    /*public function Object()
-    {
-        switch ($this->challenge_type)
-        {
-            case Config::get('constants.CHALLENGE_TYPES.DUO'):
-                return $this->belongsTo('App\Models\User', 'object_id', 'user_id');
-
-            case Config::get('constants.CHALLENGE_TYPES.SPOT'):
-                return $this->belongsTo('App\Models\Place', 'object_id', 'place_id');
-
-            case Config::get('constants.CHALLENGE_TYPES.PLAY'):
-                return $this->belongsTo('App\Models\User', 'object_id', 'play_id');
-
-            default:
-                return null;
-        }
-    }*/
-
-    /**
- * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
- */
     public function TodoBy()
     {
         return $this->belongsToMany('App\Models\User', 'todo_challenges');
