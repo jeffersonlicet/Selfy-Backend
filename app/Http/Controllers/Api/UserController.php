@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\UserFace;
 use App\Models\UserFollower;
 use App\Models\UserFollowing;
+use App\Notifications\DuoInvitationNotification;
 use App\Notifications\FollowNotification;
 use Exception;
 use App\Http\Controllers\Controller;
@@ -15,6 +16,7 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Input;
 use Illuminate\Validation\Rule;
+use Log;
 use Validator;
 
 class UserController extends Controller
@@ -175,14 +177,30 @@ class UserController extends Controller
                 $face->url = $input['photo_url'];
                 $face->save();
             }
-            else{
+            else
+            {
                 \Auth::user()->Face->url = $input['photo_url'];
                 \Auth::user()->Face->save();
             }
-                return response()->json([
-                    'status' => TRUE,
-                    'report' => 'resource_updated'
-                ]);
+
+            // Notify friends for make a Duo
+            /** @noinspection PhpUndefinedMethodInspection */
+            $followers = UserFollower::where(['following_id' => \Auth::user()->user_id])->with(['User' => function ($query) {
+                /** @noinspection PhpUndefinedMethodInspection */
+
+                $query->where('duo_enabled', 1);
+            }])->limit(20)->get();
+
+            foreach($followers as $singleton)
+            {
+                $singleton->User->notify(new DuoInvitationNotification(\Auth::user()));
+            }
+
+            return response()->json([
+                'status' => TRUE,
+                'report' => 'resource_updated',
+
+            ]);
 
             }
 
