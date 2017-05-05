@@ -10,7 +10,7 @@ use App\Models\PhotoReport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Validation\Rule;
-use Mockery\Exception;
+use Exception;
 use Validator;
 use GuzzleHttp\Client as GuzzleClient;
 use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
