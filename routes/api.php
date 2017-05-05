@@ -28,7 +28,7 @@ Route::group(/**
 
     Route::get('photo/borders/{photo_id}', 'Api\PhotoController@borders');
     Route::get('photo/bests/{user_id}', 'Api\PhotoController@bests');
-    Route::post('photo/report/{photo_id}', 'Api\PhotoController@report');
+    Route::post('photo/report', 'Api\PhotoController@report');
     Route::get('photo/clothes/{photo_id}', 'Api\PhotoController@clothes');
 
     Route::resource('comment', 'Api\CommentController',

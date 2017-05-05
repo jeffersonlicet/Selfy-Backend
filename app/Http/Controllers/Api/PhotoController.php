@@ -406,13 +406,17 @@ class PhotoController extends Controller
     /**
      * Report a photo
      *
-     * @param  int  $id
+     * @param Request $request
      * @return \Illuminate\Http\Response
+     * @internal param int $id
      */
-    public function report($id)
+    public function report(Request $request)
     {
         try
         {
+            $input = $request->all();
+            $id = $input['photo_id'];
+
             $validator =
                 Validator::make(
                     ['id' => $id],
