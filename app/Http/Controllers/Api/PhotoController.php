@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Jobs\CheckDuo;
 use App\Jobs\CheckSpot;
 use App\Models\Photo;
+use App\Models\PhotoReport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Validation\Rule;
@@ -444,9 +445,19 @@ class PhotoController extends Controller
                 throw new Exception('invalid_action');
             }
 
+            if(boolval(count(PhotoReport::where(['user_id' => \Auth::user()->user_id, 'photo_id' => $id])->first())))
+            {
+                throw new Exception('invalid_action');
+            }
+
             $photo->reports_count++;
             /** @noinspection PhpUndefinedMethodInspection */
             $photo->save();
+
+            $report = new PhotoReport();
+            $report->photo_id = $id;
+            $report->user_id = \Auth::user()->user_id;
+            $report->save();
 
             return response()->json([
                 'status' => true,
