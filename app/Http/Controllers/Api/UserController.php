@@ -767,13 +767,17 @@ class UserController extends Controller
                 $challenge->object_type = config('constants.CHALLENGE_TYPES_STR.DUO');
                 $challenge->save();
             }
+            /** @noinspection PhpUndefinedMethodInspection */
+            if(!$invitation = UserChallenge::where(['user_id' => $from->user_id, 'challenge_id' => $challenge->challenge_id])->first())
+            {
 
-            $from->notify(new DuoInvitationNotification($to));
-            $invitation = new UserChallenge();
-            $invitation->user_id = $from->user_id;
-            $invitation->challenge_id = $challenge->challenge_id;
-            $invitation->challenge_status = config('constants.CHALLENGE_STATUS.INVITED');
-            $invitation->save();
+                $from->notify(new DuoInvitationNotification($to));
+                $invitation = new UserChallenge();
+                $invitation->user_id = $from->user_id;
+                $invitation->challenge_id = $challenge->challenge_id;
+                $invitation->challenge_status = config('constants.CHALLENGE_STATUS.INVITED');
+                $invitation->save();
+            }
         }
     }
 
