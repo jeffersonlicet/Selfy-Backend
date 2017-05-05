@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Challenge;
 use App\Models\ChallengeTodo;
 use App\Models\Place;
+use App\Models\UserChallenge;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Input;
@@ -90,12 +91,13 @@ class ChallengesController extends Controller
                     'report' => $validator->messages()->first()
                 ]);
             }
-
+            /** @noinspection PhpUndefinedMethodInspection */
             if(!$challenge = Challenge::find($input['challenge_id']))
             {
                 throw new Exception("resource_not_found");
             }
 
+            /** @noinspection PhpUndefinedMethodInspection */
             if(ChallengeTodo::where(['user_id' => \Auth::user()->user_id, 'challenge_id' => $input['challenge_id']])->first())
             {
                 throw new Exception('invalid_action');
@@ -242,6 +244,161 @@ class ChallengesController extends Controller
             return response()->json([
                 'status' => TRUE,
                 'challenges' => $curated
+            ]);
+        }
+
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function accept(Request $request)
+    {
+        try
+        {
+            $input = $request->all();
+
+            $validator = Validator::make($input, [
+                'challenge_id' => ['required', 'numeric']
+            ]);
+
+            if(!$validator->passes())
+            {
+                return response()->json([
+                    'status' => TRUE,
+                    'report' => $validator->messages()->first()
+                ]);
+            }
+
+            /** @noinspection PhpUndefinedMethodInspection */
+            if(!$invitation = UserChallenge::where(['challenge_id' => $input['challenge_id'], 'user_id' => \Auth::user()->user_id])->first())
+            {
+                throw new Exception("resource_not_found");
+            }
+
+            if($invitation->challenge_status == config('constants.CHALLENGE_STATUS.ACCEPTED'))
+            {
+                throw new Exception("invalid_action");
+            }
+
+            $invitation->challenge_status = config('constants.CHALLENGE_STATUS.ACCEPTED');
+            /** @noinspection PhpUndefinedMethodInspection */
+            $invitation->save();
+
+            $increment = $invitation->Challenge->object_type."_todo";
+            \Auth::user()->{$increment}++;
+            \Auth::user()->save();
+
+            return response()->json([
+                'status' => TRUE,
+                'report' => 'action_done'
+            ]);
+        }
+
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function decline(Request $request)
+    {
+        try
+        {
+            $input = $request->all();
+
+            $validator = Validator::make($input, [
+                'challenge_id' => ['required', 'numeric']
+            ]);
+
+            if(!$validator->passes())
+            {
+                return response()->json([
+                    'status' => TRUE,
+                    'report' => $validator->messages()->first()
+                ]);
+            }
+
+            /** @noinspection PhpUndefinedMethodInspection */
+            if(!$invitation = UserChallenge::where(['challenge_id' => $input['challenge_id'], 'user_id' => \Auth::user()->user_id])->first())
+            {
+                throw new Exception("resource_not_found");
+            }
+
+            if($invitation->challenge_status == config('constants.CHALLENGE_STATUS.DECLINED'))
+            {
+                throw new Exception("invalid_action");
+            }
+
+            $invitation->challenge_status = config('constants.CHALLENGE_STATUS.DECLINED');
+            /** @noinspection PhpUndefinedMethodInspection */
+            $invitation->save();
+
+            if($invitation->challenge_status == config('constants.CHALLENGE_STATUS.ACCEPTED'))
+            {
+                $increment = $invitation->Challenge->object_type."_todo";
+                \Auth::user()->{$increment}--;
+                \Auth::user()->save();
+            }
+
+            return response()->json([
+                'status' => TRUE,
+                'report' => 'action_done'
+            ]);
+        }
+
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function remove(Request $request)
+    {
+        try
+        {
+            $input = $request->all();
+
+            $validator = Validator::make($input, [
+                'challenge_id' => ['required', 'numeric']
+            ]);
+
+            if(!$validator->passes())
+            {
+                return response()->json([
+                    'status' => TRUE,
+                    'report' => $validator->messages()->first()
+                ]);
+            }
+
+            /** @noinspection PhpUndefinedMethodInspection */
+            if(!$invitation = UserChallenge::where(['challenge_id' => $input['challenge_id'], 'user_id' => \Auth::user()->user_id])->first())
+            {
+                throw new Exception("resource_not_found");
+            }
+
+            if($invitation->challenge_status == config('constants.CHALLENGE_STATUS.ACCEPTED'))
+            {
+                $increment = $invitation->Challenge->object_type."_todo";
+                \Auth::user()->{$increment}--;
+                \Auth::user()->save();
+            }
+
+            $invitation->delete();
+
+            return response()->json([
+                'status' => TRUE,
+                'report' => 'action_done'
             ]);
         }
 

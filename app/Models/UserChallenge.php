@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class UserChallenge extends Model
 {
+    protected $primaryKey = 'user_challenge_id';
     /**
      * @var array
      */
@@ -27,7 +28,7 @@ class UserChallenge extends Model
      */
     public function Challenge()
     {
-        return $this->belongsTo('App\Challenge', null, 'challenge_id');
+        return $this->belongsTo('App\Models\Challenge', 'challenge_id', 'challenge_id');
     }
 
     /**
@@ -35,6 +36,6 @@ class UserChallenge extends Model
      */
     public function User()
     {
-        return $this->belongsTo('App\User', null, 'user_id');
+        return $this->belongsTo('App\Models\User', 'user_id', 'user_id');
     }
 }

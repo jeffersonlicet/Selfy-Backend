@@ -771,12 +771,14 @@ class UserController extends Controller
             if(!$invitation = UserChallenge::where(['user_id' => $from->user_id, 'challenge_id' => $challenge->challenge_id])->first())
             {
 
-                $from->notify(new DuoInvitationNotification($to));
                 $invitation = new UserChallenge();
                 $invitation->user_id = $from->user_id;
                 $invitation->challenge_id = $challenge->challenge_id;
                 $invitation->challenge_status = config('constants.CHALLENGE_STATUS.INVITED');
                 $invitation->save();
+
+                $from->notify(new DuoInvitationNotification($to, $challenge->id));
+
             }
         }
     }

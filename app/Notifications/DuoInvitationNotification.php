@@ -21,16 +21,18 @@ class DuoInvitationNotification extends Notification implements ShouldQueue
     use Queueable;
 
     private $user;
+    private $challenge_id;
 
     /**
      * Create a new notification instance.
      *
      * @param User $user
-     * @internal param Photo $photo
-     */
-    public function __construct(User $user)
+     * @param $challenge_id
+]     */
+    public function __construct(User $user, $challenge_id)
     {
         $this->user = $user;
+        $this->challenge_id = $challenge_id;
     }
     /**
      * Get the notification's delivery channels.
@@ -81,6 +83,7 @@ class DuoInvitationNotification extends Notification implements ShouldQueue
 
         return [
             'user_id' => $this->user->user_id,
+            'challenge_id' => $this->challenge_id
         ];
     }
 }

@@ -59,6 +59,9 @@ Route::group(
     Route::get('challenges/nearby', 'Api\ChallengesController@nearby');
     Route::get('challenges/todo', 'Api\ChallengesController@todo');
     Route::get('challenges/completed', 'Api\ChallengesController@completed');
+    Route::post('challenge/accept', 'Api\ChallengesController@accept');
+    Route::post('challenge/decline', 'Api\ChallengesController@decline');
+    Route::post('challenge/remove', 'Api\ChallengesController@remove');
 
     Route::resource('challenge', 'Api\ChallengesController',
         ['only' => ['show','store','destroy']]);
