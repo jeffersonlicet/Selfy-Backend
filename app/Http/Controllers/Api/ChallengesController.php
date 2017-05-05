@@ -17,9 +17,18 @@ use Gibbo\Foursquare\Client\Entity\Coordinates;
 use Gibbo\Foursquare\Client\Factory\Venue\VenueFactory;
 use Gibbo\Foursquare\Client\Options\Search;
 
+/**
+ * Class ChallengesController
+ * @package App\Http\Controllers\Api
+ */
 class ChallengesController extends Controller
 {
 
+    /**
+     * Show a challenge
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function show($id)
     {
         try
@@ -57,6 +66,7 @@ class ChallengesController extends Controller
             ]);
         }
     }
+
     /**
      *  Add challenge to: to do list
      *
