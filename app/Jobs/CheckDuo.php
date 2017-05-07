@@ -164,9 +164,9 @@ class CheckDuo implements ShouldQueue
                                     $normal->saveOrFail();
                                 }
 
-                                if(!$completed = ChallengeCompleted::where(['photo_id' => $this->photo->photo_id, 'challenge_id' => $normal->challenge_id])->first())
+                               // if(!$completed = ChallengeCompleted::where(['photo_id' => $this->photo->photo_id, 'challenge_id' => $normal->challenge_id])->first())
                                  /** @noinspection end */
-                                {
+                                //{
 
 
                                     $completed = new ChallengeCompleted();
@@ -183,7 +183,7 @@ class CheckDuo implements ShouldQueue
 
                                     $creator->notify(new DuoNotification($this->photo->photo_id));
                                     break;
-                                }
+                                //}
                             }
                         }
                     }
