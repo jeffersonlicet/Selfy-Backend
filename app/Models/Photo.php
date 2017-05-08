@@ -74,13 +74,13 @@ class Photo extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function Challenges()
     {
-        return $this->hasManyThrough(
+        return $this->belongsToMany(
             'App\Models\Challenge',
-                'App\Models\UserChallenge',
+                'user_challenges',
                 'photo_id',
                 'challenge_id',
                 'photo_id');
