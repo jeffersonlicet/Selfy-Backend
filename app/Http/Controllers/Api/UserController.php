@@ -773,7 +773,7 @@ class UserController extends Controller
                 $challenge->save();
             }
             /** @noinspection PhpUndefinedMethodInspection */
-            if(!$invitation = UserChallenge::where(['user_id' => $from->user_id, 'challenge_id' => $challenge->challenge_id])->first())
+            if(!$invitation = UserChallenge::where(['user_id' => $from->user_id, 'challenge_id' => $challenge->challenge_id, 'challenge_status' => config('constants.CHALLENGE_STATUS.INVITED')])->first())
             {
 
                 $invitation = new UserChallenge();
