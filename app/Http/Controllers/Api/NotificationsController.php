@@ -49,6 +49,7 @@ class NotificationsController extends Controller
                 {
                     case  'App\Notifications\DuoInvitationNotification':
 
+                        /** @noinspection PhpUndefinedMethodInspection */
                         if($challenge = Challenge::with('Object')->find($n->data['challenge_id']))
                         {
                             if($challenge->challenge_status < config('constants.CHALLENGE_STATUS.DECLINED'))

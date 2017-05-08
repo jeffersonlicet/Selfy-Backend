@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $object_type
  * @property int $object_id
  * @property User|Place Object
+ * @property int $challenge_status
  */
 class Challenge extends Model
 {
