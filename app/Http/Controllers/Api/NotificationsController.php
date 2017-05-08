@@ -51,13 +51,11 @@ class NotificationsController extends Controller
 
                         if($challenge = Challenge::with('Object')->find($n->data['challenge_id']))
                         {
-                            $notification['invitation'] = $challenge->toArray();
+                            if($challenge->challenge_status < config('constants.CHALLENGE_STATUS.DECLINED'))
+                                $notification['invitation'] = $challenge->toArray();
+                            else continue 2;
                         }
-                        else
-                        {
-
-                            continue 2;
-                        }
+                        else continue 2;
                     break;
 
                     case  'App\Notifications\DuoNotification':
@@ -65,10 +63,7 @@ class NotificationsController extends Controller
                         {
                             $notification['photo'] = $photo->toArray();
                         }
-                        else
-                        {
-                            continue 2;
-                        }
+                        else continue 2;
                     break;
 
                     case 'App\Notifications\SpotNotification':
@@ -76,31 +71,19 @@ class NotificationsController extends Controller
                         {
                             $notification['photo'] = $photo->toArray();
                         }
-                        else
-                        {
-                            continue 2;
-                        }
+                        else continue 2;
+
                     break;
 
                     case 'App\Notifications\LikeNotification':
 
-                        if($photo = Photo::find($n->data['photo_id']))
+                        if($photo = Photo::find($n->data['photo_id']) && $user = User::find($n->data['user_id']))
                         {
-                            $notification['photo'] = $photo->toArray();
-                        }
-                        else
-                        {
-                            continue 2;
+                            $notification['photo']  = $photo->toArray();
+                            $notification['user']   = $user->toArray();
                         }
 
-                        if($user = User::find($n->data['user_id']))
-                        {
-                            $notification['user'] = $user->toArray();
-                        }
-                        else
-                        {
-                            continue 2;
-                        }
+                        else continue 2;
                         break;
 
                     case 'App\Notifications\FollowNotification':
@@ -109,45 +92,24 @@ class NotificationsController extends Controller
                         {
                             $notification['user'] = $user->toArray();
                         }
-                        else
-                        {
-                            continue 2;
-                        }
+                        else continue 2;
 
                     break;
 
                     case 'App\Notifications\CommentNotification':
 
-                        if($photo = Photo::find($n->data['photo_id']))
+                        if($photo = Photo::find($n->data['photo_id']) && $comment = UserComment::find($n->data['comment_id']) && $user = User::find($n->data['user_id']))
                         {
                             $notification['photo'] = $photo->toArray();
-                        }
-                        else
-                        {
-                            continue 2;
-                        }
 
-                        if($comment = UserComment::find($n->data['comment_id']))
-                        {
                             $comment = $comment->toArray();
                             unset($comment['photo']);
 
                             $notification['comment'] = $comment;
-                        }
-                        else
-                        {
-                            continue 2;
-                        }
-
-                        if($user = User::find($n->data['user_id']))
-                        {
                             $notification['user'] = $user->toArray();
                         }
-                        else
-                        {
-                            continue 2;
-                        }
-                        break;
+                        else continue 2;
+                    break;
                 }
 
                 $curated[] = $notification;

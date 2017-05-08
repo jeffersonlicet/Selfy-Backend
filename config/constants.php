@@ -13,6 +13,7 @@ return [
     ],
 
     'CHALLENGE_STATUS' => [
+        'UNSET'         => -1,
         'INVITED'       => 0,
         'COMPLETED'     => 1,
         'ACCEPTED'      => 2,

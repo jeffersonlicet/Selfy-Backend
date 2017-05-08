@@ -33,6 +33,8 @@ class Challenge extends Model
      */
     protected $fillable = ['object_type', 'created_at', 'updated_at', 'completed_count', 'object_id'];
 
+    protected $appends = ['challenge_status'];
+
     public function Object()
     {
         return $this->morphTo();
@@ -51,5 +53,19 @@ class Challenge extends Model
     public function CompletedBy()
     {
         return $this->belongsToMany('App\Models\User', 'completed_challenges');
+    }
+
+    /**
+     * @return int
+     */
+    public function getChallengeStatusAttribute()
+    {
+        /** @noinspection PhpUndefinedMethodInspection */
+        if(!\Auth::guest() && $invitation = UserChallenge::where(['user_id' => \Auth::user()->user_id, 'challenge_id' => $this->challenge_id])->first())
+        {
+            return $invitation->challenge_status;
+        }
+
+        return -1;
     }
 }
