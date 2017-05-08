@@ -1028,16 +1028,16 @@
         },
         {
             "name": "microsoft/azure-storage",
-            "version": "v0.13.0",
+            "version": "v0.15.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Azure/azure-storage-php.git",
-                "reference": "dd36f0dbd1ae4abdab32f26a99e5e8ca7553c3c0"
+                "reference": "8058e40131d18a8062d276286e4877dd20cb655b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Azure/azure-storage-php/zipball/dd36f0dbd1ae4abdab32f26a99e5e8ca7553c3c0",
-                "reference": "dd36f0dbd1ae4abdab32f26a99e5e8ca7553c3c0",
+                "url": "https://api.github.com/repos/Azure/azure-storage-php/zipball/8058e40131d18a8062d276286e4877dd20cb655b",
+                "reference": "8058e40131d18a8062d276286e4877dd20cb655b",
                 "shasum": ""
             },
             "require": {
@@ -1047,6 +1047,7 @@
             "require-dev": {
                 "mikey179/vfsstream": "~1.6",
                 "pdepend/pdepend": "~2.2",
+                "phpdocumentor/phpdocumentor": "dev-master",
                 "phploc/phploc": "~2.1",
                 "phpmd/phpmd": "@stable",
                 "phpunit/phpunit": "~4.0",
@@ -1082,26 +1083,26 @@
                 "sdk",
                 "storage"
             ],
-            "time": "2017-02-23T09:55:42+00:00"
+            "time": "2017-05-03T09:08:36+00:00"
         },
         {
             "name": "microsoft/windowsazure",
-            "version": "v0.5.1",
+            "version": "v0.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Azure/azure-sdk-for-php.git",
-                "reference": "80c3a7b12854b79b6800808aa961372adcb36936"
+                "reference": "df6460eb5573401f0aef85ed0bb84ba82ebffd84"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Azure/azure-sdk-for-php/zipball/80c3a7b12854b79b6800808aa961372adcb36936",
-                "reference": "80c3a7b12854b79b6800808aa961372adcb36936",
+                "url": "https://api.github.com/repos/Azure/azure-sdk-for-php/zipball/df6460eb5573401f0aef85ed0bb84ba82ebffd84",
+                "reference": "df6460eb5573401f0aef85ed0bb84ba82ebffd84",
                 "shasum": ""
             },
             "require": {
                 "firebase/php-jwt": "^4.0",
                 "guzzlehttp/guzzle": "^6.2",
-                "microsoft/azure-storage": "^0.13",
+                "microsoft/azure-storage": "^0.15",
                 "pear/mail_mime": "^1.10",
                 "pear/net_url2": "^2.2",
                 "php": ">=5.6",
@@ -1147,7 +1148,7 @@
                 "php",
                 "sdk"
             ],
-            "time": "2017-03-21T19:40:23+00:00"
+            "time": "2017-05-05T07:15:05+00:00"
         },
         {
             "name": "monolog/monolog",
