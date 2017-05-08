@@ -2,11 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Models\Challenge;
-use App\Models\ChallengeCompleted;
 use App\Models\Photo;
-use App\Models\UserChallenge;
-use App\Models\UserFace;
 use App\Models\UserFaceRecognition;
 use App\Notifications\DuoNotification;
 use Carbon\Carbon;
