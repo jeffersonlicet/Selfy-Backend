@@ -72,7 +72,7 @@ class SpotNotification extends Notification
             $notification = $notificationBuilder->build();
             $data = $dataBuilder->build();
 
-            $downstreamResponse = FCM::sendTo($notifiable->firebase_token, $option, $notification, $data);
+            FCM::sendTo($notifiable->firebase_token, $option, $notification, $data);
         }
 
         return [

@@ -22,17 +22,22 @@ class DuoInvitationNotification extends Notification implements ShouldQueue
 
     private $user;
     private $challenge_id;
+    private $place_name;
 
     /**
      * Create a new notification instance.
      *
      * @param User $user
      * @param $challenge_id
-]     */
-    public function __construct(User $user, $challenge_id)
+
+    ]
+     * @param $place_name
+     */
+    public function __construct(User $user, $challenge_id, $place_name)
     {
         $this->user = $user;
         $this->challenge_id = $challenge_id;
+        $this->place_name = $place_name;
     }
     /**
      * Get the notification's delivery channels.
@@ -67,11 +72,11 @@ class DuoInvitationNotification extends Notification implements ShouldQueue
             $optionBuiler->setTimeToLive(60*20)->setPriority("high");
 
             $dataBuilder = new PayloadDataBuilder();
-            $dataBuilder->addData(['object' => $this->user->user_id, 'type' => 'duo_invitation']);
+            $dataBuilder->addData(['object' => $this->user->user_id, 'type' => 'spot_invitation']);
             $notificationBuilder = new PayloadNotificationBuilder();
 
             $notificationBuilder->setTitle('New Challenge')
-                ->setBody('Make a Duo with '.$this->user->username)
+                ->setBody('Take a selfie in '.$this->place_name)
                 ->setSound('clean_selfy');
 
             $option         = $optionBuiler->build();

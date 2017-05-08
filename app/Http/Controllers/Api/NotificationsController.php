@@ -53,7 +53,7 @@ class NotificationsController extends Controller
                         /** @noinspection PhpUndefinedMethodInspection */
                         if($challenge = Challenge::with('Object')->find($n->data['challenge_id']))
                         {
-                            if($challenge->challenge_status < config('constants.CHALLENGE_STATUS.DECLINED'))
+                            if($challenge->challenge_status == config('constants.CHALLENGE_STATUS.INVITED') || $challenge->challenge_status == config('constants.CHALLENGE_STATUS.ACCEPTED'))
                                 $notification['invitation'] = $challenge->toArray();
                             else continue 2;
                         }
