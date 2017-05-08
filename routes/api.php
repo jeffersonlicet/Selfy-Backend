@@ -19,7 +19,7 @@ Route::post('user/refresh', 'Api\AuthController@refresh');
 /* Auth required */
 Route::group(
     ['middleware' => 'ApiAuth'], function () {
-
+    Route::get('user/test', 'Api\UserController@test');
     Route::get('photo/borders/{photo_id}', 'Api\PhotoController@borders');
     Route::get('photo/bests/{user_id}', 'Api\PhotoController@bests');
     Route::post('photo/report', 'Api\PhotoController@report');

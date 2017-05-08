@@ -23,6 +23,26 @@ use Validator;
 
 class UserController extends Controller
 {
+
+    public function test()
+    {
+        $creator = \Auth::user();
+        $todo = $creator->acceptedChallenges;
+        $users = [];
+
+        foreach ($todo as $todoChallenge)
+        {
+            if($todoChallenge->Challenge->object_type == config('constants.CHALLENGE_TYPES.DUO'))
+            {
+                if($todoChallenge->User->duo_enabled)
+                {
+                    $users[] =  $todoChallenge->User;
+                }
+            }
+        }
+
+        dd($users);
+    }
     /**
      * Return a user information
      *

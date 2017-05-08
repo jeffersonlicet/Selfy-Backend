@@ -43,6 +43,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property ChallengeTodo[] $Todo
  * @property UserFaceRecognition[] FaceDescriptors
  * @property User[] $Following
+ * @property UserChallenge[] acceptedChallenges
  */
 class User extends Authenticatable
 {
@@ -86,6 +87,18 @@ class User extends Authenticatable
     public function Todo()
     {
         return $this->hasMany('App\Models\ChallengeTodo', 'user_id', 'user_id');
+    }
+
+    /**
+     * Return all
+     * @return mixed
+     */
+    public function acceptedChallenges()
+    {
+
+        return $this->hasMany('App\Models\UserChallenge', 'user_id', 'user_id');
+        /** @noinspection PhpUndefinedMethodInspection */
+        //return UserChallenge::where(['user_id' => \Auth::user()->user_id, 'challenge_status' => config('constants.CHALLENGE_STATUS.ACCEPTED')])->with('Challenge')->get();
     }
 
     /**

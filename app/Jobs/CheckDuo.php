@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Models\Challenge;
 use App\Models\ChallengeCompleted;
 use App\Models\Photo;
+use App\Models\UserChallenge;
 use App\Models\UserFace;
 use App\Models\UserFaceRecognition;
 use App\Notifications\DuoNotification;
@@ -61,7 +62,7 @@ class CheckDuo implements ShouldQueue
             /*
              *  Be sure the user has to do challenges and a face associated
              */
-            if(/*count($creator->Todo) > 0 &&*/ $creator->Face != null)
+            if($creator->duo_todo > 0 && $creator->Face != null)
             {
                 /*
                  * Check if the photo has faces
@@ -74,7 +75,6 @@ class CheckDuo implements ShouldQueue
                     /* Get user Descriptor */
                     if (count($creator->FaceDescriptors) == 0 or (count($creator->FaceDescriptors) > 0 and  $creator->FaceDescriptors[0]->updated_at < Carbon::now()->subHours(23)))
                     {
-
                         $trainCreator = $this->detect($creator->Face->url);
 
                         if ($trainCreator['status_code'] == 200 and $trainCreator['faces_count'] > 0)
@@ -120,16 +120,23 @@ class CheckDuo implements ShouldQueue
                     /*  Creator is in the photo and the photo have now 1 faces */
                     if($creatorBelongs)
                     {
+                        /* Get all candidates from my accepted challenges
+                         * Only enable duo challenges
+                         * Make sure the candidate has duo_enabled
+                         */
 
-                        $users = UserFace::where("user_id", "!=", $creator->user_id)->with(['User' => function($query){
-                            $query->where('duo_enabled', '1');
-                        }])->get();
+                        $todo = $creator->acceptedChallenges;
 
                         /* Check every candidate */
-                        foreach($users as $single)
+                        foreach($todo as $todoChallenge)
                         {
+                            if ($todoChallenge->Challenge->object_type != config('constants.CHALLENGE_TYPES.DUO'))
+                                continue;
 
-                            $friend = $single->User;
+                            if(!$todoChallenge->User->duo_enabled)
+                                continue;
+
+                            $friend = $todoChallenge->User;
 
                             if (count($friend->FaceDescriptors) == 0 or (count($friend->FaceDescriptors) > 0 && $friend->FaceDescriptors[0]->updated_at < Carbon::now()->subHours(23)))
                             {
@@ -148,42 +155,36 @@ class CheckDuo implements ShouldQueue
                                         $friend->FaceDescriptors[0]->save();
                                     }
                                 }
+
+                                else
+                                {
+                                    Log::info("Bad friend descriptors");
+                                }
                             }
 
+                            /* Check if the faces are identical */
                             $identification = $this->identify([$friend->FaceDescriptors[0]->face_external_id, $response['faces'][0]->faceId]);
 
                             if($identification['status_code'] == 200 and $identification['identical'])
                             {
-                                /** @noinspection PhpUndefinedMethodInspection */
-                                if(!$normal = Challenge::where(['object_id' => $friend->user_id])->first())
-                                {
-                                    $normal = new Challenge();
-                                    $normal->object_type = config('constants.CHALLENGE_TYPES_STR.DUO');
-                                    $normal->object_id   = $friend->user_id;
-                                    $normal->completed_count = 0;
-                                    $normal->saveOrFail();
-                                }
 
-                               // if(!$completed = ChallengeCompleted::where(['photo_id' => $this->photo->photo_id, 'challenge_id' => $normal->challenge_id])->first())
-                                 /** @noinspection end */
-                                //{
+                                /* Increment challenge completion count */
+                                $todoChallenge->Challenge++;
+                                $todoChallenge->Challenge->save();
 
+                                /* Increment user duo completion count */
+                                $creator->duo_completed++;
+                                $creator->save();
 
-                                    $completed = new ChallengeCompleted();
-                                    $completed->challenge_id = $normal->challenge_id;
-                                    $completed->photo_id = $this->photo->photo_id;
-                                    $completed->user_id = $creator->user_id;
-                                    $completed->save();
-
-                                    $creator->duo_completed++;
-                                    $creator->save();
-
-                                    $normal->completed_count++;
-                                    $normal->save();
-
-                                    $creator->notify(new DuoNotification($this->photo->photo_id));
-                                    break;
-                                //}
+                                /*
+                                 * Update invitation to completed and
+                                 * append user photo
+                                 */
+                                $todoChallenge->photo_id = $this->photo->photo_id;
+                                $todoChallenge->challenge_status = config('constants.CHALLENGE_STATUS.COMPLETED');
+                                $todoChallenge->touch();
+                                $todoChallenge->save();
+                                $creator->notify(new DuoNotification($this->photo->photo_id));
                             }
                         }
                     }

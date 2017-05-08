@@ -14,6 +14,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $created_at
  * @property Challenge $challenge
  * @property User $user
+ * @property Challenge Challenge
+ * @property User User
  */
 class UserChallenge extends Model
 {
