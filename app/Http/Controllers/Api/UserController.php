@@ -186,7 +186,7 @@ class UserController extends Controller
                 \Auth::user()->Face->save();
             }
 
-            //$this->generateBatchDuoInvitation(\Auth::user(), 20, 0);
+            $this->generateBatchDuoInvitation(\Auth::user(), 20, 0);
 
             return response()->json([
                 'status' => TRUE,
@@ -372,8 +372,8 @@ class UserController extends Controller
                     /** @noinspection PhpUndefinedMethodInspection */
                     $user->notify(new FollowNotification(\Auth::user()));
 
-                    //$this->makeDuoInvitation($user, \Auth::user());
-                    //$this->makeDuoInvitation(\Auth::user(), $user);
+                    $this->makeDuoInvitation($user, \Auth::user());
+                    $this->makeDuoInvitation(\Auth::user(), $user);
 
                     return response()->json([
                         'status' => TRUE,

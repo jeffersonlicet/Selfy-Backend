@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Challenge;
 use App\Models\Photo;
 use App\Models\User;
 use App\Models\UserComment;
@@ -46,11 +47,10 @@ class NotificationsController extends Controller
                 $notification['created_at'] = $n->created_at->toDateTimeString();
                 switch ($n->type)
                 {
-                    case  'App\Notifications\DuoNotification':
-                        if($photo = Photo::with('Challenges', 'Challenges.Object')->find($n->data['photo_id']))
+                    case  'App\Notifications\DuoInvitationNotification':
+                        if($challenge = Challenge::with('Object')->find($n->data['challenge_id']))
                         {
-
-                            $notification['photo'] = $photo->toArray();
+                            $notification['invitation'] = $challenge->toArray();
                         }
                         else
                         {
@@ -59,18 +59,30 @@ class NotificationsController extends Controller
                         }
                     break;
 
+                    case  'App\Notifications\DuoNotification':
+                        if($photo = Photo::with('Challenges', 'Challenges.Object')->find($n->data['photo_id']))
+                        {
+                            $notification['photo'] = $photo->toArray();
+                        }
+                        else
+                        {
+                            continue 2;
+                        }
+                    break;
+
                     case 'App\Notifications\SpotNotification':
-                    if($photo = Photo::with('Place')->find($n->data['photo_id']))
-                    {
-                        $notification['photo'] = $photo->toArray();
-                    }
-                    else
-                    {
-                        continue 2;
-                    }
+                        if($photo = Photo::with('Place')->find($n->data['photo_id']))
+                        {
+                            $notification['photo'] = $photo->toArray();
+                        }
+                        else
+                        {
+                            continue 2;
+                        }
                     break;
 
                     case 'App\Notifications\LikeNotification':
+
                         if($photo = Photo::find($n->data['photo_id']))
                         {
                             $notification['photo'] = $photo->toArray();
@@ -91,6 +103,7 @@ class NotificationsController extends Controller
                         break;
 
                     case 'App\Notifications\FollowNotification':
+
                         if($user = User::find($n->data['user_id']))
                         {
                             $notification['user'] = $user->toArray();
@@ -103,6 +116,7 @@ class NotificationsController extends Controller
                     break;
 
                     case 'App\Notifications\CommentNotification':
+
                         if($photo = Photo::find($n->data['photo_id']))
                         {
                             $notification['photo'] = $photo->toArray();
