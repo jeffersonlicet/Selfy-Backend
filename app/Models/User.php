@@ -39,11 +39,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property UserFace $Face
  * @property UserToken token
  * @property Photo[] photos
- * @property ChallengeCompleted[] $Completed
- * @property ChallengeTodo[] $Todo
  * @property UserFaceRecognition[] FaceDescriptors
  * @property User[] $Following
- * @property UserChallenge[] acceptedChallenges
+ * @property UserChallenge[] userChallenges
  */
 class User extends Authenticatable
 {
@@ -81,19 +79,12 @@ class User extends Authenticatable
         return $this->belongsTo('App\Models\UserGroup', 'user_group', 'user_group_id');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany|\Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function Todo()
-    {
-        return $this->hasMany('App\Models\ChallengeTodo', 'user_id', 'user_id');
-    }
 
     /**
      * Return all
      * @return mixed
      */
-    public function acceptedChallenges()
+    public function userChallenges()
     {
 
         return $this->hasMany('App\Models\UserChallenge', 'user_id', 'user_id');

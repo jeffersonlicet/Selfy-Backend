@@ -125,7 +125,7 @@ class CheckDuo implements ShouldQueue
                          * Make sure the candidate has duo_enabled
                          */
 
-                        $todo = $creator->acceptedChallenges;
+                        $todo = $creator->userChallenges;
 
                         /* Check every candidate */
                         foreach($todo as $todoChallenge)

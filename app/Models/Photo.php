@@ -80,12 +80,11 @@ class Photo extends Model
     {
         return $this->hasManyThrough(
             'App\Models\Challenge',
-                'App\Models\ChallengeCompleted',
+                'App\Models\UserChallenge',
                 'photo_id',
                 'challenge_id',
                 'photo_id');
     }
-
 
     /**
      *  Append property
