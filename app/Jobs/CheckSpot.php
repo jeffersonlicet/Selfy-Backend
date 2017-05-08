@@ -6,6 +6,7 @@ use App\Models\Challenge;
 use App\Models\ChallengeCompleted;
 use App\Models\Photo;
 use App\Models\Place;
+use App\Models\UserChallenge;
 use App\Notifications\SpotNotification;
 use Gibbo\Foursquare\Client\Client;
 use Gibbo\Foursquare\Client\Configuration;
@@ -143,15 +144,15 @@ class CheckSpot implements ShouldQueue
                 $challenge->save();
             }
 
-            $completed = new ChallengeCompleted();
+            $completed = new UserChallenge();
             $completed->photo_id        = $this->photo->photo_id;
             $completed->challenge_id    = $challenge->challenge_id;
             $completed->user_id = $this->photo->User->user_id;
+            $completed->challenge_status = config('constants.CHALLENGE_STATUS.COMPLETED');
             $completed->saveOrFail();
 
             $this->photo->User->spot_completed++;
             $this->photo->User->save();
-
             $this->photo->User->notify(new SpotNotification($this->photo->photo_id));
 
 
