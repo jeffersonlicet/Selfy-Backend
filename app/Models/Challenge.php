@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $created_at
  * @property string $updated_at
  * @property integer $completed_count
- * @property ChallengeCompleted[] $completedChallenges
  * @property User[] $users
  * @property string $object_type
  * @property int $object_id
@@ -39,21 +38,6 @@ class Challenge extends Model
     public function Object()
     {
         return $this->morphTo();
-    }
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function TodoBy()
-    {
-        return $this->belongsToMany('App\Models\User', 'todo_challenges');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function CompletedBy()
-    {
-        return $this->belongsToMany('App\Models\User', 'completed_challenges');
     }
 
     /**

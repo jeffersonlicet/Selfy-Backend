@@ -3,8 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Challenge;
-use App\Models\ChallengeCompleted;
-use App\Models\ChallengeTodo;
 use App\Models\User;
 use App\Models\UserChallenge;
 use App\Models\UserFace;
@@ -27,7 +25,7 @@ class UserController extends Controller
     public function test()
     {
         $creator = \Auth::user();
-        $todo = $creator->acceptedChallenges;
+        $todo = $creator->userChallenges;
         $users = [];
 
         foreach ($todo as $todoChallenge)
@@ -617,15 +615,15 @@ class UserController extends Controller
             if ($status == "todo") {
                 switch ($type) {
                     case 'duo':
-                        $challenges = ChallengeTodo::where('user_id', \Auth::user()->user_id)->with(['Challenge' => function ($query) {
-                            $query->where('object_type', 'duo');
-                        }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
+                       // $challenges = ChallengeTodo::where('user_id', \Auth::user()->user_id)->with(['Challenge' => function ($query) {
+                         //   $query->where('object_type', 'duo');
+                       // }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
                         break;
 
                     case 'spot':
-                        $challenges = ChallengeTodo::where('user_id', \Auth::user()->user_id)->with(['Challenge' => function ($query) {
-                            $query->where('object_type', 'spot');
-                        }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
+                       // $challenges = ChallengeTodo::where('user_id', \Auth::user()->user_id)->with(['Challenge' => function ($query) {
+                         //   $query->where('object_type', 'spot');
+                       // }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
                         break;
 
                     case 'play':
@@ -637,31 +635,31 @@ class UserController extends Controller
             } else {
                 switch ($type) {
                     case 'duo':
-                        $challenges = ChallengeCompleted::where('user_id', \Auth::user()->user_id)->with(['Challenge' => function ($query) {
-                            $query->where('object_type', 'duo');
-                        }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
+                       // $challenges = ChallengeCompleted::where('user_id', \Auth::user()->user_id)->with(['Challenge' => function ($query) {
+                          //  $query->where('object_type', 'duo');
+                        //}, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
                         break;
 
                     case 'spot':
-                        $challenges = ChallengeCompleted::where('user_id', \Auth::user()->user_id)->with(['Challenge' => function ($query) {
-                            $query->where('object_type', 'spot');
-                        }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
+                       // $challenges = ChallengeCompleted::where('user_id', \Auth::user()->user_id)->with(['Challenge' => function ($query) {
+                          //  $query->where('object_type', 'spot');
+                       // }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
                         break;
 
                     case 'play':
-                        $challenges = ChallengeCompleted::where('user_id', \Auth::user()->user_id)->with(['Challenge' => function ($query) {
-                            $query->where('object_type', 'play');
-                        }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
+                        //$challenges = ChallengeCompleted::where('user_id', \Auth::user()->user_id)->with(['Challenge' => function ($query) {
+                          //  $query->where('object_type', 'play');
+                      //  }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
                         break;
                 }
             }
 
-            $challenges = $challenges->isEmpty() ? [] : $challenges->toArray();
+            //$challenges = $challenges->isEmpty() ? [] : $challenges->toArray();
 
-            foreach ($challenges as $challenge) {
-                if ($challenge['challenge'] != null)
-                    $curated[] = $challenge['challenge'];
-            }
+            //foreach ($challenges as $challenge) {
+             //   if ($challenge['challenge'] != null)
+               //     $curated[] = $challenge['challenge'];
+          //  }
 
             return response()->json([
                 'status' => TRUE,
