@@ -35,12 +35,10 @@ class CheckDuo implements ShouldQueue
     public function __construct(Photo $photo, $key)
     {
         $this->photo = $photo;
-
         $this->headers =  [
             'Content-Type'=> 'application/json',
             'Ocp-Apim-Subscription-Key' => config('app.oxford_'.$key)
         ];
-
     }
 
     /**
@@ -151,11 +149,6 @@ class CheckDuo implements ShouldQueue
                                         $friend->FaceDescriptors[0]->save();
                                     }
                                 }
-
-                                else
-                                {
-                                    Log::info("Bad friend descriptors");
-                                }
                             }
 
                             /* Check if the faces are identical */
@@ -165,7 +158,8 @@ class CheckDuo implements ShouldQueue
                             {
 
                                 /* Increment challenge completion count */
-                                $todoChallenge->Challenge++;
+                                $todoChallenge->Challenge->completed_count++;
+                                $todoChallenge->Challenge->save();
                                 $todoChallenge->Challenge->save();
 
                                 /* Increment user duo completion count */
