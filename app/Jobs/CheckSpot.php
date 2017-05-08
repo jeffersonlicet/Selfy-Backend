@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use App\Models\Challenge;
-use App\Models\ChallengeCompleted;
 use App\Models\Photo;
 use App\Models\Place;
 use App\Models\UserChallenge;
@@ -154,8 +153,6 @@ class CheckSpot implements ShouldQueue
             $this->photo->User->spot_completed++;
             $this->photo->User->save();
             $this->photo->User->notify(new SpotNotification($this->photo->photo_id));
-
-
         }
 
         catch(\Exception $e)
