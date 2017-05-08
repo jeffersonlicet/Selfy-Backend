@@ -126,6 +126,9 @@ class CheckDuo implements ShouldQueue
                         /* Check every candidate */
                         foreach($todo as $todoChallenge)
                         {
+                            if($todoChallenge->challenge_status != config('constants.CHALLENGE_STATUS.ACCEPTED'))
+                                continue;
+
                             if ($todoChallenge->Challenge->object_type != config('constants.CHALLENGE_TYPES.DUO'))
                                 continue;
 
