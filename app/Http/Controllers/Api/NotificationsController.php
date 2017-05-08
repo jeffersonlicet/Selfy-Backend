@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Challenge;
 use App\Models\Photo;
 use App\Models\User;
+use App\Models\UserChallenge;
 use App\Models\UserComment;
 use Illuminate\Support\Facades\Input;
 use Validator;
@@ -60,10 +61,24 @@ class NotificationsController extends Controller
                     break;
 
                     case  'App\Notifications\DuoNotification':
-                        if($photo = Photo::with('Challenges', 'Challenges.Object')->find($n->data['photo_id']))
+
+                        if($photo = Photo::find($n->data['photo_id']))
                         {
                             $notification['photo'] = $photo->toArray();
+
+                            $crudeChallenges = UserChallenge::where(['photo_id' => $photo->photo_id, 'challenge_status' => config('constants.CHALLENGE_STATUS.COMPLETED')])->with(['Challenge' => function ($query) {
+                                $query->where('object_type', config('constants.CHALLENGE_TYPES_STR.DUO'));
+                            }, 'Challenge.Object'])->first();
+
+                            if($crudeChallenges)
+                            {
+                                $notification['photo']['challenges'][] = $crudeChallenges->Challenge->toArray();
+                            }
+                            else continue 2;
+
+
                         }
+
                         else continue 2;
                     break;
 

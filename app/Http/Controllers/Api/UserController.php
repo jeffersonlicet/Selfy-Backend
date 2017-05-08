@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Challenge;
+use App\Models\Photo;
 use App\Models\User;
 use App\Models\UserChallenge;
 use App\Models\UserFace;
@@ -24,22 +25,8 @@ class UserController extends Controller
 
     public function test()
     {
-        $creator = \Auth::user();
-        $todo = $creator->userChallenges;
-        $users = [];
-
-        foreach ($todo as $todoChallenge)
-        {
-            if($todoChallenge->Challenge->object_type == config('constants.CHALLENGE_TYPES.DUO'))
-            {
-                if($todoChallenge->User->duo_enabled)
-                {
-                    $users[] =  $todoChallenge->User;
-                }
-            }
-        }
-
-        dd($users);
+        $photo = Photo::with('Challenges')->find(14);
+        var_dump($photo->toArray());
     }
     /**
      * Return a user information
