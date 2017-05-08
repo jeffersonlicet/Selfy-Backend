@@ -48,6 +48,8 @@ class CheckDuo implements ShouldQueue
      */
     public function handle()
     {
+        Log::info("Starting duo job");
+
         /** @noinspection PhpUndefinedMethodInspection */
         if(Photo::find($this->photo->photo_id))
         {
@@ -118,7 +120,7 @@ class CheckDuo implements ShouldQueue
                          * Only enable duo challenges
                          * Make sure the candidate has duo_enabled
                          */
-
+                        Log::info("Creator belongs, lets check friends");
                         $todo = $creator->userChallenges;
 
                         /* Check every candidate */
@@ -127,11 +129,12 @@ class CheckDuo implements ShouldQueue
                             if ($todoChallenge->Challenge->object_type != config('constants.CHALLENGE_TYPES.DUO'))
                                 continue;
 
-                            if(!$todoChallenge->User->duo_enabled)
+                            if(!$todoChallenge->Challenge->Object->duo_enabled)
                                 continue;
 
-                            $friend = $todoChallenge->User;
+                            Log::info("Checking with ". $todoChallenge->Challenge->Object->username);
 
+                            $friend = $todoChallenge->Challenge->Object;
                             if (count($friend->FaceDescriptors) == 0 or (count($friend->FaceDescriptors) > 0 && $friend->FaceDescriptors[0]->updated_at < Carbon::now()->subHours(23)))
                             {
                                 $trainFriend = $this->detect($friend->Face->url);
@@ -175,8 +178,12 @@ class CheckDuo implements ShouldQueue
                                 $todoChallenge->touch();
                                 $todoChallenge->save();
                                 $creator->notify(new DuoNotification($this->photo->photo_id));
+
+                                break;
                             }
                         }
+
+                        //Log::info("Duo does not meet requirements");
                     }
                 }
                 else {Log::info("JEFF The photo does not have 2 faces"); }
