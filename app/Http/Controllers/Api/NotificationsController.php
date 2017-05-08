@@ -48,6 +48,7 @@ class NotificationsController extends Controller
                 switch ($n->type)
                 {
                     case  'App\Notifications\DuoInvitationNotification':
+
                         if($challenge = Challenge::with('Object')->find($n->data['challenge_id']))
                         {
                             $notification['invitation'] = $challenge->toArray();

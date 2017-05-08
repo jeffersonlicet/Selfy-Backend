@@ -777,7 +777,7 @@ class UserController extends Controller
                 $invitation->challenge_status = config('constants.CHALLENGE_STATUS.INVITED');
                 $invitation->save();
 
-                $from->notify(new DuoInvitationNotification($to, $challenge->id));
+                $from->notify(new DuoInvitationNotification($to, $challenge->challenge_id));
 
             }
         }
