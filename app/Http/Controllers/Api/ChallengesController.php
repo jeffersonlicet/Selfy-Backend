@@ -285,6 +285,11 @@ class ChallengesController extends Controller
                 throw new Exception("invalid_action");
             }
 
+            if((\Auth::user()->duo_todo + \Auth::user()->spot_todo + \Auth::user()->play_todo) == 5)
+            {
+                throw new Exception("limit_reached");
+            }
+
             $invitation->challenge_status = config('constants.CHALLENGE_STATUS.ACCEPTED');
             /** @noinspection PhpUndefinedMethodInspection */
             $invitation->save();
