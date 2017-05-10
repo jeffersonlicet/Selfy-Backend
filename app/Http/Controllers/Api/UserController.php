@@ -81,7 +81,6 @@ class UserController extends Controller
     {
         try
         {
-            /** @noinspection PhpUndefinedMethodInspection */
             if ($result = User::with('Face')->find(\Auth::user()->user_id))
             {
                 $user = $result->toArray();
@@ -199,7 +198,7 @@ class UserController extends Controller
 
             ]);
 
-            }
+        }
 
         catch (\Exception $e)
         {
@@ -602,15 +601,15 @@ class UserController extends Controller
             if ($status == "todo") {
                 switch ($type) {
                     case 'duo':
-                       // $challenges = ChallengeTodo::where('user_id', \Auth::user()->user_id)->with(['Challenge' => function ($query) {
-                         //   $query->where('object_type', 'duo');
-                       // }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
+                        // $challenges = ChallengeTodo::where('user_id', \Auth::user()->user_id)->with(['Challenge' => function ($query) {
+                        //   $query->where('object_type', 'duo');
+                        // }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
                         break;
 
                     case 'spot':
-                       // $challenges = ChallengeTodo::where('user_id', \Auth::user()->user_id)->with(['Challenge' => function ($query) {
-                         //   $query->where('object_type', 'spot');
-                       // }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
+                        // $challenges = ChallengeTodo::where('user_id', \Auth::user()->user_id)->with(['Challenge' => function ($query) {
+                        //   $query->where('object_type', 'spot');
+                        // }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
                         break;
 
                     case 'play':
@@ -622,21 +621,21 @@ class UserController extends Controller
             } else {
                 switch ($type) {
                     case 'duo':
-                       // $challenges = ChallengeCompleted::where('user_id', \Auth::user()->user_id)->with(['Challenge' => function ($query) {
-                          //  $query->where('object_type', 'duo');
+                        // $challenges = ChallengeCompleted::where('user_id', \Auth::user()->user_id)->with(['Challenge' => function ($query) {
+                        //  $query->where('object_type', 'duo');
                         //}, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
                         break;
 
                     case 'spot':
-                       // $challenges = ChallengeCompleted::where('user_id', \Auth::user()->user_id)->with(['Challenge' => function ($query) {
-                          //  $query->where('object_type', 'spot');
-                       // }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
+                        // $challenges = ChallengeCompleted::where('user_id', \Auth::user()->user_id)->with(['Challenge' => function ($query) {
+                        //  $query->where('object_type', 'spot');
+                        // }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
                         break;
 
                     case 'play':
                         //$challenges = ChallengeCompleted::where('user_id', \Auth::user()->user_id)->with(['Challenge' => function ($query) {
-                          //  $query->where('object_type', 'play');
-                      //  }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
+                        //  $query->where('object_type', 'play');
+                        //  }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
                         break;
                 }
             }
@@ -644,9 +643,9 @@ class UserController extends Controller
             //$challenges = $challenges->isEmpty() ? [] : $challenges->toArray();
 
             //foreach ($challenges as $challenge) {
-             //   if ($challenge['challenge'] != null)
-               //     $curated[] = $challenge['challenge'];
-          //  }
+            //   if ($challenge['challenge'] != null)
+            //     $curated[] = $challenge['challenge'];
+            //  }
 
             return response()->json([
                 'status' => TRUE,
@@ -673,9 +672,7 @@ class UserController extends Controller
             $limit   = Input::get('limit', config('app.photos_best_per_page'));
             $page    = Input::get('page', 0);
 
-
-            $validator =
-                Validator::make(
+            $validator = Validator::make(
                     ['query' => $query, 'limit' => $limit, 'page'=> $page],
                     ['query' => ['required', 'string'], 'limit' => ['required', 'numeric', 'between:1,20'], 'page' => ['required', 'numeric']]);
 
@@ -763,8 +760,6 @@ class UserController extends Controller
     {
         if($to->duo_enabled)
         {
-            /* Create a challenge with me */
-            /** @noinspection PhpUndefinedMethodInspection */
             if(!$challenge = Challenge::where(['object_id' => $to->user_id, 'object_type' => config('constants.CHALLENGE_TYPES_STR.DUO')])->first())
             {
                 $challenge = new Challenge();
@@ -772,7 +767,7 @@ class UserController extends Controller
                 $challenge->object_type = config('constants.CHALLENGE_TYPES_STR.DUO');
                 $challenge->save();
             }
-            /** @noinspection PhpUndefinedMethodInspection */
+
             if(!$invitation = UserChallenge::where(['user_id' => $from->user_id, 'challenge_id' => $challenge->challenge_id, 'challenge_status' => config('constants.CHALLENGE_STATUS.INVITED')])->first())
             {
 
@@ -801,15 +796,13 @@ class UserController extends Controller
             $user = \Auth::user();
         }
 
-        /** @noinspection PhpUndefinedMethodInspection */
         $followers = UserFollower::where(['following_id' => $user->user_id])->with(['User' => function ($query) {
-            /** @noinspection PhpUndefinedMethodInspection */
             $query->where('duo_enabled', 1);
         }])->limit($limit)->offset($offset)->get();
 
         foreach($followers as $singleton)
         {
-           $this->makeDuoInvitation($singleton->User, $user);
+            $this->makeDuoInvitation($singleton->User, $user);
         }
     }
 }
