@@ -607,19 +607,19 @@ class UserController extends Controller
             if ($status == "todo") {
                 switch ($type) {
                     case 'duo':
-                        $challenges = UserChallenge::where(['user_id'=> \Auth::user()->user_id, 'challege_status'=> config('constants.CHALLENGE_STATUS.ACCEPTED')])->with(['Challenge' => function ($query) {
+                        $challenges = UserChallenge::where(['user_id'=> \Auth::user()->user_id, 'challenge_status'=> config('constants.CHALLENGE_STATUS.ACCEPTED')])->with(['Challenge' => function ($query) {
                             $query->where('object_type', 'duo');
                         }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
                         break;
 
                     case 'spot':
-                        $challenges = UserChallenge::where(['user_id'=> \Auth::user()->user_id, 'challege_status'=> config('constants.CHALLENGE_STATUS.ACCEPTED')])->with(['Challenge' => function ($query) {
+                        $challenges = UserChallenge::where(['user_id'=> \Auth::user()->user_id, 'challenge_status'=> config('constants.CHALLENGE_STATUS.ACCEPTED')])->with(['Challenge' => function ($query) {
                             $query->where('object_type', 'spot');
                         }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
                         break;
 
                     case 'play':
-                        $challenges = UserChallenge::where(['user_id'=> \Auth::user()->user_id, 'challege_status'=> config('constants.CHALLENGE_STATUS.ACCEPTED')])->with(['Challenge' => function ($query) {
+                        $challenges = UserChallenge::where(['user_id'=> \Auth::user()->user_id, 'challenge_status'=> config('constants.CHALLENGE_STATUS.ACCEPTED')])->with(['Challenge' => function ($query) {
                             $query->where('object_type', 'play');
                         }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
                         break;
@@ -627,19 +627,19 @@ class UserController extends Controller
             } else {
                 switch ($type) {
                     case 'duo':
-                        $challenges = UserChallenge::where(['user_id'=> \Auth::user()->user_id, 'challege_status'=> config('constants.CHALLENGE_STATUS.COMPLETED')])->with(['Challenge' => function ($query) {
+                        $challenges = UserChallenge::where(['user_id'=> \Auth::user()->user_id, 'challenge_status'=> config('constants.CHALLENGE_STATUS.COMPLETED')])->with(['Challenge' => function ($query) {
                           $query->where('object_type', 'duo');
                         }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
                         break;
 
                     case 'spot':
-                        $challenges = UserChallenge::where(['user_id'=> \Auth::user()->user_id, 'challege_status'=> config('constants.CHALLENGE_STATUS.COMPLETED')])->with(['Challenge' => function ($query) {
+                        $challenges = UserChallenge::where(['user_id'=> \Auth::user()->user_id, 'challenge_status'=> config('constants.CHALLENGE_STATUS.COMPLETED')])->with(['Challenge' => function ($query) {
                           $query->where('object_type', 'spot');
                         }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
                         break;
 
                     case 'play':
-                        $challenges = UserChallenge::where(['user_id'=> \Auth::user()->user_id, 'challege_status'=> config('constants.CHALLENGE_STATUS.COMPLETED')])->with(['Challenge' => function ($query) {
+                        $challenges = UserChallenge::where(['user_id'=> \Auth::user()->user_id, 'challenge_status'=> config('constants.CHALLENGE_STATUS.COMPLETED')])->with(['Challenge' => function ($query) {
                           $query->where('object_type', 'play');
                         }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
                         break;
