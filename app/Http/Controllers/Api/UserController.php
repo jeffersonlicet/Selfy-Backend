@@ -584,6 +584,7 @@ class UserController extends Controller
             $page = Input::get('page', 0);
             $type = Input::get('type');
             $status = Input::get('status');
+
             $curated = [];
 
             $validator =
