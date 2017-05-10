@@ -17,7 +17,6 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Input;
 use Illuminate\Validation\Rule;
-use Log;
 use Validator;
 
 class UserController extends Controller
@@ -53,7 +52,7 @@ class UserController extends Controller
                 ]);
             }
 
-            
+
             if ($result = User::with('Face')->find($id))
             {
                 return response()->json([
@@ -356,14 +355,14 @@ class UserController extends Controller
                 ]);
             }
 
-            
+
             if(\Auth::user()->user_id != $input['user_id'] && $user = User::find($input["user_id"]))
             {
-                
+
                 if(!UserFollower::where(['follower_id' => \Auth::user()->user_id, 'following_id' => $user->user_id])->first())
                 {
                     $user->followers_count++;
-                    
+
                     $user->save();
 
                     \Auth::user()->following_count++;
@@ -374,7 +373,7 @@ class UserController extends Controller
                     $connection->following_id = $user->user_id;
                     $connection->save();
 
-                    
+
                     $user->notify(new FollowNotification(\Auth::user()));
 
                     $this->makeDuoInvitation($user, \Auth::user());
@@ -427,22 +426,22 @@ class UserController extends Controller
                 ]);
             }
 
-            
+
             if($user = User::find($input["user_id"]))
             {
-                
+
                 if(UserFollower::where(['follower_id' => \Auth::user()->user_id, 'following_id' => $user->user_id])->first())
                 {
                     $user->followers_count--;
-                    
+
                     $user->save();
 
                     \Auth::user()->following_count--;
                     \Auth::user()->save();
 
-                    
+
                     $connection = UserFollower::where(['following_id' => $user->user_id, 'follower_id' => \Auth::user()->user_id])->first();
-                    
+
                     $connection->delete();
 
                     return response()->json([
@@ -468,6 +467,7 @@ class UserController extends Controller
     }
 
     /**
+     * Get user followers
      * @return \Illuminate\Http\JsonResponse
      */
     public function followers()
@@ -521,6 +521,7 @@ class UserController extends Controller
     }
 
     /**
+     * Get user following
      * @return \Illuminate\Http\JsonResponse
      */
     public function following()
@@ -571,12 +572,14 @@ class UserController extends Controller
     }
 
     /**
+     * Get user challenges
      * @return \Illuminate\Http\JsonResponse
      */
     public function challenges()
     {
 
-        try {
+        try
+        {
             $limit = Input::get('limit', config('app.photos_best_per_page'));
             $page = Input::get('page', 0);
             $type = Input::get('type');
@@ -599,22 +602,24 @@ class UserController extends Controller
                 ]);
             }
 
+            $challenges = [];
+
             if ($status == "todo") {
                 switch ($type) {
                     case 'duo':
-                        // $challenges = ChallengeTodo::where('user_id', \Auth::user()->user_id)->with(['Challenge' => function ($query) {
-                        //   $query->where('object_type', 'duo');
-                        // }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
+                        $challenges = UserChallenge::where(['user_id'=> \Auth::user()->user_id, 'challege_status'=> config('constants.CHALLENGE_STATUS.ACCEPTED')])->with(['Challenge' => function ($query) {
+                            $query->where('object_type', 'duo');
+                        }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
                         break;
 
                     case 'spot':
-                        // $challenges = ChallengeTodo::where('user_id', \Auth::user()->user_id)->with(['Challenge' => function ($query) {
-                        //   $query->where('object_type', 'spot');
-                        // }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
+                        $challenges = UserChallenge::where(['user_id'=> \Auth::user()->user_id, 'challege_status'=> config('constants.CHALLENGE_STATUS.ACCEPTED')])->with(['Challenge' => function ($query) {
+                            $query->where('object_type', 'spot');
+                        }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
                         break;
 
                     case 'play':
-                        $challenges = ChallengeTodo::where('user_id', \Auth::user()->user_id)->with(['Challenge' => function ($query) {
+                        $challenges = UserChallenge::where(['user_id'=> \Auth::user()->user_id, 'challege_status'=> config('constants.CHALLENGE_STATUS.ACCEPTED')])->with(['Challenge' => function ($query) {
                             $query->where('object_type', 'play');
                         }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
                         break;
@@ -622,36 +627,37 @@ class UserController extends Controller
             } else {
                 switch ($type) {
                     case 'duo':
-                        // $challenges = ChallengeCompleted::where('user_id', \Auth::user()->user_id)->with(['Challenge' => function ($query) {
-                        //  $query->where('object_type', 'duo');
-                        //}, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
+                        $challenges = UserChallenge::where(['user_id'=> \Auth::user()->user_id, 'challege_status'=> config('constants.CHALLENGE_STATUS.COMPLETED')])->with(['Challenge' => function ($query) {
+                          $query->where('object_type', 'duo');
+                        }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
                         break;
 
                     case 'spot':
-                        // $challenges = ChallengeCompleted::where('user_id', \Auth::user()->user_id)->with(['Challenge' => function ($query) {
-                        //  $query->where('object_type', 'spot');
-                        // }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
+                        $challenges = UserChallenge::where(['user_id'=> \Auth::user()->user_id, 'challege_status'=> config('constants.CHALLENGE_STATUS.COMPLETED')])->with(['Challenge' => function ($query) {
+                          $query->where('object_type', 'spot');
+                        }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
                         break;
 
                     case 'play':
-                        //$challenges = ChallengeCompleted::where('user_id', \Auth::user()->user_id)->with(['Challenge' => function ($query) {
-                        //  $query->where('object_type', 'play');
-                        //  }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
+                        $challenges = UserChallenge::where(['user_id'=> \Auth::user()->user_id, 'challege_status'=> config('constants.CHALLENGE_STATUS.COMPLETED')])->with(['Challenge' => function ($query) {
+                          $query->where('object_type', 'play');
+                        }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
                         break;
                 }
             }
+            $challenges = $challenges->isEmpty() ? [] : $challenges->toArray();
 
-            //$challenges = $challenges->isEmpty() ? [] : $challenges->toArray();
-
-            //foreach ($challenges as $challenge) {
-            //   if ($challenge['challenge'] != null)
-            //     $curated[] = $challenge['challenge'];
-            //  }
+            foreach ($challenges as $challenge) 
+            {
+                if ($challenge['challenge'] != null)
+                    $curated[] = $challenge['challenge'];
+            }
 
             return response()->json([
                 'status' => TRUE,
                 'challenges' => $curated
             ]);
+
         }
         catch (\Exception $e)
         {
@@ -663,6 +669,7 @@ class UserController extends Controller
     }
 
     /**
+     * Search users
      * @return \Illuminate\Http\JsonResponse
      */
     public function search()
@@ -702,6 +709,10 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Return duo enabled users
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function duo()
     {
         try
