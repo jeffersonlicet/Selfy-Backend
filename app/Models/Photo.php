@@ -93,7 +93,7 @@ class Photo extends Model
      */
     public function getLikeEnabledAttribute()
     {
-        /** @noinspection PhpUndefinedMethodInspection */
+        
         return !\Auth::guest() && !boolval(count(UserLike::where(['user_id' => \Auth::user()->user_id, 'photo_id' => $this->photo_id])->first()));
         /** @noinspection end */
     }
@@ -105,7 +105,7 @@ class Photo extends Model
      */
     public function getDeleteEnabledAttribute()
     {
-        /** @noinspection PhpUndefinedMethodInspection */
+        
         return \Auth::user()->user_id == $this->user_id;
         /** @noinspection end */
     }
@@ -117,7 +117,7 @@ class Photo extends Model
      */
     public function getReportEnabledAttribute()
     {
-        /** @noinspection PhpUndefinedMethodInspection */
+        
         return !\Auth::guest() && !boolval(count(PhotoReport::where(['user_id' => \Auth::user()->user_id, 'photo_id' => $this->photo_id])->first()));
         /** @noinspection end */
     }
@@ -134,7 +134,7 @@ class Photo extends Model
      */
     public static function collection(User $user, $user_id, $limit, $offset)
     {
-        /** @noinspection PhpUndefinedMethodInspection */
+        
             return Photo::definition($user, $user_id)->with('User', 'Place', 'Challenges', 'Challenges.Object')->offset($offset)->limit($limit)->orderBy('photo_id', 'desc')->get();
         /** @noinspection end */
     }
@@ -147,7 +147,7 @@ class Photo extends Model
      */
     public static function single($id)
     {
-        /** @noinspection PhpUndefinedMethodInspection */
+        
         return Photo::with('User', 'Place', 'Challenges', 'Challenges.Object')->find($id);
         /** @noinspection end */
     }
@@ -164,7 +164,7 @@ class Photo extends Model
      */
     public static function related($photo_id, $user_id, $relation, $limit)
     {
-        /** @noinspection PhpUndefinedMethodInspection */
+        
         return Photo::with('User', 'Place', 'Challenges', 'Challenges.Object')->where(['user_id'=> $user_id, ['photo_id', $relation, $photo_id]])->limit($limit)->orderBy('photo_id', 'desc')->get();
         /** @noinspection end */
     }
@@ -183,7 +183,7 @@ class Photo extends Model
         switch ($requested_id)
         {
             case 0:
-                /** @noinspection PhpUndefinedMethodInspection */
+                
                 $following = $user->Following->pluck('following_id');
                 $following[] = $user->user_id;
 
@@ -191,7 +191,7 @@ class Photo extends Model
                 /** @noinspection end */
                 break;
             default:
-                /** @noinspection PhpUndefinedMethodInspection */
+                
                 return $query->where('user_id', $requested_id);
                 /** @noinspection end */
                 break;

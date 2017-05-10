@@ -45,7 +45,7 @@ class Challenge extends Model
      */
     public function getChallengeStatusAttribute()
     {
-        /** @noinspection PhpUndefinedMethodInspection */
+        
         if(!\Auth::guest() && $invitation = UserChallenge::where(['user_id' => \Auth::user()->user_id, 'challenge_id' => $this->challenge_id])->first())
         {
             return $invitation->challenge_status;

@@ -50,7 +50,7 @@ class CheckDuo implements ShouldQueue
     {
         Log::info("Starting duo job");
 
-        /** @noinspection PhpUndefinedMethodInspection */
+        
         if(Photo::find($this->photo->photo_id))
         {
             $creator = $this->photo->User;

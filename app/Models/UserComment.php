@@ -51,7 +51,7 @@ class UserComment extends Model
 
     public function getDeleteEnabledAttribute()
     {
-        /** @noinspection PhpUndefinedMethodInspection */
+        
         return \Auth::user()->user_id == $this->user_id || $this->Photo->user_id == \Auth::user()->user_id;
         /** @noinspection end */
     }

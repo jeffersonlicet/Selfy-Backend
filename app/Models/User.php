@@ -88,7 +88,7 @@ class User extends Authenticatable
     {
 
         return $this->hasMany('App\Models\UserChallenge', 'user_id', 'user_id');
-        /** @noinspection PhpUndefinedMethodInspection */
+        
         //return UserChallenge::where(['user_id' => \Auth::user()->user_id, 'challenge_status' => config('constants.CHALLENGE_STATUS.ACCEPTED')])->with('Challenge')->get();
     }
 
@@ -141,7 +141,7 @@ class User extends Authenticatable
      */
     public function getFollowEnabledAttribute()
     {
-        /** @noinspection PhpUndefinedMethodInspection */
+        
         return !\Auth::guest() && \Auth::user()->user_id != $this->user_id && !boolval(count(UserFollower::where(['follower_id' => \Auth::user()->user_id, 'following_id' => $this->user_id])->first()));
         /** @noinspection end */
     }

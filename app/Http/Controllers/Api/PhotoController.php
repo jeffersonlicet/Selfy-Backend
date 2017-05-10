@@ -47,7 +47,7 @@ class PhotoController extends Controller
 
             $result = Photo::collection(\Auth::user(), $user_id, $limit, $page * $limit);
 
-            /** @noinspection PhpUndefinedMethodInspection */
+            
             return response()->json([
                 'status' => TRUE,
                 'photos' => $result->isEmpty() ?  [] : $result->toArray()
@@ -138,7 +138,7 @@ class PhotoController extends Controller
                 ]);
             }
 
-            /** @noinspection PhpUndefinedMethodInspection */
+            
             if ($result = Photo::single($id))
             {
 
@@ -194,7 +194,7 @@ class PhotoController extends Controller
             {
                 $input = $request->all();
 
-                /** @noinspection PhpUndefinedMethodInspection */
+                
                 $photo = Photo::find($id);
 
                 if(!$photo)
@@ -205,9 +205,9 @@ class PhotoController extends Controller
                 if($photo->user_id == \Auth::user()->user_id)
                 {
                     $photo->caption = $input['caption'];
-                    /** @noinspection PhpUndefinedMethodInspection */
+                    
                     $photo->touch();
-                    /** @noinspection PhpUndefinedMethodInspection */
+                    
                     $photo->save();
 
                     return response()->json([
@@ -254,7 +254,7 @@ class PhotoController extends Controller
                     'report' => $validator->messages()->first()
                 ]);
             }
-            /** @noinspection PhpUndefinedMethodInspection */
+            
             $photo = Photo::find($id);
 
             if(!$photo)
@@ -264,7 +264,7 @@ class PhotoController extends Controller
 
             if($photo->user_id == \Auth::user()->user_id)
             {
-                /** @noinspection PhpUndefinedMethodInspection */
+                
                $photo->delete();
 
                 return response()->json([
@@ -385,10 +385,10 @@ class PhotoController extends Controller
                 ]);
             }
 
-            /** @noinspection PhpUndefinedMethodInspection */
+            
             $result = Photo::where('user_id', $user_id)->with('Challenges', 'Challenges.Object')->orderBy('likes_count', 'desc')->orderBy('views_count', 'desc')->orderBy('comments_count', 'desc')->get();
 
-            /** @noinspection PhpUndefinedMethodInspection */
+            
             return response()->json([
                 'status' => TRUE,
                 'photos' => $result->isEmpty() ?  [] : $result->toArray()
@@ -432,7 +432,7 @@ class PhotoController extends Controller
                 ]);
             }
 
-            /** @noinspection PhpUndefinedMethodInspection */
+            
             $photo = Photo::find($id);
 
             if(!$photo)
@@ -451,7 +451,7 @@ class PhotoController extends Controller
             }
 
             $photo->reports_count++;
-            /** @noinspection PhpUndefinedMethodInspection */
+            
             $photo->save();
 
             $report = new PhotoReport();
@@ -495,7 +495,7 @@ class PhotoController extends Controller
                 ]);
             }
 
-            /** @noinspection PhpUndefinedMethodInspection */
+            
             $photo = Photo::find($id);
 
             if(!$photo)

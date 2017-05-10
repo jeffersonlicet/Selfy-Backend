@@ -64,7 +64,7 @@ class CheckSpot implements ShouldQueue
     {
         try
         {
-            /** @noinspection PhpUndefinedMethodInspection */
+            
             $place = Place::where(['latitude' => $this->coordinates[0], 'longitude' => $this->coordinates[1]])->first();
             if(!$place)
             {
@@ -96,9 +96,9 @@ class CheckSpot implements ShouldQueue
 
                 if(isset($venues[0]))
                 {
-                    /** @noinspection PhpUndefinedMethodInspection */
+                    
                     $place->fillFromVenue($venues[0]);
-                    /** @noinspection PhpUndefinedMethodInspection */
+                    
                     $place->save();
                 }
 
@@ -125,7 +125,7 @@ class CheckSpot implements ShouldQueue
             $this->photo->place_id = $this->place->place_id;
             $this->photo->saveOrFail();
 
-            /** @noinspection PhpUndefinedMethodInspection */
+            
             $challenge = Challenge::where(['object_id' => $this->place->place_id, 'object_type' => config('constants.CHALLENGE_TYPES_STR.SPOT')])->first();
 
             if(!$challenge)

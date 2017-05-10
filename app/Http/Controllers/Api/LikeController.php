@@ -42,7 +42,7 @@ class LikeController extends Controller
                 ]);
             }
 
-            /** @noinspection PhpUndefinedMethodInspection */
+            
             $likes = UserLike::with('User')->where('photo_id', $photo_id)->offset($page*$limit)->limit($limit)->orderBy('like_id', 'desc')->get();
 
            return response()->json([
@@ -81,7 +81,7 @@ class LikeController extends Controller
                 throw new Exception('invalid_param');
             }
 
-            /** @noinspection PhpUndefinedMethodInspection */
+            
             $photo = Photo::find($input['photo_id']);
 
             if(!$photo)
@@ -105,7 +105,7 @@ class LikeController extends Controller
             }
 
             $photo->likes_count++;
-            /** @noinspection PhpUndefinedMethodInspection */
+            
 
             $photo->save();
 
@@ -150,7 +150,7 @@ class LikeController extends Controller
                 throw new Exception('invalid_param');
             }
 
-            /** @noinspection PhpUndefinedMethodInspection */
+            
             $photo = Photo::find($id);
 
             if(!$photo)
@@ -163,17 +163,17 @@ class LikeController extends Controller
                 throw new Exception('invalid_action');
             }
 
-            /** @noinspection PhpUndefinedMethodInspection */
+            
             if(!$like = UserLike::where(['user_id' => \Auth::user()->user_id, 'photo_id' => $photo->photo_id]))
             {
                 throw new Exception('internal_error');
             }
 
-            /** @noinspection PhpUndefinedMethodInspection */
+            
             $like->delete();
 
             $photo->likes_count--;
-            /** @noinspection PhpUndefinedMethodInspection */
+            
             $photo->save();
 
             return response()->json([

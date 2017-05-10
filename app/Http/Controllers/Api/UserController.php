@@ -28,6 +28,7 @@ class UserController extends Controller
         $photo = Photo::with('Challenges')->find(14);
         var_dump($photo->toArray());
     }
+
     /**
      * Return a user information
      *
@@ -52,7 +53,7 @@ class UserController extends Controller
                 ]);
             }
 
-            /** @noinspection PhpUndefinedMethodInspection */
+            
             if ($result = User::with('Face')->find($id))
             {
                 return response()->json([
@@ -355,14 +356,14 @@ class UserController extends Controller
                 ]);
             }
 
-            /** @noinspection PhpUndefinedMethodInspection */
+            
             if(\Auth::user()->user_id != $input['user_id'] && $user = User::find($input["user_id"]))
             {
-                /** @noinspection PhpUndefinedMethodInspection */
+                
                 if(!UserFollower::where(['follower_id' => \Auth::user()->user_id, 'following_id' => $user->user_id])->first())
                 {
                     $user->followers_count++;
-                    /** @noinspection PhpUndefinedMethodInspection */
+                    
                     $user->save();
 
                     \Auth::user()->following_count++;
@@ -373,7 +374,7 @@ class UserController extends Controller
                     $connection->following_id = $user->user_id;
                     $connection->save();
 
-                    /** @noinspection PhpUndefinedMethodInspection */
+                    
                     $user->notify(new FollowNotification(\Auth::user()));
 
                     $this->makeDuoInvitation($user, \Auth::user());
@@ -426,22 +427,22 @@ class UserController extends Controller
                 ]);
             }
 
-            /** @noinspection PhpUndefinedMethodInspection */
+            
             if($user = User::find($input["user_id"]))
             {
-                /** @noinspection PhpUndefinedMethodInspection */
+                
                 if(UserFollower::where(['follower_id' => \Auth::user()->user_id, 'following_id' => $user->user_id])->first())
                 {
                     $user->followers_count--;
-                    /** @noinspection PhpUndefinedMethodInspection */
+                    
                     $user->save();
 
                     \Auth::user()->following_count--;
                     \Auth::user()->save();
 
-                    /** @noinspection PhpUndefinedMethodInspection */
+                    
                     $connection = UserFollower::where(['following_id' => $user->user_id, 'follower_id' => \Auth::user()->user_id])->first();
-                    /** @noinspection PhpUndefinedMethodInspection */
+                    
                     $connection->delete();
 
                     return response()->json([

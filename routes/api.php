@@ -9,7 +9,7 @@
 | routes are loaded by the RouteServiceProvider within a group which
 | is assigned the "api" middleware group. Enjoy building your API!
 |
-*/
+ */
 
 /* Auth not required */
 Route::post('user/create', 'Api\AuthController@create');
@@ -19,57 +19,53 @@ Route::post('user/refresh', 'Api\AuthController@refresh');
 /* Auth required */
 Route::group(
     ['middleware' => 'ApiAuth'], function () {
-    Route::get('user/test', 'Api\UserController@test');
-    Route::get('photo/borders/{photo_id}', 'Api\PhotoController@borders');
-    Route::get('photo/bests/{user_id}', 'Api\PhotoController@bests');
-    Route::post('photo/report', 'Api\PhotoController@report');
-    Route::get('photo/clothes/{photo_id}', 'Api\PhotoController@clothes');
+        Route::get('user/test', 'Api\UserController@test');
+        Route::get('photo/borders/{photo_id}', 'Api\PhotoController@borders');
+        Route::get('photo/bests/{user_id}', 'Api\PhotoController@bests');
+        Route::post('photo/report', 'Api\PhotoController@report');
+        Route::get('photo/clothes/{photo_id}', 'Api\PhotoController@clothes');
 
-    Route::resource('photo', 'Api\PhotoController',
-        ['only' => ['store','update','destroy','show']]);
+        Route::resource('photo', 'Api\PhotoController',
+            ['only' => ['store','update','destroy','show']]);
 
-    Route::get('photos', 'Api\PhotoController@index');
+        Route::get('photos', 'Api\PhotoController@index');
 
-    Route::resource('comment', 'Api\CommentController',
-        ['only' => ['store','update','destroy']]);
-    Route::get('comments', 'Api\CommentController@index');
+        Route::resource('comment', 'Api\CommentController',
+            ['only' => ['store','update','destroy']]);
+        Route::get('comments', 'Api\CommentController@index');
 
-    Route::resource('like', 'Api\LikeController',
-        ['only' => ['store','destroy']]);
+        Route::resource('like', 'Api\LikeController',
+            ['only' => ['store','destroy']]);
 
-    Route::get('likes', 'Api\LikeController@index');
-    Route::post('user/avatar', 'Api\UserController@avatar');
+        Route::get('likes', 'Api\LikeController@index');
+        Route::post('user/avatar', 'Api\UserController@avatar');
 
-    Route::get('users/duo', 'Api\UserController@duo');
-    Route::get('users/search', 'Api\UserController@search');
+        Route::get('users/duo', 'Api\UserController@duo');
+        Route::get('users/search', 'Api\UserController@search');
 
-    Route::post('user/face', 'Api\UserController@face');
-    Route::post('user/update', 'Api\UserController@update');
-    Route::post('user/firebase', 'Api\UserController@firebase');
-    Route::post('user/follow', 'Api\UserController@follow');
-    Route::post('user/unfollow', 'Api\UserController@unfollow');
-    Route::get('user/followers', 'Api\UserController@followers');
-    Route::get('user/following', 'Api\UserController@following');
-    Route::get('user/me', 'Api\UserController@me');
-    Route::get('user/challenges', 'Api\UserController@challenges');
+        Route::post('user/face', 'Api\UserController@face');
+        Route::post('user/update', 'Api\UserController@update');
+        Route::post('user/firebase', 'Api\UserController@firebase');
+        Route::post('user/follow', 'Api\UserController@follow');
+        Route::post('user/unfollow', 'Api\UserController@unfollow');
+        Route::get('user/followers', 'Api\UserController@followers');
+        Route::get('user/following', 'Api\UserController@following');
+        Route::get('user/me', 'Api\UserController@me');
+        Route::get('user/challenges', 'Api\UserController@challenges');
 
-    Route::resource('user', 'Api\UserController',
-        ['only' => ['destroy', 'show']]);
+        Route::resource('user', 'Api\UserController',
+            ['only' => ['destroy', 'show']]);
 
-    Route::get('challenges/nearby', 'Api\ChallengesController@nearby');
-    Route::get('challenges/todo', 'Api\ChallengesController@todo');
-    Route::get('challenges/completed', 'Api\ChallengesController@completed');
-    Route::post('challenge/accept', 'Api\ChallengesController@accept');
-    Route::post('challenge/decline', 'Api\ChallengesController@decline');
-    Route::post('challenge/remove', 'Api\ChallengesController@remove');
+        Route::get('challenges/nearby', 'Api\ChallengesController@nearby');
+        Route::get('challenges/todo', 'Api\ChallengesController@todo');
+        Route::get('challenges/completed', 'Api\ChallengesController@completed');
+        
+        Route::post('challenge/accept', 'Api\ChallengesController@accept');
+        Route::post('challenge/decline', 'Api\ChallengesController@decline');
+        Route::post('challenge/remove', 'Api\ChallengesController@remove');
 
-    Route::resource('challenge', 'Api\ChallengesController',
-        ['only' => ['show','store','destroy']]);
+        Route::resource('challenge', 'Api\ChallengesController',
+            ['only' => ['show']]);
 
-    Route::get('notifications', 'Api\NotificationsController@index');
-
-
-
-
-
-});
+        Route::get('notifications', 'Api\NotificationsController@index');  
+    });

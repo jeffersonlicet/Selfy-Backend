@@ -38,7 +38,7 @@ class NotificationsController extends Controller
 
             \Auth::user()->unreadNotifications->markAsRead();
 
-            /** @noinspection PhpUndefinedMethodInspection */
+            
             foreach (\Auth::user()->notifications()->offset($page*$limit)->limit($limit)->get() as $n)
             {
                 $notification = [];
@@ -50,7 +50,7 @@ class NotificationsController extends Controller
                 {
                     case  'App\Notifications\DuoInvitationNotification':
 
-                        /** @noinspection PhpUndefinedMethodInspection */
+                        
                         if($challenge = Challenge::with('Object')->find($n->data['challenge_id']))
                         {
                             if($challenge->challenge_status == config('constants.CHALLENGE_STATUS.INVITED') || $challenge->challenge_status == config('constants.CHALLENGE_STATUS.ACCEPTED'))

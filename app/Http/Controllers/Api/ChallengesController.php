@@ -4,10 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Challenge;
-use App\Models\ChallengeTodo;
 use App\Models\Place;
 use App\Models\UserChallenge;
-use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Http\Request;
@@ -48,7 +46,7 @@ class ChallengesController extends Controller
                 ]);
             }
 
-            /** @noinspection PhpUndefinedMethodInspection */
+            
             if ($result = Challenge::with('Object')->find($id))
             {
                 return response()->json([
@@ -59,120 +57,6 @@ class ChallengesController extends Controller
 
             throw new Exception('resource_not_found');
         }
-        catch (\Exception $e)
-        {
-            return response()->json([
-                'status' => FALSE,
-                'report' => $e->getMessage()
-            ]);
-        }
-    }
-
-    /**
-     *  Add challenge to: to do list
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function store(Request $request)
-    {
-        try
-        {
-            $input = $request->all();
-
-            $validator = Validator::make($input, [
-                'challenge_id' => ['required', 'numeric']
-            ]);
-
-            if(!$validator->passes())
-            {
-                return response()->json([
-                    'status' => TRUE,
-                    'report' => $validator->messages()->first()
-                ]);
-            }
-            /** @noinspection PhpUndefinedMethodInspection */
-            if(!$challenge = Challenge::find($input['challenge_id']))
-            {
-                throw new Exception("resource_not_found");
-            }
-
-            /** @noinspection PhpUndefinedMethodInspection */
-            if(ChallengeTodo::where(['user_id' => \Auth::user()->user_id, 'challenge_id' => $input['challenge_id']])->first())
-            {
-                throw new Exception('invalid_action');
-            }
-
-            $todo = new ChallengeTodo();
-            $todo->user_id = \Auth::user()->user_id;
-            $todo->challenge_id = $input['challenge_id'];
-            $todo->created_at = Carbon::now();
-            $todo->saveOrFail();
-
-            $increment = $challenge->object_type."_todo";
-            \Auth::user()->{$increment}++;
-            \Auth::user()->save();
-
-            return response()->json([
-                'status' => TRUE,
-                'report' => 'action_done'
-            ]);
-        }
-
-        catch (\Exception $e)
-        {
-            return response()->json([
-                'status' => FALSE,
-                'report' => $e->getMessage()
-            ]);
-        }
-
-    }
-
-    /**
-     * Delete a to do challenge from my list
-     *
-     * @param $id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function destroy($id)
-    {
-        try
-        {
-            $validator = Validator::make(
-                ['id' => $id],
-                ['id' => ['required', 'numeric']]
-            );
-
-            if(!$validator->passes())
-            {
-                throw new Exception('invalid_param');
-            }
-
-            /** @noinspection PhpUndefinedMethodInspection */
-            $todo = ChallengeTodo::where('challenge_id', $id)->first();
-
-            if(!$todo)
-            {
-                throw new Exception("resource_not_found");
-            }
-
-            if($todo->user_id != \Auth::user()->user_id)
-            {
-                throw new Exception('invalid_action');
-            }
-
-            \Auth::user()->{$todo->Challenge->object_type."_todo"}--;
-            \Auth::user()->save();
-            $todo->delete();
-
-            return response()->json([
-                'status' => true,
-                'report' => 'action_done'
-            ]);
-
-        }
-
         catch (\Exception $e)
         {
             return response()->json([
@@ -237,6 +121,7 @@ class ChallengesController extends Controller
                     $challenge->completed_count = 0;
                     $challenge->saveOrFail();
                 }
+
                 $challenge['object'] = $place;
                 $curated[] = $challenge;
             }
@@ -256,6 +141,12 @@ class ChallengesController extends Controller
         }
     }
 
+    /**
+     * Accept a challenge invitation
+     * @param Request $request 
+     * @throws Exception 
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function accept(Request $request)
     {
         try
@@ -274,7 +165,7 @@ class ChallengesController extends Controller
                 ]);
             }
 
-            /** @noinspection PhpUndefinedMethodInspection */
+            
             if(!$invitation = UserChallenge::where(['challenge_id' => $input['challenge_id'], 'user_id' => \Auth::user()->user_id])->first())
             {
                 throw new Exception("resource_not_found");
@@ -291,7 +182,7 @@ class ChallengesController extends Controller
             }
 
             $invitation->challenge_status = config('constants.CHALLENGE_STATUS.ACCEPTED');
-            /** @noinspection PhpUndefinedMethodInspection */
+            
             $invitation->save();
 
             $increment = $invitation->Challenge->object_type."_todo";
@@ -312,7 +203,13 @@ class ChallengesController extends Controller
             ]);
         }
     }
-
+    
+    /**
+     * Decline a challenge invitation
+     * @param Request $request 
+     * @throws Exception 
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function decline(Request $request)
     {
         try
@@ -331,7 +228,7 @@ class ChallengesController extends Controller
                 ]);
             }
 
-            /** @noinspection PhpUndefinedMethodInspection */
+            
             if(!$invitation = UserChallenge::where(['challenge_id' => $input['challenge_id'], 'user_id' => \Auth::user()->user_id])->first())
             {
                 throw new Exception("resource_not_found");
@@ -343,7 +240,7 @@ class ChallengesController extends Controller
             }
 
             $invitation->challenge_status = config('constants.CHALLENGE_STATUS.DECLINED');
-            /** @noinspection PhpUndefinedMethodInspection */
+            
             $invitation->save();
 
             if($invitation->challenge_status == config('constants.CHALLENGE_STATUS.ACCEPTED'))
@@ -368,6 +265,12 @@ class ChallengesController extends Controller
         }
     }
 
+    /**
+     * Remove a challenge invitation
+     * @param Request $request 
+     * @throws Exception 
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function remove(Request $request)
     {
         try
@@ -386,7 +289,7 @@ class ChallengesController extends Controller
                 ]);
             }
 
-            /** @noinspection PhpUndefinedMethodInspection */
+            
             if(!$invitation = UserChallenge::where(['challenge_id' => $input['challenge_id'], 'user_id' => \Auth::user()->user_id])->first())
             {
                 throw new Exception("resource_not_found");

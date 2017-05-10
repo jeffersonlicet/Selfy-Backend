@@ -47,7 +47,7 @@ class CommentController extends Controller
                 ]);
             }
 
-            /** @noinspection PhpUndefinedMethodInspection */
+            
             $comments = UserComment::with('User')->where('photo_id', $photo_id)->offset($page*$limit)->limit($limit)->orderBy('comment_id', 'desc')->get();
 
 
@@ -94,7 +94,7 @@ class CommentController extends Controller
                 ]);
             }
 
-            /** @noinspection PhpUndefinedMethodInspection */
+            
             $photo = Photo::find($input['photo_id']);
 
             if(!$photo)
@@ -114,7 +114,7 @@ class CommentController extends Controller
             }
 
             $photo->comments_count++;
-            /** @noinspection PhpUndefinedMethodInspection */
+            
             $photo->save();
 
             if($photo->User->user_id != \Auth::user()->user_id)
@@ -162,7 +162,7 @@ class CommentController extends Controller
                 throw new Exception('invalid_param');
             }
 
-            /** @noinspection PhpUndefinedMethodInspection */
+            
             $comment = UserComment::find($id);
 
             if(!$comment)
@@ -176,9 +176,9 @@ class CommentController extends Controller
             }
 
             $comment->Photo->comments_count--;
-            /** @noinspection PhpUndefinedMethodInspection */
+            
             $comment->Photo->save();
-            /** @noinspection PhpUndefinedMethodInspection */
+            
             $comment->delete();
 
             return response()->json([
