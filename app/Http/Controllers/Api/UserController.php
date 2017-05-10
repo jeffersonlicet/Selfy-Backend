@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Challenge;
-use App\Models\Photo;
 use App\Models\User;
 use App\Models\UserChallenge;
 use App\Models\UserFace;
@@ -11,6 +10,8 @@ use App\Models\UserFollower;
 use App\Models\UserFollowing;
 use App\Notifications\DuoInvitationNotification;
 use App\Notifications\FollowNotification;
+use Carbon\Carbon;
+use DB;
 use Exception;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -24,8 +25,17 @@ class UserController extends Controller
 
     public function test()
     {
-        $photo = Photo::with('Challenges')->find(14);
-        var_dump($photo->toArray());
+        $result = DB::table("user_challenges")
+            ->where("user_challenges.challenge_status", "=", config('constants.CHALLENGE_STATUS.COMPLETED'))
+            ->where('user_challenges.updated_at', '>=', Carbon::today())
+            ->join('users', 'user_challenges.user_id', '=', 'users.user_id')
+            ->select( 'users.user_id', 'users.username', 'users.avatar', DB::raw('count(*) as completed_count'))
+            ->groupBy('users.user_id', 'users.username', 'users.avatar')
+            ->limit('5')
+            ->orderBy('completed_count', 'DESC')
+            ->get();
+
+        var_dump($result->toArray());
     }
 
     /**
@@ -577,7 +587,6 @@ class UserController extends Controller
      */
     public function challenges()
     {
-
         try
         {
             $limit = Input::get('limit', config('app.photos_best_per_page'));
@@ -796,6 +805,31 @@ class UserController extends Controller
         }
     }
 
+
+    /**
+     * Generate daily top users based on challenges completed
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function featured()
+    {
+        try
+        {
+            $result = User::getTopByChallenges(5);
+
+            return response()->json([
+                'status' => TRUE,
+                'users' => $result->isEmpty() ? [] : $result->toArray()
+            ]);
+
+        }
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
     /**
      * Generate a batch of duo invitations
      * @param User $user

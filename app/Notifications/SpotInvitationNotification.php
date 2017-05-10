@@ -16,7 +16,7 @@ use FCM;
 
 
 
-class DuoInvitationNotification extends Notification implements ShouldQueue
+class SpotInvitationNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 

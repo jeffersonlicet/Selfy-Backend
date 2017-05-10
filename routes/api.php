@@ -42,6 +42,7 @@ Route::group(
 
         Route::get('users/duo', 'Api\UserController@duo');
         Route::get('users/search', 'Api\UserController@search');
+        Route::get('users/featured', 'Api\UserController@featured');
 
         Route::post('user/face', 'Api\UserController@face');
         Route::post('user/update', 'Api\UserController@update');

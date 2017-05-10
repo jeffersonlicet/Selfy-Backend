@@ -4,6 +4,9 @@ namespace App\Models;
 
 
 
+
+use Carbon\Carbon;
+use DB;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -70,6 +73,19 @@ class User extends Authenticatable
     protected $hidden = [
        'deleted_at', 'password', 'reset_password_token', 'firebase_token', 'email', 'reset_password_sent_at', 'created_at', 'updated_at'
     ];
+
+    public static function getTopByChallenges($limit = 5)
+    {
+        return DB::table("user_challenges")
+            ->where("user_challenges.challenge_status", "=", config('constants.CHALLENGE_STATUS.COMPLETED'))
+            ->where('user_challenges.updated_at', '>=', Carbon::today())
+            ->join('users', 'user_challenges.user_id', '=', 'users.user_id')
+            ->select( 'users.user_id', 'users.username', 'users.avatar', DB::raw('count(*) as completed_count'))
+            ->groupBy('users.user_id', 'users.username', 'users.avatar')
+            ->limit($limit)
+            ->orderBy('completed_count', 'DESC')
+            ->get();
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
