@@ -22,7 +22,6 @@ use Gibbo\Foursquare\Client\Options\Search;
  */
 class ChallengesController extends Controller
 {
-
     /**
      * Show a challenge
      * @param $id
@@ -46,7 +45,7 @@ class ChallengesController extends Controller
                 ]);
             }
 
-            
+
             if ($result = Challenge::with('Object')->find($id))
             {
                 return response()->json([
@@ -143,8 +142,8 @@ class ChallengesController extends Controller
 
     /**
      * Accept a challenge invitation
-     * @param Request $request 
-     * @throws Exception 
+     * @param Request $request
+     * @throws Exception
      * @return \Illuminate\Http\JsonResponse
      */
     public function accept(Request $request)
@@ -165,7 +164,7 @@ class ChallengesController extends Controller
                 ]);
             }
 
-            
+
             if(!$invitation = UserChallenge::where(['challenge_id' => $input['challenge_id'], 'user_id' => \Auth::user()->user_id])->first())
             {
                 throw new Exception("resource_not_found");
@@ -182,7 +181,7 @@ class ChallengesController extends Controller
             }
 
             $invitation->challenge_status = config('constants.CHALLENGE_STATUS.ACCEPTED');
-            
+
             $invitation->save();
 
             $increment = $invitation->Challenge->object_type."_todo";
@@ -203,11 +202,11 @@ class ChallengesController extends Controller
             ]);
         }
     }
-    
+
     /**
      * Decline a challenge invitation
-     * @param Request $request 
-     * @throws Exception 
+     * @param Request $request
+     * @throws Exception
      * @return \Illuminate\Http\JsonResponse
      */
     public function decline(Request $request)
@@ -228,7 +227,7 @@ class ChallengesController extends Controller
                 ]);
             }
 
-            
+
             if(!$invitation = UserChallenge::where(['challenge_id' => $input['challenge_id'], 'user_id' => \Auth::user()->user_id])->first())
             {
                 throw new Exception("resource_not_found");
@@ -240,7 +239,7 @@ class ChallengesController extends Controller
             }
 
             $invitation->challenge_status = config('constants.CHALLENGE_STATUS.DECLINED');
-            
+
             $invitation->save();
 
             if($invitation->challenge_status == config('constants.CHALLENGE_STATUS.ACCEPTED'))
@@ -267,8 +266,8 @@ class ChallengesController extends Controller
 
     /**
      * Remove a challenge invitation
-     * @param Request $request 
-     * @throws Exception 
+     * @param Request $request
+     * @throws Exception
      * @return \Illuminate\Http\JsonResponse
      */
     public function remove(Request $request)
@@ -289,7 +288,7 @@ class ChallengesController extends Controller
                 ]);
             }
 
-            
+
             if(!$invitation = UserChallenge::where(['challenge_id' => $input['challenge_id'], 'user_id' => \Auth::user()->user_id])->first())
             {
                 throw new Exception("resource_not_found");

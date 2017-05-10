@@ -48,6 +48,7 @@ Route::group(
         Route::post('user/firebase', 'Api\UserController@firebase');
         Route::post('user/follow', 'Api\UserController@follow');
         Route::post('user/unfollow', 'Api\UserController@unfollow');
+       
         Route::get('user/followers', 'Api\UserController@followers');
         Route::get('user/following', 'Api\UserController@following');
         Route::get('user/me', 'Api\UserController@me');
@@ -57,15 +58,12 @@ Route::group(
             ['only' => ['destroy', 'show']]);
 
         Route::get('challenges/nearby', 'Api\ChallengesController@nearby');
-        Route::get('challenges/todo', 'Api\ChallengesController@todo');
-        Route::get('challenges/completed', 'Api\ChallengesController@completed');
         
         Route::post('challenge/accept', 'Api\ChallengesController@accept');
         Route::post('challenge/decline', 'Api\ChallengesController@decline');
         Route::post('challenge/remove', 'Api\ChallengesController@remove');
 
-        Route::resource('challenge', 'Api\ChallengesController',
-            ['only' => ['show']]);
+        Route::resource('challenge', 'Api\ChallengesController',['only' => ['show']]);
 
         Route::get('notifications', 'Api\NotificationsController@index');  
     });
