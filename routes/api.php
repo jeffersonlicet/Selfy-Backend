@@ -20,6 +20,7 @@ Route::post('user/refresh', 'Api\AuthController@refresh');
 Route::group(
     ['middleware' => 'ApiAuth'], function () {
         Route::get('user/test', 'Api\UserController@test');
+
         Route::get('photo/borders/{photo_id}', 'Api\PhotoController@borders');
         Route::get('photo/bests/{user_id}', 'Api\PhotoController@bests');
         Route::post('photo/report', 'Api\PhotoController@report');
@@ -40,6 +41,7 @@ Route::group(
         Route::get('likes', 'Api\LikeController@index');
         Route::post('user/avatar', 'Api\UserController@avatar');
 
+        Route::get('users/suggestions', 'Api\UserController@suggestions');
         Route::get('users/duo', 'Api\UserController@duo');
         Route::get('users/search', 'Api\UserController@search');
         Route::get('users/featured', 'Api\UserController@featured');

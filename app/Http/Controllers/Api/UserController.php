@@ -25,17 +25,7 @@ class UserController extends Controller
 
     public function test()
     {
-        $result = DB::table("user_challenges")
-            ->where("user_challenges.challenge_status", "=", config('constants.CHALLENGE_STATUS.COMPLETED'))
-            ->where('user_challenges.updated_at', '>=', Carbon::today())
-            ->join('users', 'user_challenges.user_id', '=', 'users.user_id')
-            ->select( 'users.user_id', 'users.username', 'users.avatar', DB::raw('count(*) as completed_count'))
-            ->groupBy('users.user_id', 'users.username', 'users.avatar')
-            ->limit('5')
-            ->orderBy('completed_count', 'DESC')
-            ->get();
 
-        var_dump($result->toArray());
     }
 
     /**
@@ -819,6 +809,52 @@ class UserController extends Controller
             return response()->json([
                 'status' => TRUE,
                 'users' => $result->isEmpty() ? [] : $result->toArray()
+            ]);
+
+        }
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * Generate follow suggestion
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function suggestions()
+    {
+        try
+        {
+            $limit = Input::get('limit', 10);
+            $page = Input::get('page', 0);
+
+            $validator =
+                Validator::make(
+                    ['limit' => $limit, 'page' => $page],
+                    ['limit' => ['required', 'numeric', 'between:1,20'], 'page' => ['required', 'numeric']
+
+                    ]
+                );
+
+            if (!$validator->passes()) {
+                return response()->json([
+                    'status' => TRUE,
+                    'report' => $validator->messages()->first()
+                ]);
+            }
+
+            $following  = \Auth::user()->Following->pluck('following_id');
+            $following[] = \Auth::user()->user_id;
+
+            $suggestion =  User::whereNotIn('user_id', $following)->inRandomOrder()->take($limit)->offset($limit*$page)->get();
+
+            return response()->json([
+                'status' => TRUE,
+                'users' => $suggestion->isEmpty() ? [] : $suggestion->toArray()
             ]);
 
         }
