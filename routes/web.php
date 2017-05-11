@@ -11,6 +11,9 @@
 |
 */
 
+Route::get('about/privacy', function () {
+    return view('privacy');
+});
 Route::get('/', function () {
     return view('welcome');
 });
