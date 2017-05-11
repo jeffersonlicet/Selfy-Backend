@@ -13,10 +13,10 @@
         "laravel/tinker": "~1.0",
         "php-http/guzzle6-adapter": "^1.1",
         "tymon/jwt-auth": "0.5.*",
-        "vluzrmos/language-detector": "^1.0"
+        "vluzrmos/language-detector": "^1.0",
+        "barryvdh/laravel-ide-helper": "^2.3",
     },
     "require-dev": {
-        "barryvdh/laravel-ide-helper": "^2.3",
         "fzaninotto/faker": "~1.4",
         "krlove/eloquent-model-generator": "^1.2",
         "mockery/mockery": "0.9.*",
