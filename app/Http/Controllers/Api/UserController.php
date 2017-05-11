@@ -854,7 +854,7 @@ class UserController extends Controller
 
             return response()->json([
                 'status' => TRUE,
-                'users' => $suggestion->isEmpty() ? [] : $suggestion->toArray()
+                'connections' => $suggestion->isEmpty() ? [] : $suggestion->toArray()
             ]);
 
         }
