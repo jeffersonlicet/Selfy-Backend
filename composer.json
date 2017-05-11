@@ -13,7 +13,7 @@
         "laravel/tinker": "~1.0",
         "php-http/guzzle6-adapter": "^1.1",
         "tymon/jwt-auth": "0.5.*",
-        "vluzrmos/language-detector": "^1.0",
+        "vluzrmos/language-detector": "^1.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
