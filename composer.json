@@ -13,7 +13,8 @@
         "laravel/tinker": "~1.0",
         "php-http/guzzle6-adapter": "^1.1",
         "tymon/jwt-auth": "0.5.*",
-        "vluzrmos/language-detector": "^1.0"
+        "vluzrmos/language-detector": "^1.0",
+        "barryvdh/laravel-ide-helper": "^2.3"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
@@ -48,6 +49,7 @@
         "post-update-cmd": [
             "Illuminate\\Foundation\\ComposerScripts::postUpdate",
             "php artisan clear-compiled",
+            "php artisan ide-helper:generate",
             "php artisan optimize"
         ]
     },

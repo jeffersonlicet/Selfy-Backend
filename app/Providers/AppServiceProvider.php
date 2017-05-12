@@ -30,6 +30,10 @@ class AppServiceProvider extends ServiceProvider
     {
         // Register dev services
         if ($this->app->environment() !== 'production') {
+
+            // IDE helper
+            /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
+            $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
             /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
             $this->app->register(\Krlove\EloquentModelGenerator\Provider\GeneratorServiceProvider::class);
         }
