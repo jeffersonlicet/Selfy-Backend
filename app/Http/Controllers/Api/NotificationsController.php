@@ -80,8 +80,10 @@ class NotificationsController extends Controller
                     break;
 
                     case 'App\Notifications\LikeNotification':
+                        $photo = Photo::find($n->data['photo_id']);
+                        $user = User::find($n->data['user_id']);
 
-                        if($photo = Photo::find($n->data['photo_id']) && $user = User::find($n->data['user_id']))
+                        if($photo != null && $user != null)
                         {
                             $notification['photo']  = $photo->toArray();
                             $notification['user']   = $user->toArray();
@@ -102,7 +104,11 @@ class NotificationsController extends Controller
 
                     case 'App\Notifications\CommentNotification':
 
-                        if($photo = Photo::find($n->data['photo_id']) && $comment = UserComment::find($n->data['comment_id']) && $user = User::find($n->data['user_id']))
+                        $photo = Photo::find($n->data['photo_id']);
+                        $comment = UserComment::find($n->data['comment_id']) ;
+                        $user = User::find($n->data['user_id']);
+
+                        if($photo != null && $comment != null && $user != null)
                         {
                             $notification['photo'] = $photo->toArray();
 
