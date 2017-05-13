@@ -28,7 +28,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-
         /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
         $this->app->register(\Krlove\EloquentModelGenerator\Provider\GeneratorServiceProvider::class);
     }
