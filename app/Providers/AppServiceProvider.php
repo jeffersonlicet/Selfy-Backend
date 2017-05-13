@@ -28,10 +28,5 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        // Register dev services
-        if ($this->app->environment() !== 'production') {
-            /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
-            $this->app->register(\Krlove\EloquentModelGenerator\Provider\GeneratorServiceProvider::class);
-        }
     }
 }
