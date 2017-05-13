@@ -6,9 +6,11 @@
     "type": "project",
     "require": {
         "php": ">=5.6.4",
+        "barryvdh/laravel-ide-helper": "^2.3",
         "ben-gibson/foursquare-venue-client": "^0.0.6",
         "brozot/laravel-fcm": "^1.2",
         "jeffersonlicet/azure-queue-laravel": "@dev",
+        "krlove/eloquent-model-generator": "^1.2",
         "laravel/framework": "5.4.*",
         "laravel/tinker": "~1.0",
         "php-http/guzzle6-adapter": "^1.1",
@@ -17,7 +19,6 @@
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
-        "krlove/eloquent-model-generator": "^1.2",
         "mockery/mockery": "0.9.*",
         "phpunit/phpunit": "~5.7"
     },
@@ -47,7 +48,8 @@
         ],
         "post-update-cmd": [
             "Illuminate\\Foundation\\ComposerScripts::postUpdate",
-            "php artisan clear-compiled",
+            "php artisan ide-helper:generate",
+            "php artisan ide-helper:meta",
             "php artisan optimize"
         ]
     },
