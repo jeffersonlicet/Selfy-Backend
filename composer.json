@@ -21,7 +21,6 @@
         "phpunit/phpunit": "~5.7",
         "krlove/eloquent-model-generator": "^1.2",
         "barryvdh/laravel-ide-helper": "^2.3"
-
     },
     "autoload": {
         "classmap": [
@@ -49,8 +48,6 @@
         ],
         "post-update-cmd": [
             "Illuminate\\Foundation\\ComposerScripts::postUpdate",
-            "php artisan ide-helper:generate",
-            "php artisan ide-helper:meta",
             "php artisan optimize"
         ]
     },
