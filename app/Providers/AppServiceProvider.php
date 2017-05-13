@@ -28,9 +28,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
-        $this->app->register(\Krlove\EloquentModelGenerator\Provider\GeneratorServiceProvider::class);
-        /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
-        $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
+        if ($this->app->environment() !== 'production') {
+            /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
+            $this->app->register(\Krlove\EloquentModelGenerator\Provider\GeneratorServiceProvider::class);
+            /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
+            $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
+        }
     }
 }
