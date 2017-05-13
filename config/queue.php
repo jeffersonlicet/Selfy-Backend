@@ -43,7 +43,7 @@ return [
 
         'azure' => [
             'driver' => 'azure',
-            'queue' => 'seginusqueueproduction',
+            'queue' => env('QUEUE_REPO', 'seginusqueueproduction'),
             'protocol' => 'https', // http or https
             'accountname' => 'seginus',
             'key' => 'sv7Q10jTkgCFUD/4c5OCZqBP/CaEOkkU71kIkrc1fQp9TsdDtPqDfjuup9YfuQYLNvvCk44KhChBmrSErT5ctQ==',
