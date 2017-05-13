@@ -17,7 +17,7 @@ class AppServiceProvider extends ServiceProvider
         Relation::morphMap([
             'duo' => 'App\Models\User',
             'spot' => 'App\Models\Place',
-            'play' => 'App\Models\Play',
+            'play' => 'App\Models\ChallengePlay',
         ]);
     }
 
