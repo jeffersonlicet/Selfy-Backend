@@ -170,7 +170,7 @@ class CommentController extends Controller
                 throw new Exception("resource_not_found");
             }
 
-            if($comment->user_id != \Auth::user()->user_id)
+            if($comment->user_id != \Auth::user()->user_id && $comment->Photo->User->user_id != \Auth::user()->user_id)
             {
                 throw new Exception('invalid_action');
             }
