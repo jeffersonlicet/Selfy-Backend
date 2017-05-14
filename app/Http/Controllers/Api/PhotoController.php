@@ -267,6 +267,9 @@ class PhotoController extends Controller
                 
                $photo->delete();
 
+                \Auth::user()->photos_count--;
+                \Auth::user()->save();
+
                 return response()->json([
                     'status' => true,
                     'report' => 'resource_deleted'
