@@ -63,6 +63,50 @@ class PhotoController extends Controller
         }
     }
 
+
+    /**
+     * Get the recent photo collections
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function recent()
+    {
+        try
+        {
+            $page       = Input::get('page', 0);
+            $limit      = Input::get('limit', config('app.photos_per_page'));
+
+            $validator =
+                Validator::make(
+                    ['limit' => $limit, 'page'=> $page],
+                    ['limit' => ['required', 'numeric', 'between:1,20'], 'page' => ['required', 'numeric']]
+                );
+
+            if(!$validator->passes())
+            {
+                return response()->json([
+                    'status' => TRUE,
+                    'likes' => $validator->messages()->first()
+                ]);
+            }
+
+            $result = Photo::recent(\Auth::user(), $limit, $page * $limit);
+
+            return response()->json([
+                'status' => TRUE,
+                'photos' => $result->isEmpty() ?  [] : $result->toArray()
+            ]);
+
+        }
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
+
     /**
      * Store a photo
      *

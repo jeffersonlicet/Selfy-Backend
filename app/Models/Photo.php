@@ -93,7 +93,7 @@ class Photo extends Model
      */
     public function getLikeEnabledAttribute()
     {
-        
+
         return !\Auth::guest() && !boolval(count(UserLike::where(['user_id' => \Auth::user()->user_id, 'photo_id' => $this->photo_id])->first()));
         /** @noinspection end */
     }
@@ -105,7 +105,7 @@ class Photo extends Model
      */
     public function getDeleteEnabledAttribute()
     {
-        
+
         return \Auth::user()->user_id == $this->user_id;
         /** @noinspection end */
     }
@@ -117,7 +117,7 @@ class Photo extends Model
      */
     public function getReportEnabledAttribute()
     {
-        
+
         return !\Auth::guest() && !boolval(count(PhotoReport::where(['user_id' => \Auth::user()->user_id, 'photo_id' => $this->photo_id])->first()));
         /** @noinspection end */
     }
@@ -134,8 +134,24 @@ class Photo extends Model
      */
     public static function collection(User $user, $user_id, $limit, $offset)
     {
-        
+
             return Photo::definition($user, $user_id)->with('User', 'Place', 'Challenges', 'Challenges.Object')->offset($offset)->limit($limit)->orderBy('photo_id', 'desc')->get();
+        /** @noinspection end */
+    }
+
+
+    /**
+     * @param User $user
+     * @param $limit
+     * @param $offset
+     * @return mixed
+     */
+    public static function recent(User $user, $limit, $offset)
+    {
+
+        return Photo::recentDefinition($user)->whereHas('User', function ($query) {
+            $query->where('account_private', '=',  0);
+        })->with('User')->offset($offset)->limit($limit)->orderBy('photo_id', 'desc')->get();
         /** @noinspection end */
     }
 
@@ -147,7 +163,7 @@ class Photo extends Model
      */
     public static function single($id)
     {
-        
+
         return Photo::with('User', 'Place', 'Challenges', 'Challenges.Object')->find($id);
         /** @noinspection end */
     }
@@ -164,13 +180,29 @@ class Photo extends Model
      */
     public static function related($photo_id, $user_id, $relation, $limit)
     {
-        
+
         return Photo::with('User', 'Place', 'Challenges', 'Challenges.Object')->where(['user_id'=> $user_id, ['photo_id', $relation, $photo_id]])->limit($limit)->orderBy('photo_id', 'desc')->get();
         /** @noinspection end */
     }
 
     /**
      *
+     * Creates a definition to know if is a general feed or a user/profile feed
+     *
+     * @param $query
+     * @param User $user
+     * @return mixed
+     */
+    public function scopeRecentDefinition($query, User $user)
+    {
+       $following = $user->Following->pluck('following_id');
+       $following[] = $user->user_id;
+
+       return $query->whereNotIn('user_id', $following);
+
+    }
+
+    /**
      * Creates a definition to know if is a general feed or a user/profile feed
      *
      * @param $query
@@ -183,7 +215,7 @@ class Photo extends Model
         switch ($requested_id)
         {
             case 0:
-                
+
                 $following = $user->Following->pluck('following_id');
                 $following[] = $user->user_id;
 
@@ -191,7 +223,7 @@ class Photo extends Model
                 /** @noinspection end */
                 break;
             default:
-                
+
                 return $query->where('user_id', $requested_id);
                 /** @noinspection end */
                 break;

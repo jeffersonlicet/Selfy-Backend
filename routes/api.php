@@ -30,6 +30,7 @@ Route::group(
             ['only' => ['store','update','destroy','show']]);
 
         Route::get('photos', 'Api\PhotoController@index');
+        Route::get('photos/recent', 'Api\PhotoController@recent');
 
         Route::resource('comment', 'Api\CommentController',
             ['only' => ['store','update','destroy']]);
