@@ -607,41 +607,41 @@ class UserController extends Controller
             if ($status == "todo") {
                 switch ($type) {
                     case 'duo':
-                        $challenges = UserChallenge::where(['user_id'=> \Auth::user()->user_id, 'challenge_status'=> config('constants.CHALLENGE_STATUS.ACCEPTED')])->with(['Challenge' => function ($query) {
+                        $challenges = UserChallenge::where(['user_id'=> \Auth::user()->user_id, 'challenge_status'=> config('constants.CHALLENGE_STATUS.ACCEPTED')])->whereHas('Challenge', function ($query) {
                             $query->where('object_type', 'duo');
-                        }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
+                        })->with(['Challenge', 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
                         break;
 
                     case 'spot':
-                        $challenges = UserChallenge::where(['user_id'=> \Auth::user()->user_id, 'challenge_status'=> config('constants.CHALLENGE_STATUS.ACCEPTED')])->with(['Challenge' => function ($query) {
+                        $challenges = UserChallenge::where(['user_id'=> \Auth::user()->user_id, 'challenge_status'=> config('constants.CHALLENGE_STATUS.ACCEPTED')])->whereHas('Challenge', function ($query) {
                             $query->where('object_type', 'spot');
-                        }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
+                        })->with(['Challenge', 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
                         break;
 
                     case 'play':
-                        $challenges = UserChallenge::where(['user_id'=> \Auth::user()->user_id, 'challenge_status'=> config('constants.CHALLENGE_STATUS.ACCEPTED')])->with(['Challenge' => function ($query) {
+                        $challenges = UserChallenge::where(['user_id'=> \Auth::user()->user_id, 'challenge_status'=> config('constants.CHALLENGE_STATUS.ACCEPTED')])->whereHas('Challenge', function ($query) {
                             $query->where('object_type', 'play');
-                        }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
+                        })->with(['Challenge', 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
                         break;
                 }
             } else {
                 switch ($type) {
                     case 'duo':
-                        $challenges = UserChallenge::where(['user_id'=> \Auth::user()->user_id, 'challenge_status'=> config('constants.CHALLENGE_STATUS.COMPLETED')])->with(['Challenge' => function ($query) {
-                          $query->where('object_type', 'duo');
-                        }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
+                        $challenges = UserChallenge::where(['user_id'=> \Auth::user()->user_id, 'challenge_status'=> config('constants.CHALLENGE_STATUS.COMPLETED')])->whereHas('Challenge', function ($query) {
+                            $query->where('object_type', 'duo');
+                        })->with(['Challenge', 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
                         break;
 
                     case 'spot':
-                        $challenges = UserChallenge::where(['user_id'=> \Auth::user()->user_id, 'challenge_status'=> config('constants.CHALLENGE_STATUS.COMPLETED')])->with(['Challenge' => function ($query) {
-                          $query->where('object_type', 'spot');
-                        }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
+                        $challenges = UserChallenge::where(['user_id'=> \Auth::user()->user_id, 'challenge_status'=> config('constants.CHALLENGE_STATUS.COMPLETED')])->whereHas('Challenge', function ($query) {
+                            $query->where('object_type', 'spot');
+                        })->with(['Challenge', 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
                         break;
 
                     case 'play':
-                        $challenges = UserChallenge::where(['user_id'=> \Auth::user()->user_id, 'challenge_status'=> config('constants.CHALLENGE_STATUS.COMPLETED')])->with(['Challenge' => function ($query) {
-                          $query->where('object_type', 'play');
-                        }, 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
+                        $challenges = UserChallenge::where(['user_id'=> \Auth::user()->user_id, 'challenge_status'=> config('constants.CHALLENGE_STATUS.COMPLETED')])->whereHas('Challenge', function ($query) {
+                            $query->where('object_type', 'play');
+                        })->with(['Challenge', 'Challenge.object'])->limit($limit)->offset($limit * $page)->get();
                         break;
                 }
             }
@@ -737,9 +737,9 @@ class UserController extends Controller
                 ]);
             }
 
-            $users = UserFace::where("user_id", "!=", \Auth::user()->user_id)->with(['User' => function($query){
-                $query->where('duo_enabled', '1');
-            }])->get();
+            $users = UserFace::where("user_id", "!=", \Auth::user()->user_id)->whereHas('User', function ($query) {
+                $query->where('duo_enabled', 1);
+            })->with('User')->get();
 
 
             foreach ($users as $user)
@@ -879,9 +879,9 @@ class UserController extends Controller
             $user = \Auth::user();
         }
 
-        $followers = UserFollower::where(['following_id' => $user->user_id])->with(['User' => function ($query) {
+        $followers = UserFollower::where(['following_id' => $user->user_id])->whereHas('User', function ($query) {
             $query->where('duo_enabled', 1);
-        }])->limit($limit)->offset($offset)->get();
+        })->with('User')->limit($limit)->offset($offset)->get();
 
         foreach($followers as $singleton)
         {
