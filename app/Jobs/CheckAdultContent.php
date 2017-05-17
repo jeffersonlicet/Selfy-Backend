@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Photo;
+use App\Notifications\PhotoRevisionNotification;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
@@ -54,6 +55,7 @@ class CheckAdultContent implements ShouldQueue
                     $this->photo->adult_content = 1;
                     $this->photo->touch();
                     $this->photo->save();
+                    $this->photo->User->notify(new PhotoRevisionNotification($this->photo));
                 }
             }
             else throw new Exception('error checking adult content');
