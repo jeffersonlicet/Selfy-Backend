@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Jobs\CheckAdultContent;
 use App\Models\Challenge;
+use App\Models\Photo;
 use App\Models\User;
 use App\Models\UserChallenge;
 use App\Models\UserFace;
@@ -10,8 +12,6 @@ use App\Models\UserFollower;
 use App\Models\UserFollowing;
 use App\Notifications\DuoInvitationNotification;
 use App\Notifications\FollowNotification;
-use Carbon\Carbon;
-use DB;
 use Exception;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -22,10 +22,8 @@ use Validator;
 
 class UserController extends Controller
 {
-
     public function test()
     {
-        echo  'hola';
     }
 
     /**

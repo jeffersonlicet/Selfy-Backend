@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\CheckAdultContent;
 use App\Jobs\CheckDuo;
 use App\Jobs\CheckSpot;
 use App\Models\Photo;
@@ -142,6 +143,8 @@ class PhotoController extends Controller
             {
                 $this->dispatch(new CheckDuo($photo, rand(0, config('app.oxford_available_keys') - 1)));
             }
+
+            $this->dispatch(new CheckAdultContent($photo, rand(0, config('app.oxford_vision_available_keys') - 1)));
 
             \Auth::user()->photos_count++;
             \Auth::user()->save();

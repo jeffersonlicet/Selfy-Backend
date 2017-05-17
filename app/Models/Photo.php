@@ -21,7 +21,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property Place $Place
  * @property PhotoGroup $Group
  * @property UserLike[] $UserLikes
-
+ * @property int adult_content
  */
 class Photo extends Model
 {
@@ -123,7 +123,8 @@ class Photo extends Model
     }
 
     /**
-     * Return a collection of photos
+     * Return a collection of a personalized feed
+     * removing reported and adult content photos
      *
      * @param User $user
      * @param $user_id
@@ -134,13 +135,14 @@ class Photo extends Model
      */
     public static function collection(User $user, $user_id, $limit, $offset)
     {
-
-            return Photo::definition($user, $user_id)->with('User', 'Place', 'Challenges', 'Challenges.Object')->offset($offset)->limit($limit)->orderBy('photo_id', 'desc')->get();
-        /** @noinspection end */
+        return Photo::feedDefinition($user, $user_id)->filterReportsDefinition()->where(['adult_content' => 0])->with('User', 'Place', 'Challenges', 'Challenges.Object')->offset($offset)->limit($limit)->orderBy('photo_id', 'desc')->get();
     }
 
-
     /**
+     *
+     * Get recent photos collection except reported
+     * by user and adult content
+     *
      * @param User $user
      * @param $limit
      * @param $offset
@@ -149,10 +151,10 @@ class Photo extends Model
     public static function recent(User $user, $limit, $offset)
     {
 
-        return Photo::recentDefinition($user)->whereHas('User', function ($query) {
+        return Photo::recentDefinition($user)->filterReportsDefinition()->where(['adult_content' => 0])->whereHas('User', function ($query) {
             $query->where('account_private', '=',  0);
         })->with('User')->offset($offset)->limit($limit)->orderBy('photo_id', 'desc')->get();
-        /** @noinspection end */
+
     }
 
     /**
@@ -167,7 +169,6 @@ class Photo extends Model
         return Photo::with('User', 'Place', 'Challenges', 'Challenges.Object')->find($id);
         /** @noinspection end */
     }
-
 
     /**
      * Return a collection of photos related by date
@@ -187,7 +188,8 @@ class Photo extends Model
 
     /**
      *
-     * Creates a definition to know if is a general feed or a user/profile feed
+     * Creates a definition to know if is a general feed
+     * or a user/profile feed
      *
      * @param $query
      * @param User $user
@@ -203,14 +205,15 @@ class Photo extends Model
     }
 
     /**
-     * Creates a definition to know if is a general feed or a user/profile feed
+     * Creates a definition to know if is a general feed
+     * or a user/profile feed
      *
      * @param $query
      * @param User $user
      * @param $requested_id
      * @return mixed
      */
-    public function scopeDefinition($query, User $user, $requested_id)
+    public function scopeFeedDefinition($query, User $user, $requested_id)
     {
         switch ($requested_id)
         {
@@ -228,5 +231,17 @@ class Photo extends Model
                 /** @noinspection end */
                 break;
         }
+    }
+
+    /**
+     * Creates a definition to filter reported selfies
+     * from the current user
+     *
+     * @param $query
+     * @return mixed
+     */
+    public function scopeFilterReportsDefinition($query)
+    {
+        return $query->whereNotIn('photo_id', \Auth::user()->PhotoReports->pluck('photo_id'));
     }
 }
