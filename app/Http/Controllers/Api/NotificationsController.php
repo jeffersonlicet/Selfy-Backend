@@ -48,9 +48,15 @@ class NotificationsController extends Controller
                 $notification['created_at'] = $n->created_at->toDateTimeString();
                 switch ($n->type)
                 {
-                    case  'App\Notifications\DuoInvitationNotification':
+                    case  'App\Notifications\PhotoRevisionNotification':
+                        if($photo = Photo::with('Challenges', 'Challenges.object')->find($n->data['photo_id']))
+                        {
+                            $notification['photo'] = $photo->toArray();
+                        }
 
-                        
+                        else continue 2;
+                        break;
+                    case  'App\Notifications\DuoInvitationNotification':
                         if($challenge = Challenge::with('Object')->find($n->data['challenge_id']))
                         {
                             if($challenge->challenge_status == config('constants.CHALLENGE_STATUS.INVITED') || $challenge->challenge_status == config('constants.CHALLENGE_STATUS.ACCEPTED'))
