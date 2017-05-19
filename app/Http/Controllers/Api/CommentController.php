@@ -3,16 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Jobs\CheckDuo;
-use App\Jobs\CheckSpot;
 use App\Models\Photo;
 use App\Models\UserComment;
-use App\Models\UserLike;
 use App\Notifications\CommentNotification;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
-use Illuminate\Validation\Rule;
 use Mockery\Exception;
 use Validator;
 

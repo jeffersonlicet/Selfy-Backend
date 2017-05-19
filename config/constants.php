@@ -18,5 +18,12 @@ return [
         'COMPLETED'     => 1,
         'ACCEPTED'      => 2,
         'DECLINED'      => 3
+    ],
+
+    'INVITATION_STATUS' => [
+        'UNSET'         => -1,
+        'INVITED'       => 0,
+        'ACCEPTED'      => 1,
+        'DECLINED'      => 2
     ]
 ];

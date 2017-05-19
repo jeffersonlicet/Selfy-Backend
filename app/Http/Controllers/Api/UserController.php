@@ -10,7 +10,9 @@ use App\Models\UserChallenge;
 use App\Models\UserFace;
 use App\Models\UserFollower;
 use App\Models\UserFollowing;
+use App\Models\UserInvitation;
 use App\Notifications\DuoInvitationNotification;
+use App\Notifications\FollowInvitationNotification;
 use App\Notifications\FollowNotification;
 use Exception;
 use App\Http\Controllers\Controller;
@@ -109,17 +111,19 @@ class UserController extends Controller
     {
         try
         {
-            $values = $request->only(['bio', 'firstname' , 'lastname', 'face_url', 'duo_enabled', 'spot_enabled']);
+            $values = $request->only(['bio', 'firstname' , 'lastname', 'face_url', 'duo_enabled', 'spot_enabled', 'account_private']);
             $values['duo_enabled'] = $values['duo_enabled'] == "1";
             $values['spot_enabled'] = $values['spot_enabled'] == "1";
+            $values['account_private'] = $values['account_private'] == "1";
+
             $validator = Validator::make(
                     $values,
                     [
                         'firstname'				=>	'required|string',
                         'lastname'				=>	'required|string',
-                        'bio'				    =>	'string',
                         'duo_enabled'           =>	'required',
-                        'spot_enabled'           =>	'required',
+                        'spot_enabled'          =>	'required',
+                        'account_private'       =>	'required',
                     ]
                 );
 
@@ -357,10 +361,31 @@ class UserController extends Controller
             if(\Auth::user()->user_id != $input['user_id'] && $user = User::find($input["user_id"]))
             {
 
-                if(!UserFollower::where(['follower_id' => \Auth::user()->user_id, 'following_id' => $user->user_id])->first())
+                //Check if the account is private
+                if($user->account_private)
+                {
+                    if(!$invitation= UserInvitation::where(['user_id' => \Auth::user()->user_id, 'profile_id' => $input["user_id"]])->first())
+                    {
+                        $invitation = new UserInvitation();
+                        $invitation->user_id = \Auth::user()->user_id;
+                        $invitation->profile_id = $input["user_id"];
+                        $invitation->save();
+
+                        $user->notify(new FollowInvitationNotification(\Auth::user()));
+
+                        return response()->json([
+                            'status' => TRUE,
+                            'report' => 'invitation_sent'
+                        ]);
+                    }
+                    else
+                    {
+                        throw new Exception("invitation_exists");
+                    }
+                }
+                elseif(!UserFollower::where(['follower_id' => \Auth::user()->user_id, 'following_id' => $user->user_id])->first())
                 {
                     $user->followers_count++;
-
                     $user->save();
 
                     \Auth::user()->following_count++;
@@ -370,7 +395,6 @@ class UserController extends Controller
                     $connection->follower_id = \Auth::user()->user_id;
                     $connection->following_id = $user->user_id;
                     $connection->save();
-
 
                     $user->notify(new FollowNotification(\Auth::user()));
 
@@ -424,23 +448,22 @@ class UserController extends Controller
                 ]);
             }
 
-
             if($user = User::find($input["user_id"]))
             {
 
                 if(UserFollower::where(['follower_id' => \Auth::user()->user_id, 'following_id' => $user->user_id])->first())
                 {
                     $user->followers_count--;
-
                     $user->save();
 
                     \Auth::user()->following_count--;
                     \Auth::user()->save();
 
-
                     $connection = UserFollower::where(['following_id' => $user->user_id, 'follower_id' => \Auth::user()->user_id])->first();
-
                     $connection->delete();
+
+                    if($invitation= UserInvitation::where(['user_id' => \Auth::user()->user_id, 'profile_id' => $input["user_id"]])->first())
+                        $invitation->delete();
 
                     return response()->json([
                         'status' => TRUE,
