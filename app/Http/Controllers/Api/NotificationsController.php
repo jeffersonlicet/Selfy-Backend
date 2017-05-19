@@ -63,7 +63,7 @@ class NotificationsController extends Controller
                         break;
 
                     case  'App\Notifications\FollowInvitationNotification':
-                        $invitation = UserInvitation::where(['profile_id' => \Auth::user()->user_id, 'user_id' => $n->data['user_id']])->first();
+                        $invitation = UserInvitation::with('User')->where(['profile_id' => \Auth::user()->user_id, 'user_id' => $n->data['user_id']])->first();
 
                         if($invitation != null)
                         {
