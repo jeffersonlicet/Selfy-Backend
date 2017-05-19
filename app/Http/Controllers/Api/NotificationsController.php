@@ -8,6 +8,7 @@ use App\Models\Photo;
 use App\Models\User;
 use App\Models\UserChallenge;
 use App\Models\UserComment;
+use App\Models\UserInvitation;
 use Illuminate\Support\Facades\Input;
 use Validator;
 
@@ -46,6 +47,7 @@ class NotificationsController extends Controller
                 $notification['read'] = $n->read_at != null;
                 $notification['type'] = explode("\\", $n->type)[2];
                 $notification['created_at'] = $n->created_at->toDateTimeString();
+
                 switch ($n->type)
                 {
                     case  'App\Notifications\AcceptedInvitationNotification':
@@ -61,11 +63,11 @@ class NotificationsController extends Controller
                         break;
 
                     case  'App\Notifications\FollowInvitationNotification':
-                        $user = User::find($n->data['user_id']);
+                        $invitation = UserInvitation::where(['profile_id' => \Auth::user()->user_id, 'user_id' => $n->data['user_id']])->first();
 
-                        if($user != null)
+                        if($invitation != null)
                         {
-                            $notification['user']   = $user->toArray();
+                            $notification['follow_invitation']   = $invitation->toArray();
                         }
 
                         else continue 2;
