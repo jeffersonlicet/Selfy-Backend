@@ -48,6 +48,30 @@ class NotificationsController extends Controller
                 $notification['created_at'] = $n->created_at->toDateTimeString();
                 switch ($n->type)
                 {
+                    case  'App\Notifications\AcceptedInvitationNotification':
+                        $user = User::find($n->data['user_id']);
+
+                        if($user != null)
+                        {
+                            $notification['user']   = $user->toArray();
+                        }
+
+                        else continue 2;
+
+                        break;
+
+                    case  'App\Notifications\FollowInvitationNotification':
+                        $user = User::find($n->data['user_id']);
+
+                        if($user != null)
+                        {
+                            $notification['user']   = $user->toArray();
+                        }
+
+                        else continue 2;
+
+                        break;
+
                     case  'App\Notifications\PhotoRevisionNotification':
                         if($photo = Photo::with('Challenges', 'Challenges.object')->find($n->data['photo_id']))
                         {
