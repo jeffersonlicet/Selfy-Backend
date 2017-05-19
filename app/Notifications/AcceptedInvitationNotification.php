@@ -67,7 +67,7 @@ class AcceptedInvitationNotification extends Notification implements ShouldQueue
             $notificationBuilder = new PayloadNotificationBuilder();
 
             $notificationBuilder->setTitle($this->user->username)
-                ->setBody('accepted your request')
+                ->setBody($this->user->username.' accepted your request')
                 ->setSound('clean_selfy');
 
             $option         = $optionBuiler->build();
