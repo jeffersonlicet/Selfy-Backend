@@ -55,7 +55,7 @@ class PhotoController extends Controller
             {
                 return response()->json([
                     'status' => TRUE,
-                    'report' => 'invalid_action'
+                    'report' => 'account_private'
                 ]);
             }
 
@@ -197,12 +197,24 @@ class PhotoController extends Controller
                 ]);
             }
 
-            
+
+
             if ($result = Photo::single($id))
             {
 
                 if($result->user_id != \Auth::user()->user_id)
                 {
+                    if($result->User->account_private
+                        && !UserInvitation::where(['user_id' => \Auth::user()->user_id,
+                            'profile_id' => $result->user_id,
+                            'invitation_status' => config('constants.INVITATION_STATUS.ACCEPTED')])->first())
+                    {
+                        return response()->json([
+                            'status' => TRUE,
+                            'report' => 'account_private'
+                        ]);
+                    }
+
                     $result->views_count++;
                     $result->save();
                 }
