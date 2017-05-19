@@ -8,6 +8,8 @@ use App\Jobs\CheckDuo;
 use App\Jobs\CheckSpot;
 use App\Models\Photo;
 use App\Models\PhotoReport;
+use App\Models\User;
+use App\Models\UserInvitation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Validation\Rule;
@@ -42,13 +44,23 @@ class PhotoController extends Controller
             {
                 return response()->json([
                     'status' => TRUE,
-                    'likes' => $validator->messages()->first()
+                    'report' => $validator->messages()->first()
+                ]);
+            }
+
+            if($user_id != 0
+                && $user_id != \Auth::user()->user_id
+                && User::find($user_id)->account_private
+                && !UserInvitation::where(['user_id' => \Auth::user()->user_id, 'profile_id' => $user_id, 'invitation_status' => config('constants.INVITATION_STATUS.ACCEPTED')])->first())
+            {
+                return response()->json([
+                    'status' => TRUE,
+                    'report' => 'invalid_action'
                 ]);
             }
 
             $result = Photo::collection(\Auth::user(), $user_id, $limit, $page * $limit);
 
-            
             return response()->json([
                 'status' => TRUE,
                 'photos' => $result->isEmpty() ?  [] : $result->toArray()
