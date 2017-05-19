@@ -42,6 +42,7 @@ Route::group(
         Route::post('invitation/accept', 'Api\InvitationController@accept');
         Route::post('invitation/decline', 'Api\InvitationController@decline');
         Route::post('invitation/remove', 'Api\InvitationController@remove');
+        Route::post('invitation/create', 'Api\InvitationController@create');
 
         Route::get('invitations', 'Api\InvitationController@index');
 

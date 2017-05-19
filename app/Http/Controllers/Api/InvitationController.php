@@ -123,6 +123,74 @@ class InvitationController extends Controller
     }
 
     /**
+     * Recreate follow invitation
+     * @param Request $request
+     * @throws Exception
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function create(Request $request)
+    {
+        try
+        {
+            $input = $request->all();
+
+            $validator = Validator::make($input, [
+                'user_id' => ['required', 'numeric']
+            ]);
+
+            if(!$validator->passes())
+            {
+                return response()->json([
+                    'status' => TRUE,
+                    'report' => $validator->messages()->first()
+                ]);
+            }
+
+            if($invitation = UserInvitation::where([
+                'user_id' => $input['user_id'],
+                'profile_id' => \Auth::user()->user_id])->first())
+            {
+                $invitation->invitation_status = config('constants.INVITATION_STATUS.ACCEPTED');
+                $invitation->touch();
+                $invitation->save();
+
+            }
+            else
+            {
+                $invitation = new UserInvitation();
+                $invitation->invitation_status = config('constants.INVITATION_STATUS.ACCEPTED');
+                $invitation->user_id = $input['user_id'];
+                $invitation->profile_id = \Auth::user()->user_id;
+                $invitation->save();
+            }
+
+            $connection = new UserFollower();
+            $connection->follower_id = $invitation->user_id;
+            $connection->following_id = $invitation->profile_id;
+            $connection->save();
+
+            \Auth::user()->followers_count++;
+            \Auth::user()->save();
+
+            $invitation->Creator->following_count++;
+            $invitation->Creator->save();
+
+            return response()->json([
+                'status' => TRUE,
+                'report' => 'action_done'
+            ]);
+        }
+
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
      * Decline a user follow invitation
      * @param Request $request
      * @throws Exception
