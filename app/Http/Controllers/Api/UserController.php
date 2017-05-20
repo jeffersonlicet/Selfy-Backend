@@ -26,6 +26,8 @@ class UserController extends Controller
 {
     public function test()
     {
+        $followers_id = \Auth::user()->Followers->pluck('follower_id');
+        dd($followers_id);
     }
 
     /**
@@ -128,6 +130,22 @@ class UserController extends Controller
                         'save_photos' =>	'required',
                     ]
                 );
+
+            if($values['account_private'])
+            {
+                $followers_id = \Auth::user()->Followers->pluck('follower_id');
+
+                foreach($followers_id as $id)
+                {
+                    if(!UserInvitation::where(['user_id' => $id, 'profile_id' => \Auth::user()->user_id])->first())
+                    {
+                        $invitation = new UserInvitation();
+                        $invitation->user_id = $id;
+                        $invitation->profile_id = \Auth::user()->user_id;
+                        $invitation->save();
+                    }
+                }
+            }
 
             if(!$validator->passes())
             {

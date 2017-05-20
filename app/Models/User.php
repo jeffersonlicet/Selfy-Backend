@@ -46,6 +46,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property Photo[] photos
  * @property UserFaceRecognition[] FaceDescriptors
  * @property User[] $Following
+ * @property User[] $Followers
  * @property UserChallenge[] userChallenges
  * @property PhotoReport[] $PhotoReports
  */
@@ -145,6 +146,14 @@ class User extends Authenticatable
     public function Following()
     {
         return $this->hasMany('App\Models\UserFollowing', 'follower_id', 'user_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany|\Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function Followers()
+    {
+        return $this->hasMany('App\Models\UserFollower', 'following_id', 'user_id');
     }
 
     /**
