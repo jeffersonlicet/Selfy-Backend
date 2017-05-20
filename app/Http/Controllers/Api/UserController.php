@@ -111,10 +111,11 @@ class UserController extends Controller
     {
         try
         {
-            $values = $request->only(['bio', 'firstname' , 'lastname', 'face_url', 'duo_enabled', 'spot_enabled', 'account_private']);
+            $values = $request->only(['bio', 'firstname' , 'lastname', 'face_url', 'duo_enabled', 'spot_enabled', 'account_private', 'save_photos']);
             $values['duo_enabled'] = $values['duo_enabled'] == "1";
             $values['spot_enabled'] = $values['spot_enabled'] == "1";
             $values['account_private'] = $values['account_private'] == "1";
+            $values['save_photos'] = $values['save_photos'] == "1";
 
             $validator = Validator::make(
                     $values,
@@ -124,6 +125,7 @@ class UserController extends Controller
                         'duo_enabled'           =>	'required',
                         'spot_enabled'          =>	'required',
                         'account_private'       =>	'required',
+                        'save_photos' =>	'required',
                     ]
                 );
 
