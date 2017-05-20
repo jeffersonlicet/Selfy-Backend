@@ -83,7 +83,7 @@ class NotificationsController extends Controller
                         else continue 2;
                         break;
                     case  'App\Notifications\DuoInvitationNotification':
-                        if($challenge = Challenge::has('object')->with('Object')->find($n->data['challenge_id']))
+                        if($challenge = Challenge::with('Object')->find($n->data['challenge_id']))
                         {
                             if($challenge->challenge_status == config('constants.CHALLENGE_STATUS.INVITED') || $challenge->challenge_status == config('constants.CHALLENGE_STATUS.ACCEPTED'))
                                 $notification['invitation'] = $challenge->toArray();
