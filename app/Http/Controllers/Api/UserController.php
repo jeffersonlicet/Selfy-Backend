@@ -532,7 +532,7 @@ class UserController extends Controller
                 ]);
             }
 
-            $followers = UserFollower::where('following_id', $user_id)->with('User')->offset($page*$limit)->limit($limit)->orderBy('follow_id', 'desc')->get();
+            $followers = UserFollower::where('following_id', $user_id)->has('User')->with('User')->offset($page*$limit)->limit($limit)->orderBy('follow_id', 'desc')->get();
 
             $parsed = [];
 
@@ -584,7 +584,7 @@ class UserController extends Controller
                 ]);
             }
 
-            $following = UserFollowing::where('follower_id', $user_id)->with('User')->offset($page * $limit)->limit($limit)->orderBy('follow_id', 'desc')->get();
+            $following = UserFollowing::where('follower_id', $user_id)->has('User')->with('User')->offset($page * $limit)->limit($limit)->orderBy('follow_id', 'desc')->get();
             $parsed = [];
 
             if (!$following->isEmpty()) {
