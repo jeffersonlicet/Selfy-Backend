@@ -23,7 +23,6 @@ class InvitationController extends Controller
         {
             $page = Input::get('page', 0);
             $limit = Input::get('limit', config('app.likes_per_page'));
-            $status = Input::get('status', config('constants.INVITATION_STATUS.INVITED'));
 
             $validator =
                 Validator::make(
@@ -39,7 +38,7 @@ class InvitationController extends Controller
                 ]);
             }
 
-            $invitations = UserInvitation::with('Creator')->where(['profile_id' => \Auth::user()->user_id, 'invitation_status' => $status])->offset($page*$limit)->limit($limit)->get();
+            $invitations = UserInvitation::with('Creator')->where(['profile_id' => \Auth::user()->user_id])->offset($page*$limit)->limit($limit)->get();
 
             return response()->json([
                 'status' => TRUE,
