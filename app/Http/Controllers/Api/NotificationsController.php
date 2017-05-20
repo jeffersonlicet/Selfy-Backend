@@ -63,7 +63,7 @@ class NotificationsController extends Controller
                         break;
 
                     case  'App\Notifications\FollowInvitationNotification':
-                        $invitation = UserInvitation::with('Creator')->where(['profile_id' => \Auth::user()->user_id, 'user_id' => $n->data['user_id']])->first();
+                        $invitation = UserInvitation::whereHas('Creator')->with('Creator')->where(['profile_id' => \Auth::user()->user_id, 'user_id' => $n->data['user_id']])->first();
 
                         if($invitation != null)
                         {
@@ -83,7 +83,7 @@ class NotificationsController extends Controller
                         else continue 2;
                         break;
                     case  'App\Notifications\DuoInvitationNotification':
-                        if($challenge = Challenge::with('Object')->find($n->data['challenge_id']))
+                        if($challenge = Challenge::whereHas('Object')->with('Object')->find($n->data['challenge_id']))
                         {
                             if($challenge->challenge_status == config('constants.CHALLENGE_STATUS.INVITED') || $challenge->challenge_status == config('constants.CHALLENGE_STATUS.ACCEPTED'))
                                 $notification['invitation'] = $challenge->toArray();
