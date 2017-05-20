@@ -38,7 +38,7 @@ class InvitationController extends Controller
                 ]);
             }
 
-            $invitations = UserInvitation::with('Creator')->where(['profile_id' => \Auth::user()->user_id])->offset($page*$limit)->limit($limit)->get();
+            $invitations = UserInvitation::with('Creator')->where(['profile_id' => \Auth::user()->user_id])->offset($page*$limit)->orderBy('invitation_id', 'desc')->limit($limit)->get();
 
             return response()->json([
                 'status' => TRUE,
