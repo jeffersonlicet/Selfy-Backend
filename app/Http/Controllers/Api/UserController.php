@@ -26,8 +26,6 @@ class UserController extends Controller
 {
     public function test()
     {
-        $followers_id = \Auth::user()->Followers->pluck('follower_id');
-        dd($followers_id);
     }
 
     /**
@@ -141,6 +139,7 @@ class UserController extends Controller
                     {
                         $invitation = new UserInvitation();
                         $invitation->user_id = $id;
+                        $invitation->invitation_status = config('constants.INVITATION_STATUS.ACCEPTED');
                         $invitation->profile_id = \Auth::user()->user_id;
                         $invitation->save();
                     }
