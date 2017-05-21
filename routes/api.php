@@ -17,6 +17,7 @@ Route::post('user/login', 'Api\AuthController@login');
 Route::post('user/refresh', 'Api\AuthController@refresh');
 Route::post('user/exists', 'Api\AuthController@exists');
 Route::post('user/facebook_create', 'Api\AuthController@create_facebook');
+Route::post('user/facebook_link', 'Api\AuthController@link_facebook');
 
 /* Auth required */
 Route::group(
