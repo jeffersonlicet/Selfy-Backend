@@ -50,6 +50,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property UserChallenge[] userChallenges
  * @property PhotoReport[] $PhotoReports
  * @property int gender
+ * @property int facebook
+ * @property int twitter
  */
 class User extends Authenticatable
 {

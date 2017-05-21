@@ -237,6 +237,77 @@ class AuthController extends Controller
     }
 
     /**
+     * Link a Facebook account with an existing user
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function link_facebook(Request $request)
+    {
+        try
+        {
+            $input = $request->all();
+
+            $validator = Validator::make($input, [
+                'email' => 'required|email',
+            ]);
+
+            if (!$validator->passes())
+                return response()->json(['status'=>FALSE, 'report'=>$validator->messages()->first()]);
+
+            if(!$user = User::where('email', $input['email'])->get())
+                return response()->json(['status'=>FALSE, 'report'=> "invalid_action"]);
+
+            if ($request->has('gender') && $user->gender == 0)
+            {
+                if($request->has('gender') == 'm')
+                    $user->gender = 1;
+                elseif ($request->has('gender') == 'f')
+                    $user->gender = 2;
+            }
+
+            $user->facebook = config('constants.SOCIAL_STATUS.COMPLETED');
+            $user->save();
+
+            $public = JWTAuth::fromUser($user);
+            $private = str_random(50);
+
+            $token = new App\Models\UserToken();
+            $token->public_key = $public;
+            $token->private_key = $private;
+            $token->user_id = $user->user_id;
+
+            if ($request->has('device_os'))
+                $token->device_os = $input['device_os'];
+
+            if ($request->has('device_id'))
+                $token->device_id = $input['device_id'];
+
+            $token->save();
+
+            $userInfo = new UserInformation();
+            $userInfo->facebook_id = $input['fb_id'];
+            $userInfo->user_id = $user->user_id;
+            $userInfo->save();
+
+            return response()->json([
+                'status' => TRUE,
+                'public_key' => $public,
+                'private_key' => $private,
+                'user' => $user->toArray()
+            ]);
+
+        }
+
+        catch(Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
      * Determine if an account has facebook associated
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -257,7 +328,8 @@ class AuthController extends Controller
             {
                 $report = 'confirmation_required';
 
-                if($user->information != null && $user->information->facebook_id != null){
+                if($user->facebook == config('constants.SOCIAL_STATUS.COMPLETED'))
+                {
                     $report = 'exists';
                     $user->token->delete();
 
@@ -284,6 +356,9 @@ class AuthController extends Controller
                     $token->save();
                     unset($user->token);
                 }
+
+                elseif($user->facebook == config('constants.SOCIAL_STATUS.PENDING')) $report = 'email_sent';
+                elseif($user->facebook == config('constants.SOCIAL_STATUS.CONFIRMED')) $report = 'email_confirmed';
 
                 else
                 {
@@ -323,6 +398,9 @@ class AuthController extends Controller
             if (!$validator->passes())
                 return response()->json(['status'=>FALSE, 'report'=>$validator->messages()->first()]);
 
+            if($user = User::where('email', $input['email'])->get())
+                return response()->json(['status' =>FALSE, 'report' => 'please try again']);
+
             $user = new User();
 
             if ($request->has('gender'))
@@ -334,6 +412,7 @@ class AuthController extends Controller
             }
 
             $user->email = $input['email'];
+            $user->facebook = config('constants.SOCIAL_STATUS.COMPLETED');
 
             if ($request->has('firstname'))
                 $user->firstname = $input['firstname'];

@@ -25,5 +25,12 @@ return [
         'INVITED'       => 0,
         'ACCEPTED'      => 1,
         'DECLINED'      => 2
+    ],
+
+    'SOCIAL_STATUS' => [
+        'UNSET'         => 0,
+        'PENDING'       => 1,
+        'COMPLETED'      => 2,
+        'CONFIRMED'      => 3,
     ]
 ];
