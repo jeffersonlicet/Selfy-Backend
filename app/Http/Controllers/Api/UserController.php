@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Jobs\CheckAdultContent;
 use App\Models\Challenge;
-use App\Models\Photo;
 use App\Models\User;
 use App\Models\UserChallenge;
 use App\Models\UserFace;
@@ -835,7 +833,6 @@ class UserController extends Controller
         }
     }
 
-
     /**
      * Generate daily top users based on challenges completed
      * @return \Illuminate\Http\JsonResponse
@@ -854,10 +851,7 @@ class UserController extends Controller
         }
         catch (\Exception $e)
         {
-            return response()->json([
-                'status' => FALSE,
-                'report' => $e->getMessage()
-            ]);
+            return response()->json(['status' => FALSE,'report' => $e->getMessage()]);
         }
     }
 
@@ -906,6 +900,7 @@ class UserController extends Controller
             ]);
         }
     }
+
     /**
      * Generate a batch of duo invitations
      * @param User $user

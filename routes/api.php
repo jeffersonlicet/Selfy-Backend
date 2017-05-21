@@ -15,6 +15,8 @@
 Route::post('user/create', 'Api\AuthController@create');
 Route::post('user/login', 'Api\AuthController@login');
 Route::post('user/refresh', 'Api\AuthController@refresh');
+Route::post('user/exist', 'Api\AuthController@exist');
+Route::post('user/facebook_create', 'Api\AuthController@create_facebook');
 
 /* Auth required */
 Route::group(
@@ -59,7 +61,7 @@ Route::group(
         Route::post('user/firebase', 'Api\UserController@firebase');
         Route::post('user/follow', 'Api\UserController@follow');
         Route::post('user/unfollow', 'Api\UserController@unfollow');
-       
+
         Route::get('user/followers', 'Api\UserController@followers');
         Route::get('user/following', 'Api\UserController@following');
         Route::get('user/me', 'Api\UserController@me');

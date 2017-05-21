@@ -6,6 +6,8 @@ use App;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 
+use App\Models\UserInformation;
+use Exception;
 use Hash;
 use JWTAuth;
 use Validator;
@@ -226,6 +228,127 @@ class AuthController extends Controller
 
         }
         catch(\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * Determine if an account has facebook associated
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function exist(Request $request)
+    {
+        try
+        {
+            $input = $request->all();
+            $validator = Validator::make($input, ['identity' => 'required|email']);
+
+            if (!$validator->passes())
+                return response()->json(['status' => FALSE, 'report' => $validator->messages()->first()]);
+
+            if($user = User::with('information')->where('email', $input['identity'])->first())
+            {
+                $report = 'confirmation_required';
+                if($user->information != null && $user->information->facebook_id != null)
+                    $report = 'exists';
+            }
+            else $report = 'register_required';
+
+            return response()->json(['status' => TRUE, 'report'=> $report]);
+        }
+
+        catch(Exception $e)
+        {
+            return response()->json(['status' => FALSE, 'report' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Create an user account using facebook data
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function create_facebook(Request $request)
+    {
+        try
+        {
+            $input = $request->all();
+
+            $validator = Validator::make($input, [
+                'email' => 'required|email',
+                'fb_id' => 'required'
+            ]);
+
+            if (!$validator->passes())
+                return response()->json(['status'=>FALSE, 'report'=>$validator->messages()->first()]);
+
+            $user = new User();
+
+            if ($request->has('gender'))
+            {
+                if($request->has('gender') == 'm')
+                    $user->gender = 1;
+                elseif ($request->has('gender') == 'f')
+                    $user->gender = 2;
+            }
+
+            $user->email = $input['email'];
+
+            if ($request->has('firstname'))
+                $user->firstname = $input['firstname'];
+
+            if ($request->has('lastname'))
+                $user->lastname = $input['lastname'];
+
+            if ($request->has('firebase_token'))
+                $user->firebase_token = $input['firebase_token'];
+
+            $user->user_locale = App::getLocale();
+            $user->avatar = 'http://i.imgur.com/4sfeHin.jpg';
+
+            if ($user->save())
+            {
+                $public = JWTAuth::fromUser($user);
+                $private = str_random(50);
+
+                $token = new App\Models\UserToken();
+                $token->public_key = $public;
+                $token->private_key = $private;
+                $token->user_id = $user->user_id;
+
+                if ($request->has('device_os'))
+                    $token->device_os = $input['device_os'];
+
+                if ($request->has('device_id'))
+                    $token->device_id = $input['device_id'];
+
+                $token->save();
+
+                $userInfo = new UserInformation();
+                $userInfo->facebook_id = $input['fb_id'];
+                $userInfo->user_id = $user->user_id;
+                $userInfo->save();
+
+                return response()->json([
+                    'status' => TRUE,
+                    'public_key' => $public,
+                    'private_key' => $private,
+                    'user' => $user->toArray()
+                ]);
+            }
+            return response()->json([
+                'status' => FALSE,
+                'report' => $validator->messages()->first()
+            ]);
+        }
+
+        catch(Exception $e)
         {
             return response()->json([
                 'status' => FALSE,
