@@ -259,7 +259,7 @@ class AuthController extends Controller
             }
             else $report = 'register_required';
 
-            return response()->json(['status' => TRUE, 'report'=> $report]);
+            return response()->json(['status' => TRUE, 'report'=> $report, 'user' => $user]);
         }
 
         catch(Exception $e)
