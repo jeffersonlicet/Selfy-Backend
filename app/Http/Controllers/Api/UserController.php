@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Mail\FbIntegrationConfirmMail;
 use App\Models\Challenge;
 use App\Models\User;
 use App\Models\UserChallenge;
@@ -18,12 +19,15 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Input;
 use Illuminate\Validation\Rule;
+use Mail;
 use Validator;
 
 class UserController extends Controller
 {
     public function test()
     {
+        Mail::to(User::find(1))->send(new FbIntegrationConfirmMail(User::find(1)));
+        print('sent');
     }
 
     /**

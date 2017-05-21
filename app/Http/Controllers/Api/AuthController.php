@@ -312,7 +312,7 @@ class AuthController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function exists(Request $request)
+    public function sync_facebook(Request $request)
     {
         try
         {
