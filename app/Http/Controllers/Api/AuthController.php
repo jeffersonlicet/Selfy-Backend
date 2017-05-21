@@ -247,6 +247,8 @@ class AuthController extends Controller
         {
             $input = $request->all();
             $validator = Validator::make($input, ['identity' => 'required|email']);
+            $public = '';
+            $private = '';
 
             if (!$validator->passes())
                 return response()->json(['status' => FALSE, 'report' => $validator->messages()->first()]);
@@ -254,12 +256,40 @@ class AuthController extends Controller
             if($user = User::with('information')->where('email', $input['identity'])->first())
             {
                 $report = 'confirmation_required';
-                if($user->information != null && $user->information->facebook_id != null)
+
+                if($user->information != null && $user->information->facebook_id != null){
                     $report = 'exists';
+                    $user->token->delete();
+
+                    if ($request->has('firebase_token'))
+                    {
+                        $user->firebase_token = $input['firebase_token'];
+                        $user->save();
+                    }
+
+                    $public = JWTAuth::fromUser($user);
+                    $private = str_random(50);
+
+                    $token = new App\Models\UserToken();
+                    $token->public_key = $public;
+                    $token->private_key = $private;
+                    $token->user_id = $user->user_id;
+
+                    if ($request->has('device_os'))
+                        $token->device_os = $input['device_os'];
+
+                    if ($request->has('device_id'))
+                        $token->device_id = $input['device_id'];
+
+                    $token->save();
+                    unset($user->token);
+                }
             }
             else $report = 'register_required';
 
-            return response()->json(['status' => TRUE, 'report'=> $report, 'user' => $user]);
+            return response()->json(['status' => TRUE, 'report'=> $report, 'user' => $user,
+                'public_key' => $public,
+                'private_key' => $private]);
         }
 
         catch(Exception $e)
