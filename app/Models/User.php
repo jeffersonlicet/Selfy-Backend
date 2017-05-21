@@ -104,6 +104,14 @@ class User extends Authenticatable
         return $this->belongsTo('App\Models\UserGroup', 'user_group', 'user_group_id');
     }
 
+    /**
+     * Bind user social information
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function information()
+    {
+        return $this->hasOne('App\Models\UserInformation', 'user_id', 'user_id');
+    }
 
     /**
      * Return all
