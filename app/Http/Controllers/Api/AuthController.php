@@ -241,7 +241,7 @@ class AuthController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function exist(Request $request)
+    public function exists(Request $request)
     {
         try
         {
