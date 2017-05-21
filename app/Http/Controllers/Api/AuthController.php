@@ -284,6 +284,11 @@ class AuthController extends Controller
                     $token->save();
                     unset($user->token);
                 }
+
+                else
+                {
+                    //TODO SEND EMAIL WITH STEPS
+                }
             }
             else $report = 'register_required';
 
