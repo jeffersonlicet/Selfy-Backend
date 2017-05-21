@@ -303,6 +303,13 @@ class AuthController extends Controller
             if ($request->has('firstname'))
                 $user->firstname = $input['firstname'];
 
+            if ($request->has('bio'))
+                $user->bio = $input['bio'];
+
+            if ($request->has('avatar'))
+                $user->avatar = $input['avatar'];
+            else $user->avatar = 'http://i.imgur.com/4sfeHin.jpg';
+
             if ($request->has('lastname'))
                 $user->lastname = $input['lastname'];
 
@@ -310,7 +317,6 @@ class AuthController extends Controller
                 $user->firebase_token = $input['firebase_token'];
 
             $user->user_locale = App::getLocale();
-            $user->avatar = 'http://i.imgur.com/4sfeHin.jpg';
 
             if ($user->save())
             {
