@@ -254,7 +254,7 @@ class AuthController extends Controller
             if (!$validator->passes())
                 return response()->json(['status'=>FALSE, 'report'=>$validator->messages()->first()]);
 
-            if(!$user = User::where('email', $input['email'])->get())
+            if(!$user = User::where('email', $input['email'])->first())
                 return response()->json(['status'=>FALSE, 'report'=> "invalid_action"]);
 
             if ($request->has('gender') && $user->gender == 0)
@@ -398,7 +398,7 @@ class AuthController extends Controller
             if (!$validator->passes())
                 return response()->json(['status'=>FALSE, 'report'=>$validator->messages()->first()]);
 
-            if($user = User::where('email', $input['email'])->get())
+            if($user = User::where('email', $input['email'])->first())
                 return response()->json(['status' =>FALSE, 'report' => 'please try again']);
 
             $user = new User();

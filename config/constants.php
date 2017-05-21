@@ -28,8 +28,8 @@ return [
     ],
 
     'SOCIAL_STATUS' => [
-        'UNSET'         => 0,
-        'PENDING'       => 1,
+        'UNSET'          => 0,
+        'PENDING'        => 1,
         'COMPLETED'      => 2,
         'CONFIRMED'      => 3,
     ]
