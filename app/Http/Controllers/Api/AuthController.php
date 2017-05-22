@@ -369,6 +369,8 @@ class AuthController extends Controller
                     $key->key_type = config('constants.KEY_TYPE.FACEBOOK_INTEGRATION_CONFIRM');
                     $key->key_value = str_random(15);
                     $key->save();
+                    $user->facebook = config('constants.SOCIAL_STATUS.PENDING');
+                    $user->save();
 
                     Mail::to($user)->send(new FbIntegrationConfirmMail($user, $key->key_value));
                 }
