@@ -26,7 +26,7 @@ class UserController extends Controller
 {
     public function test()
     {
-        Mail::to(User::find(1))->send(new FbIntegrationConfirmMail(User::find(1)));
+        Mail::to(User::find(1))->send(new FbIntegrationConfirmMail(User::find(1), 5251));
         print('sent');
     }
 

@@ -23,5 +23,5 @@
 @endforeach
 
 <!-- Salutation -->
-Regards,<br>Selfy.
+Regards,<br>The Selfy team.
 @endcomponent

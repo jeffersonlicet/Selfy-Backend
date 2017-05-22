@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Api;
 
 use App;
 use App\Http\Controllers\Controller;
+use App\Mail\FbIntegrationConfirmMail;
 use App\Models\User;
 
 use App\Models\UserInformation;
 use Exception;
 use Hash;
 use JWTAuth;
+use Mail;
 use Validator;
 use Illuminate\Http\Request;
 
@@ -362,7 +364,13 @@ class AuthController extends Controller
 
                 else
                 {
-                    //TODO SEND EMAIL WITH STEPS
+                    $key = new App\Models\UserKey();
+                    $key->user_id = $user->user_id;
+                    $key->key_type = config('constants.KEY_TYPE.FACEBOOK_INTEGRATION_CONFIRM');
+                    $key->key_value = str_random(15);
+                    $key->save();
+
+                    Mail::to($user)->send(new FbIntegrationConfirmMail($user, $key->key_value));
                 }
             }
             else $report = 'register_required';

@@ -32,5 +32,14 @@ return [
         'PENDING'        => 1,
         'COMPLETED'      => 2,
         'CONFIRMED'      => 3,
+    ],
+
+    'KEY_TYPE' => [
+        'FACEBOOK_INTEGRATION_CONFIRM' => 0,
+    ],
+
+    'KEY_STATUS' => [
+        'VALID' => 0,
+        'EXPIRED' => 1,
     ]
 ];
