@@ -37,7 +37,7 @@ class FbIntegrationConfirmMail extends Mailable implements ShouldQueue
             ->with([
                 'greeting' => 'Hi '.$this->user->firstname ?? $this->user->username,
                 'introLines' => ["We've sent you this email to confirm the integration of your existing Selfy account with your Facebook profile.", "If you want to link your accounts simply press the button below."],
-                'actionUrl' => 'http://getselfy.net/facebook/link?code='.$this->code,
+                'actionUrl' => 'http://www.getselfy.net/facebook/link?code='.$this->code,
                 'actionText' => 'Confirm',
                 'outroLines' => ["If you do not wish to link accounts please ignore this email.", "Thank you very much for using Selfy."]
             ]);
