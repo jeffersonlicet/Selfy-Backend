@@ -364,6 +364,14 @@ class AuthController extends Controller
 
                 else
                 {
+                    $keys = App\Models\UserKey::where(['key_type' => config('constants.KEY_TYPE.FACEBOOK_INTEGRATION_CONFIRM'),
+                        'user_id' => $user->user_id])->get();
+
+                    foreach($keys as $k)
+                    {
+                        $k->delete();
+                    }
+                    
                     $key = new App\Models\UserKey();
                     $key->user_id = $user->user_id;
                     $key->key_type = config('constants.KEY_TYPE.FACEBOOK_INTEGRATION_CONFIRM');
