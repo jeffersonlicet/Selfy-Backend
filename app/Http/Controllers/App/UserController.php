@@ -42,6 +42,5 @@ class UserController extends Controller
         else
             return view('pages.message')->with(['pageTitle'=> 'Selfy', 'messageTitle' => 'Oops!',
                 'messageBody' => 'The token has expired or is invalid.'])->render();
-
     }
 }
