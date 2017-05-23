@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Api;
 use App;
 use App\Http\Controllers\Controller;
 use App\Mail\FbIntegrationConfirmMail;
-use App\Models\User;
 
+use App\Models\User;
 use App\Models\UserInformation;
 use Exception;
 use Hash;
