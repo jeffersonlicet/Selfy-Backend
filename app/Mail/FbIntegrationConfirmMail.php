@@ -33,7 +33,7 @@ class FbIntegrationConfirmMail extends Mailable implements ShouldQueue
     public function build()
     {
         return
-            $this->from('hello@sprkly.net')->subject("Selfy - Confirm Facebook integration")->markdown('vendor.mail.facebook.confirmation.template')
+            $this->from('hello@sprkly.net', 'Selfy')->subject("Selfy - Confirm Facebook integration")->markdown('vendor.mail.facebook.confirmation.template')
             ->with([
                 'greeting' => 'Hi '.$this->user->firstname ?? $this->user->username,
                 'introLines' => ["We've sent you this email to confirm the integration of your existing Selfy account with your Facebook profile.", "If you want to link your accounts simply press the button below."],
