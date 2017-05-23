@@ -23,7 +23,9 @@ class UserController extends Controller
                 $code->User->facebook = config('constants.SOCIAL_STATUS.CONFIRMED');
                 $code->User->save();
                 $code->delete();
-                print("Confirmado");
+
+                return view('pages.message')->with(['pageTitle'=> 'Selfy', 'messageTitle' => 'Nice!',
+                    'messageBody' => 'Now you will be able to use your Facebook account with your Selfy account.'])->render();
             }
             else
             {
@@ -32,12 +34,14 @@ class UserController extends Controller
                 $code->save();
 
                 Mail::to($code->User)->send(new FbIntegrationConfirmMail($user, $code->key_value));
-                print("Confirma de nuevo");
+                return view('pages.message')->with(['pageTitle'=> 'Selfy', 'messageTitle' => 'Oops!',
+                    'messageBody' => 'The token has expired please try again. We\'ve sent your another mail.'])->render();
             }
         }
 
         else
-            print("Codigo no existe");
+            return view('pages.message')->with(['pageTitle'=> 'Selfy', 'messageTitle' => 'Oops!',
+                'messageBody' => 'The token has expired or is invalid.'])->render();
 
     }
 }

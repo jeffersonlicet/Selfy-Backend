@@ -16,7 +16,7 @@ Route::get('about/privacy', function () {
 });
 
 Route::get('/', function () {
-    return view('pages.home')->with(['pageTitle' => 'Welcome']);
+    return view('pages.welcome')->with(['pageTitle' => 'Welcome to Selfy']);
 });
 
 Route::get('/facebook/link', 'App\UserController@confirm_facebook_link');
