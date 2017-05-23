@@ -8,6 +8,7 @@ use App\Mail\FbIntegrationConfirmMail;
 
 use App\Models\User;
 use App\Models\UserInformation;
+use Carbon\Carbon;
 use Exception;
 use Hash;
 use JWTAuth;
@@ -359,9 +360,29 @@ class AuthController extends Controller
                     unset($user->token);
                 }
 
-                elseif($user->facebook == config('constants.SOCIAL_STATUS.PENDING')) $report = 'email_sent';
-                elseif($user->facebook == config('constants.SOCIAL_STATUS.CONFIRMED')) $report = 'email_confirmed';
+                elseif($user->facebook == config('constants.SOCIAL_STATUS.PENDING'))
+                {
+                    if($old_key = App\Models\UserKey::where(['key_type' => config('constants.KEY_TYPE.FACEBOOK_INTEGRATION_CONFIRM'),
+                        'user_id' => $user->user_id,
+                       ])->where('user_challenges.updated_at', '<', Carbon::today())->first())
+                    {
+                        $old_key->delete();
 
+                        $key = new App\Models\UserKey();
+                        $key->user_id = $user->user_id;
+                        $key->key_type = config('constants.KEY_TYPE.FACEBOOK_INTEGRATION_CONFIRM');
+                        $key->key_value = str_random(15);
+                        $key->save();
+                        $user->facebook = config('constants.SOCIAL_STATUS.PENDING');
+                        $user->save();
+
+                        Mail::to($user)->send(new FbIntegrationConfirmMail($user, $key->key_value));
+                        $report = 'confirmation_required';
+                    }
+                    else $report = 'email_sent';
+                }
+
+                elseif($user->facebook == config('constants.SOCIAL_STATUS.CONFIRMED')) $report = 'email_confirmed';
                 else
                 {
                     $keys = App\Models\UserKey::where(['key_type' => config('constants.KEY_TYPE.FACEBOOK_INTEGRATION_CONFIRM'),
@@ -371,7 +392,7 @@ class AuthController extends Controller
                     {
                         $k->delete();
                     }
-                    
+
                     $key = new App\Models\UserKey();
                     $key->user_id = $user->user_id;
                     $key->key_type = config('constants.KEY_TYPE.FACEBOOK_INTEGRATION_CONFIRM');
