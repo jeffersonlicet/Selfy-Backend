@@ -14,6 +14,9 @@
 Route::get('about/privacy', function () {
     return view('privacy');
 });
+
 Route::get('/', function () {
-    return view('welcome');
+    return view('pages.home')->with(['pageTitle' => 'Welcome']);
 });
+
+Route::get('/facebook/link', 'App\UserController@confirm_facebook_link');

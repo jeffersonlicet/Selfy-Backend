@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property integer $key_status
  * @property string $updated_at
  * @property string $created_At
- * @property User $user
+ * @property User $User
  */
 class UserKey extends Model
 {
@@ -24,7 +24,7 @@ class UserKey extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function user()
+    public function User()
     {
         return $this->belongsTo('App\Model\User', 'user_id', 'user_id');
     }
