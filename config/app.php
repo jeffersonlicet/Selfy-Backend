@@ -182,7 +182,6 @@ return [
         Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
         LaravelFCM\FCMServiceProvider::class,
         Squigg\AzureQueueLaravel\AzureQueueServiceProvider::class,
-        Yab\Laracogs\LaracogsProvider::class
     ],
 
     /*
