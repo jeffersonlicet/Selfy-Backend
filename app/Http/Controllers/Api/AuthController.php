@@ -8,6 +8,7 @@ use App\Mail\FbIntegrationConfirmMail;
 
 use App\Models\User;
 use App\Models\UserInformation;
+use App\Models\UserKey;
 use Carbon\Carbon;
 use Exception;
 use Hash;
@@ -501,6 +502,62 @@ class AuthController extends Controller
                     'user' => $user->toArray()
                 ]);
             }
+            return response()->json([
+                'status' => FALSE,
+                'report' => $validator->messages()->first()
+            ]);
+        }
+
+        catch(Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * Action to perform after click link from mobile to
+     * confirm facebook integration
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function confirm_facebook(Request $request)
+    {
+        try
+        {
+            $input = $request->all();
+
+            $validator = Validator::make($input, [
+                'code' => 'required',
+            ]);
+
+            if (!$validator->passes())
+                return response()->json(['status'=>FALSE, 'report'=>$validator->messages()->first()]);
+
+            if($code = UserKey::where('key_value', $input['code'])->first())
+            {
+                if($code->key_status == config('constants.KEY_STATUS.VALID') && $code->updated_at >= Carbon::today())
+                {
+                    $code->key_status = config('constants.KEY_STATUS.EXPIRED');
+                    $code->User->facebook = config('constants.SOCIAL_STATUS.CONFIRMED');
+                    $code->User->save();
+                    $code->delete();
+
+                    return response()->json(['status'=> TRUE, 'report' => 'action_done']);
+                }
+                else
+                {
+                    $code->key_value = str_random(15);
+                    $code->touch();
+                    $code->save();
+
+                    Mail::to($code->User)->send(new FbIntegrationConfirmMail($code->User, $code->key_value));
+                    return response()->json(['status'=> FALSE, 'report' => 'action_resend']);
+                }
+            }
+
             return response()->json([
                 'status' => FALSE,
                 'report' => $validator->messages()->first()

@@ -33,7 +33,7 @@ class UserController extends Controller
                 $code->touch();
                 $code->save();
 
-                Mail::to($code->User)->send(new FbIntegrationConfirmMail($user, $code->key_value));
+                Mail::to($code->User)->send(new FbIntegrationConfirmMail($code->User, $code->key_value));
                 return view('pages.message')->with(['pageTitle'=> 'Selfy', 'messageTitle' => 'Oops!',
                     'messageBody' => 'The token has expired please try again. We\'ve sent your another mail.'])->render();
             }
