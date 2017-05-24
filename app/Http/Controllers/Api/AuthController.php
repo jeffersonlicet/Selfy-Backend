@@ -558,7 +558,6 @@ class AuthController extends Controller
                 }
             }
 
-
             return response()->json([
                 'status' => FALSE,
                 'report' => 'invalid_key'
