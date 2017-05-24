@@ -215,15 +215,16 @@ class UserController extends Controller
                     'report' => $validator->messages()->first()
                 ]);
             }
+            if(\Auth::user()->username == null)
+            {
+                \Auth::user()->update($values);
+                \Auth::user()->touch();
+                \Auth::user()->save();
 
-            \Auth::user()->update($values);
-            \Auth::user()->touch();
-            \Auth::user()->save();
+                return response()->json(['status' => TRUE,'report' => 'resource_updated']);
+            }
 
-            return response()->json([
-                'status' => TRUE,
-                'report' => 'resource_updated'
-            ]);
+            else return response()->json(['status' => TRUE,'report' => 'invalid_action']);
         }
         catch (\Exception $e)
         {
