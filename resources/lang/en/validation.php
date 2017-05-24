@@ -115,5 +115,5 @@ return [
     */
 
     'attributes' => [],
-
+    'allowed_username' => 'The :attribute is invalid',
 ];

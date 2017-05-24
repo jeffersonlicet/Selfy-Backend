@@ -26,8 +26,27 @@ class UserController extends Controller
 {
     public function test()
     {
-        Mail::to(User::find(28))->send(new FbIntegrationConfirmMail(User::find(28), 5251));
-        print('sent');
+        $values['username'] = Input::get("username");
+
+        $validator = Validator::make(
+            $values, [ 'username' =>	'required|allowed_username|unique:users,username']
+        );
+
+        if(!$validator->passes())
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $validator->messages()->first()
+            ]);
+        }
+
+        else
+        {
+            print($values['username']);
+            print("is valid");
+        }
+
+        return response();
     }
 
     /**
@@ -147,6 +166,47 @@ class UserController extends Controller
                     }
                 }
             }
+
+            if(!$validator->passes())
+            {
+                return response()->json([
+                    'status' => FALSE,
+                    'report' => $validator->messages()->first()
+                ]);
+            }
+
+            \Auth::user()->update($values);
+            \Auth::user()->touch();
+            \Auth::user()->save();
+
+            return response()->json([
+                'status' => TRUE,
+                'report' => 'resource_updated'
+            ]);
+        }
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update_username(Request $request)
+    {
+        try
+        {
+            $values = $request->only(['username']);
+            $values['username'] = strtolower($values['username']);
+
+            $validator = Validator::make(
+                $values, [ 'username' =>	'required|allowed_username']
+            );
 
             if(!$validator->passes())
             {

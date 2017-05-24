@@ -99,4 +99,10 @@ return [
         ],
     ],
 
+
+    'reserved_usernames' => [
+        'jeffersonlicet',
+        'jeyns',
+    ],
+
 ];

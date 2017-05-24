@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
+use Validator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +20,11 @@ class AppServiceProvider extends ServiceProvider
             'spot' => 'App\Models\Place',
             'play' => 'App\Models\ChallengePlay',
         ]);
+
+        Validator::extend(
+            'allowed_username',
+            'App\Validation\AllowedUsernameValidator@validate'
+        );
     }
 
     /**
