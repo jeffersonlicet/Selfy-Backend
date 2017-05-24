@@ -21,7 +21,7 @@ class UserKey extends Model
     /**
      * @var array
      */
-    protected $fillable = ['user_id', 'key_id', 'key_value', 'key_type', 'key_status', 'updated_at', 'created_At'];
+    protected $fillable = ['user_id', 'key_id', 'key_value', 'key_type', 'key_status', 'updated_at', 'created_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

@@ -365,7 +365,7 @@ class AuthController extends Controller
                 {
                     if($old_key = App\Models\UserKey::where(['key_type' => config('constants.KEY_TYPE.FACEBOOK_INTEGRATION_CONFIRM'),
                         'user_id' => $user->user_id,
-                       ])->where('user_challenges.updated_at', '<', Carbon::today())->first())
+                       ])->where('updated_at', '<', Carbon::today())->first())
                     {
                         $old_key->delete();
 
@@ -534,7 +534,7 @@ class AuthController extends Controller
             ]);
 
             if (!$validator->passes())
-                return response()->json(['status'=>FALSE, 'report'=>$validator->messages()->first()]);
+                return response()->json(['status'=> FALSE, 'report' => $validator->messages()->first()]);
 
             if($code = UserKey::where('key_value', $input['code'])->first())
             {
@@ -558,9 +558,10 @@ class AuthController extends Controller
                 }
             }
 
+
             return response()->json([
                 'status' => FALSE,
-                'report' => $validator->messages()->first()
+                'report' => 'invalid_key'
             ]);
         }
 
