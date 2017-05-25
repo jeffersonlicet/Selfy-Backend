@@ -132,7 +132,7 @@ class UserController extends Controller
     {
         try
         {
-            $values = $request->only(['bio', 'firstname' , 'lastname', 'face_url', 'duo_enabled', 'spot_enabled', 'account_private', 'save_photos']);
+            $values = $request->only(['bio', 'firstname' , 'lastname', 'face_url', 'duo_enabled', 'spot_enabled', 'account_private', 'save_photos', 'email']);
             $values['duo_enabled'] = $values['duo_enabled'] == "1";
             $values['spot_enabled'] = $values['spot_enabled'] == "1";
             $values['account_private'] = $values['account_private'] == "1";
@@ -147,6 +147,7 @@ class UserController extends Controller
                         'spot_enabled'          =>	'required',
                         'account_private'       =>	'required',
                         'save_photos' =>	'required',
+                        'email' => 'required|email|unique:users,email'
                     ]
                 );
 
