@@ -53,7 +53,9 @@ class AuthController extends Controller
 
                 $user->password = Hash::make($input['password']);
                 $user->user_locale = App::getLocale();
-                $user->avatar = 'http://i.imgur.com/4sfeHin.jpg';
+
+                $user->avatar = 'http://i.imgur.com/Q42Sl3B.jpg';
+
                 if ($user->save())
                 {
                     $public = JWTAuth::fromUser($user);
