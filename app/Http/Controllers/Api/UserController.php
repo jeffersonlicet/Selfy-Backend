@@ -205,7 +205,7 @@ class UserController extends Controller
             $values['username'] = strtolower($values['username']);
 
             $validator = Validator::make(
-                $values, [ 'username' =>	'required|allowed_username']
+                $values, [ 'username' =>	'required|allowed_username|unique:users,username']
             );
 
             if(!$validator->passes())
