@@ -191,6 +191,21 @@ class User extends Authenticatable
      *  Return if the user can perform a like action
      * @return bool
      */
+    public function getSecondaryEmailAttribute()
+    {
+        if($this->facebook == config('constants.SOCIAL_STATUS.COMPLETED'))
+        {
+            return UserInformation::where('user_id', $this->user_id)->first()->facebook_email;
+        }
+
+        return null;
+    }
+
+    /**
+     *  Append property
+     *  Return if the user can perform a like action
+     * @return bool
+     */
     public function getFollowEnabledAttribute()
     {
 
