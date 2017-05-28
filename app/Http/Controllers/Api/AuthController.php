@@ -331,9 +331,10 @@ class AuthController extends Controller
             if (!$validator->passes())
                 return response()->json(['status' => FALSE, 'report' => $validator->messages()->first()]);
 
-            if(($user = User::with('information')->where('email', $input['identity'])->first()) ||
-                ($user = UserInformation::has('User')->with('User')->where('facebook_email', $input['identity'])->first()->User))
+            $alternate = UserInformation::has('User')->with('User')->where('facebook_email', $input['identity'])->first();
+            if(($user = User::with('information')->where('email', $input['identity'])->first()) || $alternate)
             {
+                if($alternate) $user = $alternate->User;
                 $report = 'confirmation_required';
 
                 if($user->facebook == config('constants.SOCIAL_STATUS.COMPLETED'))
