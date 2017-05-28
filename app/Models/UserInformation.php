@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property float $twitter_id
  * @property string $created_at
  * @property string $updated_at
- * @property User $user
+ * @property User $User
  */
 class UserInformation extends Model
 {
@@ -30,7 +30,7 @@ class UserInformation extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function user()
+    public function User()
     {
         return $this->belongsTo('App\Models\User', 'user_id', 'user_id');
     }

@@ -1027,17 +1027,38 @@ class UserController extends Controller
                 ]);
             }
 
-            $following  = \Auth::user()->Following->pluck('following_id');
-            $following[] = \Auth::user()->user_id;
             $fb = App::make('SammyK\LaravelFacebookSdk\LaravelFacebookSdk');
 
-            try {
-                $response = $fb->get('/me/friends?fields=id,installed', \Auth::user()->facebook_token);
-                dd($response);
-            } catch (\Facebook\Exceptions\FacebookSDKException $e) {
-                dd($e->getMessage());
-            }
+            try
+            {
+                $response = $fb->get('/me/friends?limit=5000&fields=id,installed', \Auth::user()->facebook_token);
 
+                if($response->getHttpStatusCode() == 200)
+                {
+                    $fbUsers    = \GuzzleHttp\json_decode($response->getBody())->data;
+                    $user_ids   = [];
+                    $curated    = [];
+
+                    foreach ($fbUsers as $user)
+                        $user_ids[] = $user->id;
+
+                    $user_ids[] = '987355971280310';
+
+                    $users = App\Models\UserInformation::has('User')->whereIn('facebook_id', $user_ids)
+                        ->with(['User' => function($query) {
+                            $following  = \Auth::user()->Following->pluck('following_id');
+                            $following[] = \Auth::user()->user_id;
+                            $query->whereNotIn('user_id', $following);
+                        }])->get();
+
+                    foreach ($users as $u)
+                        $curated[] = $u->User;
+
+                    return response()->json(['status' => TRUE, 'connections' => $curated]);
+                }
+            } catch (\Facebook\Exceptions\FacebookSDKException $e) {
+                return response()->json(['status' => FALSE, 'report' =>$e->getMessage()]);
+            }
 
         }
         catch (\Exception $e)
