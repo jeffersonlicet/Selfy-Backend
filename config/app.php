@@ -182,6 +182,7 @@ return [
         Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
         LaravelFCM\FCMServiceProvider::class,
         Squigg\AzureQueueLaravel\AzureQueueServiceProvider::class,
+        SammyK\LaravelFacebookSdk\LaravelFacebookSdkServiceProvider::class,
     ],
 
     /*

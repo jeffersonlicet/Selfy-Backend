@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App;
 use App\Mail\FbIntegrationConfirmMail;
 use App\Models\Challenge;
 use App\Models\User;
@@ -19,7 +20,6 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Input;
 use Illuminate\Validation\Rule;
-use Mail;
 use Validator;
 
 class UserController extends Controller
@@ -994,6 +994,50 @@ class UserController extends Controller
                 'status' => TRUE,
                 'connections' => $suggestion->isEmpty() ? [] : $suggestion->toArray()
             ]);
+
+        }
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function facebook_suggestion()
+    {
+        try
+        {
+            $limit = Input::get('limit', 10);
+            $page = Input::get('page', 0);
+
+            $validator =
+                Validator::make(
+                    ['limit' => $limit, 'page' => $page],
+                    ['limit' => ['required', 'numeric', 'between:1,20'], 'page' => ['required', 'numeric']
+
+                    ]
+                );
+
+            if (!$validator->passes()) {
+                return response()->json([
+                    'status' => TRUE,
+                    'report' => $validator->messages()->first()
+                ]);
+            }
+
+            $following  = \Auth::user()->Following->pluck('following_id');
+            $following[] = \Auth::user()->user_id;
+            $fb = App::make('SammyK\LaravelFacebookSdk\LaravelFacebookSdk');
+
+            try {
+                $response = $fb->get('/me/friends?fields=id,installed', \Auth::user()->facebook_token);
+                dd($response);
+            } catch (\Facebook\Exceptions\FacebookSDKException $e) {
+                dd($e->getMessage());
+            }
+
 
         }
         catch (\Exception $e)

@@ -52,7 +52,8 @@ Route::group(
 
         Route::get('likes', 'Api\LikeController@index');
         Route::post('user/avatar', 'Api\UserController@avatar');
-//
+
+        Route::get('users/fb_suggestions', 'Api\UserController@facebook_suggestion');
         Route::get('users/suggestions', 'Api\UserController@suggestions');
         Route::get('users/duo', 'Api\UserController@duo');
         Route::get('users/search', 'Api\UserController@search');
