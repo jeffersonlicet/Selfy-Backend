@@ -52,6 +52,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property int gender
  * @property int facebook
  * @property int twitter
+ * @property string $facebook_token
  */
 class User extends Authenticatable
 {
