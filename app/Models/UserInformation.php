@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $created_at
  * @property string $updated_at
  * @property User $User
+ * @property string $facebook_email
  */
 class UserInformation extends Model
 {

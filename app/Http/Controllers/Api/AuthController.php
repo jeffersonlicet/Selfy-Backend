@@ -293,6 +293,7 @@ class AuthController extends Controller
             $userInfo = new UserInformation();
             $userInfo->facebook_id = $input['fb_id'];
             $userInfo->user_id = $user->user_id;
+            $userInfo->facebook_email = $input['email'];
             $userInfo->save();
 
             return response()->json([
@@ -330,7 +331,8 @@ class AuthController extends Controller
             if (!$validator->passes())
                 return response()->json(['status' => FALSE, 'report' => $validator->messages()->first()]);
 
-            if($user = User::with('information')->where('email', $input['identity'])->first())
+            if(($user = User::with('information')->where('email', $input['identity'])->first()) ||
+                ($user = UserInformation::has('User')->with('User')->where('facebook_email', $input['identity'])->first()->User))
             {
                 $report = 'confirmation_required';
 
@@ -453,7 +455,6 @@ class AuthController extends Controller
                     $user->gender = 2;
             }
 
-            $user->email = $input['email'];
             $user->facebook = config('constants.SOCIAL_STATUS.COMPLETED');
 
             if ($request->has('firstname'))
@@ -495,6 +496,7 @@ class AuthController extends Controller
                 $userInfo = new UserInformation();
                 $userInfo->facebook_id = $input['fb_id'];
                 $userInfo->user_id = $user->user_id;
+                $userInfo->facebook_email = $input['email'];
                 $userInfo->save();
 
                 return response()->json([
