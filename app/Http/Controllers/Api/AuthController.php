@@ -539,7 +539,7 @@ class AuthController extends Controller
                  */
                 case config('constants.SOCIAL_STATUS.UNSET'):
 
-                    if(!User::where('email', $input['identity'])->first() && !UserInformation::where('facebook_id', $input['facebook_id'])->first())
+                    if(\Auth::user()->email == $input['identity'] || (!User::where('email', $input['identity'])->first() && !UserInformation::where('facebook_id', $input['facebook_id'])->first()))
                     {
                        /* Let's create the link */
                         \Auth::user()->facebook = config('constants.SOCIAL_STATUS.IMPLICIT');
@@ -558,6 +558,7 @@ class AuthController extends Controller
                             'user' => \Auth::user()->toArray()
                         ]);
                     }
+
 
                     /**
                      * Integration error
