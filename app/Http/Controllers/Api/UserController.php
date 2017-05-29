@@ -10,6 +10,7 @@ use App\Models\UserChallenge;
 use App\Models\UserFace;
 use App\Models\UserFollower;
 use App\Models\UserFollowing;
+use App\Models\UserInformation;
 use App\Models\UserInvitation;
 use App\Notifications\DuoInvitationNotification;
 use App\Notifications\FollowInvitationNotification;
@@ -242,25 +243,35 @@ class UserController extends Controller
      */
     public function update_facebook_token(Request $request)
     {
-        try
-        {
-            $values = $request->only(['facebook_token']);
+        try {
+            $values = $request->only(['facebook_token', 'facebook_id']);
 
             $validator = Validator::make(
-                $values, [ 'facebook_token' =>	'required']
+                $values, ['facebook_token' => 'required', 'facebook_id' => 'required']
             );
 
-            if(!$validator->passes())
-            {
+            if (!$validator->passes()) {
                 return response()->json([
                     'status' => FALSE,
                     'report' => $validator->messages()->first()
                 ]);
             }
 
-            \Auth::user()->update($values);
+            \Auth::user()->facebook_token = $values['facebook_token'];
             \Auth::user()->touch();
             \Auth::user()->save();
+
+            if(!UserInformation::where('user_id', \Auth::user()->user_id)->first())
+            {
+                $userInfo = new UserInformation();
+                $userInfo->facebook_id = $values['facebook_token'];
+                $userInfo->user_id = \Auth::user()->user_id;
+                $userInfo->save();
+
+                \Auth::user()->facebook = config('constants.SOCIAL_STATUS.IMPLICIT');
+                \Auth::user()->touch();
+                \Auth::user()->save();
+            }
 
             return response()->json(['status' => TRUE,'report' => 'resource_updated']);
 
@@ -1024,6 +1035,14 @@ class UserController extends Controller
                 return response()->json([
                     'status' => TRUE,
                     'report' => $validator->messages()->first()
+                ]);
+            }
+
+            if(\Auth::user()->facebook_token == null)
+            {
+                return response()->json([
+                    'status' => TRUE,
+                    'report' => 'facebook_required'
                 ]);
             }
 
