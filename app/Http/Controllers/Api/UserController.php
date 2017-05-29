@@ -243,7 +243,8 @@ class UserController extends Controller
      */
     public function update_facebook_token(Request $request)
     {
-        try {
+        try
+        {
             $values = $request->only(['facebook_token', 'facebook_id']);
 
             $validator = Validator::make(
@@ -257,24 +258,33 @@ class UserController extends Controller
                 ]);
             }
 
-            \Auth::user()->facebook_token = $values['facebook_token'];
-            \Auth::user()->touch();
-            \Auth::user()->save();
-
-            if(!UserInformation::where('user_id', \Auth::user()->user_id)->first())
+            if(\Auth::user()->facebook == config('constants.SOCIAL_STATUS.UNSET'))
             {
-                $userInfo = new UserInformation();
-                $userInfo->facebook_id = $values['facebook_token'];
-                $userInfo->user_id = \Auth::user()->user_id;
-                $userInfo->save();
+                if(!UserInformation::where(['facebook_id' => $values['facebook_id']])->first())
+                {
+                    $userInfo = new UserInformation();
+                    $userInfo->facebook_id = $values['facebook_id'];
+                    $userInfo->user_id = \Auth::user()->user_id;
+                    $userInfo->save();
 
-                \Auth::user()->facebook = config('constants.SOCIAL_STATUS.IMPLICIT');
+                    \Auth::user()->facebook = config('constants.SOCIAL_STATUS.IMPLICIT');
+                    \Auth::user()->touch();
+                    \Auth::user()->save();
+
+                    return response()->json(['status' => TRUE,'report' => 'resource_updated']);
+                } else return response()->json(['status' => FALSE,'report' => 'validation_required']);
+            }
+            elseif(\Auth::user()->facebook == config('constants.SOCIAL_STATUS.COMPLETED') ||
+                   \Auth::user()->facebook == config('constants.SOCIAL_STATUS.IMPLICIT'))
+            {
+                \Auth::user()->facebook_token = $values['facebook_token'];
                 \Auth::user()->touch();
                 \Auth::user()->save();
+
+                return response()->json(['status' => TRUE,'report' => 'resource_updated']);
             }
 
-            return response()->json(['status' => TRUE,'report' => 'resource_updated']);
-
+            else return response()->json(['status' => FALSE,'report' => 'validation_required']);
         }
         catch (\Exception $e)
         {
