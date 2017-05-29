@@ -389,6 +389,7 @@ class AuthController extends Controller
                 }
 
                 elseif($user->facebook == config('constants.SOCIAL_STATUS.CONFIRMED')) $report = 'email_confirmed';
+                elseif($user->facebook == config('constants.SOCIAL_STATUS.IMPLICIT')) $report = 'is_implicit';
                 else
                 {
                     $keys = App\Models\UserKey::where(['key_type' => config('constants.KEY_TYPE.FACEBOOK_INTEGRATION_CONFIRM'),
