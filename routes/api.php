@@ -16,7 +16,6 @@ Route::post('user/create', 'Api\AuthController@create');
 Route::post('user/login', 'Api\AuthController@login');
 Route::post('user/refresh', 'Api\AuthController@refresh');
 Route::post('user/exists', 'Api\AuthController@sync_facebook');
-Route::post('user/exists_implicit', 'Api\AuthController@sync_facebook_implicit');
 Route::post('user/facebook_create', 'Api\AuthController@create_facebook');
 Route::post('user/facebook_link', 'Api\AuthController@link_facebook');
 Route::post('user/facebook_confirm', 'Api\AuthController@confirm_facebook');
@@ -66,6 +65,7 @@ Route::group(
         Route::post('user/firebase', 'Api\UserController@firebase');
         Route::post('user/follow', 'Api\UserController@follow');
         Route::post('user/unfollow', 'Api\UserController@unfollow');
+        Route::post('user/exists_implicit', 'Api\AuthController@sync_facebook_implicit');
 
         Route::get('user/followers', 'Api\UserController@followers');
         Route::get('user/following', 'Api\UserController@following');
