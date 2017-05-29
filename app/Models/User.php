@@ -208,7 +208,6 @@ class User extends Authenticatable
      */
     public function getFollowEnabledAttribute()
     {
-
         return !\Auth::guest() && \Auth::user()->user_id != $this->user_id && !boolval(count(UserFollower::where(['follower_id' => \Auth::user()->user_id, 'following_id' => $this->user_id])->first()));
         /** @noinspection end */
     }
