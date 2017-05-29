@@ -515,9 +515,9 @@ class AuthController extends Controller
                      */
                     else
                     {
-                        return response()->json(['status' => TRUE,
+                        return response()->json([
+                            'status' => TRUE,
                             'report'=> 'invalid_action',
-                            'user' => []
                         ]);
                     }
 
@@ -562,16 +562,15 @@ class AuthController extends Controller
                     {
                         return response()->json(['status' => TRUE,
                             'report'=> 'invalid_action',
-                            'user' => []
                         ]);
                     }
 
                     break;
             }
 
-            return response()->json(['status' => TRUE,
+            return response()->json([
+                'status' => TRUE,
                 'report'=> 'invalid_action',
-                'user' => []
             ]);
         }
 
