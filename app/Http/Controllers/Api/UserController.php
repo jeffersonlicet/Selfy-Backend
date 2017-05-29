@@ -1031,25 +1031,24 @@ class UserController extends Controller
 
             try
             {
-                $response = $fb->get('/me/friends?limit=5000&fields=id,installed', \Auth::user()->facebook_token);
+                $response = $fb->get('/me/friends?fields=id&limit=5000', \Auth::user()->facebook_token);
 
                 if($response->getHttpStatusCode() == 200)
                 {
                     $fbUsers    = \GuzzleHttp\json_decode($response->getBody())->data;
+
                     $user_ids   = [];
                     $curated    = [];
 
                     foreach ($fbUsers as $user)
                         $user_ids[] = $user->id;
 
-                    $user_ids[] = '987355971280310';
-
                     $users = App\Models\UserInformation::has('User')->whereIn('facebook_id', $user_ids)
                         ->with(['User' => function($query) {
                             $following  = \Auth::user()->Following->pluck('following_id');
                             $following[] = \Auth::user()->user_id;
                             $query->whereNotIn('user_id', $following);
-                        }])->get();
+                        }])->limit($limit)->offset($limit*$page)->get();
 
                     foreach ($users as $u)
                         $curated[] = $u->User;
