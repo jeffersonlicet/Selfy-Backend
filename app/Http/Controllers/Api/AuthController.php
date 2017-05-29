@@ -424,6 +424,87 @@ class AuthController extends Controller
         }
     }
 
+
+    /**
+     * Determine if an account has facebook associated without
+     * altering tokens
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function sync_facebook_implicit(Request $request)
+    {
+        try
+        {
+            $input = $request->all();
+            $validator = Validator::make($input, ['identity' => 'required|email']);
+
+            if (!$validator->passes())
+                return response()->json(['status' => FALSE, 'report' => $validator->messages()->first()]);
+
+            $alternate = UserInformation::has('User')->with('User')->where('facebook_email', $input['identity'])->first();
+            if(($user = User::with('information')->where('email', $input['identity'])->first()) || $alternate)
+            {
+                if($alternate) $user = $alternate->User;
+                $report = 'confirmation_required';
+
+                if($user->facebook == config('constants.SOCIAL_STATUS.COMPLETED')) $report = 'exists';
+
+                elseif($user->facebook == config('constants.SOCIAL_STATUS.PENDING'))
+                {
+                    if($old_key = App\Models\UserKey::where(['key_type' => config('constants.KEY_TYPE.FACEBOOK_INTEGRATION_CONFIRM'),
+                        'user_id' => $user->user_id,
+                    ])->where('updated_at', '<', Carbon::today())->first())
+                    {
+                        $old_key->delete();
+
+                        $key = new App\Models\UserKey();
+                        $key->user_id = $user->user_id;
+                        $key->key_type = config('constants.KEY_TYPE.FACEBOOK_INTEGRATION_CONFIRM');
+                        $key->key_value = str_random(15);
+                        $key->save();
+                        $user->facebook = config('constants.SOCIAL_STATUS.PENDING');
+                        $user->save();
+
+                        Mail::to($user)->send(new FbIntegrationConfirmMail($user, $key->key_value));
+                        $report = 'confirmation_required';
+                    }
+                    else $report = 'email_sent';
+                }
+
+                elseif($user->facebook == config('constants.SOCIAL_STATUS.CONFIRMED')) $report = 'email_confirmed';
+                elseif($user->facebook == config('constants.SOCIAL_STATUS.IMPLICIT')) $report = 'is_implicit';
+                else
+                {
+                    $keys = App\Models\UserKey::where(['key_type' => config('constants.KEY_TYPE.FACEBOOK_INTEGRATION_CONFIRM'),
+                        'user_id' => $user->user_id])->get();
+
+                    foreach($keys as $k)
+                    {
+                        $k->delete();
+                    }
+
+                    $key = new App\Models\UserKey();
+                    $key->user_id = $user->user_id;
+                    $key->key_type = config('constants.KEY_TYPE.FACEBOOK_INTEGRATION_CONFIRM');
+                    $key->key_value = str_random(15);
+                    $key->save();
+                    $user->facebook = config('constants.SOCIAL_STATUS.PENDING');
+                    $user->save();
+
+                    Mail::to($user)->send(new FbIntegrationConfirmMail($user, $key->key_value));
+                }
+            }
+            else $report = 'register_required';
+
+            return response()->json(['status' => TRUE, 'report'=> $report, 'user' => $user]);
+        }
+
+        catch(Exception $e)
+        {
+            return response()->json(['status' => FALSE, 'report' => $e->getMessage()]);
+        }
+    }
+
     /**
      * Create an user account using facebook data
      *
