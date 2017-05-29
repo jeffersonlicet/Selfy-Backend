@@ -569,7 +569,7 @@ class AuthController extends Controller
                     break;
             }
 
-            return response()->json(['status' => FALSE,
+            return response()->json(['status' => TRUE,
                 'report'=> 'invalid_action',
                 'user' => []
             ]);
