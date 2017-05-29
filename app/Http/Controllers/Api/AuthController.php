@@ -493,6 +493,12 @@ class AuthController extends Controller
                         \Auth::user()->touch();
                         \Auth::user()->save();
 
+                        $info = new UserInformation();
+                        $info->facebook_id = $input['facebook_id'];
+                        $info->user_id = \Auth::user()->user_id;
+                        $info->facebook_email = $input['identity'];
+                        $info->save();
+
                         //Clean confirm integration keys
                         $keys = UserKey::where([
                             'key_type' => config('constants.KEY_TYPE.FACEBOOK_INTEGRATION_CONFIRM'),
