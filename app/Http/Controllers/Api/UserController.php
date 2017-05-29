@@ -258,7 +258,8 @@ class UserController extends Controller
                 ]);
             }
 
-            if(\Auth::user()->facebook == config('constants.SOCIAL_STATUS.UNSET'))
+            if(\Auth::user()->facebook == config('constants.SOCIAL_STATUS.UNSET') ||
+                \Auth::user()->facebook == config('constants.SOCIAL_STATUS.CONFIRMED'))
             {
                 if(!UserInformation::where(['facebook_id' => $values['facebook_id']])->first())
                 {
