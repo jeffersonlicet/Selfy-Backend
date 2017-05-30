@@ -15,6 +15,10 @@ Route::get('about/privacy', function () {
     return view('privacy');
 });
 
+Route::get('android', function () {
+    return view('pages.android')->with(['metaTags' => true, 'pageTitle' => 'Selfy for Android']);
+});
+
 Route::get('/', function () {
     return view('pages.welcome')->with(['pageTitle' => 'Welcome to Selfy']);
 });
