@@ -59,6 +59,7 @@ Route::group(
         Route::get('users/search', 'Api\UserController@search');
         Route::get('users/featured', 'Api\UserController@featured');
         Route::post('user/update_username', 'Api\UserController@update_username');
+        Route::post('user/update_challenges', 'Api\UserController@update_challenges');
         Route::post('user/update_facebook_token', 'Api\UserController@update_facebook_token');
         Route::post('user/face', 'Api\UserController@face');
         Route::post('user/update', 'Api\UserController@update');

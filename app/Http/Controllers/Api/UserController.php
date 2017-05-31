@@ -199,6 +199,54 @@ class UserController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
+    public function update_challenges(Request $request)
+    {
+        try
+        {
+            $values = $request->only(['play_enabled', 'duo_enabled', 'spot_enabled']);
+            $values['duo_enabled'] = $values['duo_enabled'] == "1";
+            $values['spot_enabled'] = $values['spot_enabled'] == "1";
+            $values['play_enabled'] = $values['play_enabled'] == "1";
+
+            $validator = Validator::make(
+                $values,
+                [
+                    'duo_enabled'           =>	'required',
+                    'spot_enabled'          =>	'required',
+                    'play_enabled'       =>	'required',
+                ]
+            );
+
+            if(!$validator->passes())
+            {
+                return response()->json([
+                    'status' => FALSE,
+                    'report' => $validator->messages()->first()
+                ]);
+            }
+
+            \Auth::user()->update($values);
+            \Auth::user()->touch();
+            \Auth::user()->save();
+
+            return response()->json([
+                'status' => TRUE,
+                'report' => 'resource_updated'
+            ]);
+        }
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function update_username(Request $request)
     {
         try

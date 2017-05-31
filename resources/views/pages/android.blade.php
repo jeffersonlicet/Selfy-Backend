@@ -1,4 +1,4 @@
-@extends('layouts.default')
+@extends('layouts.landing')
 
 @section("content")
     Hola mundo
