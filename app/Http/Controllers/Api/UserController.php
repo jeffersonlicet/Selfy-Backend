@@ -204,6 +204,9 @@ class UserController extends Controller
         try
         {
             $values = $request->only(['play_enabled', 'duo_enabled', 'spot_enabled']);
+            $values['duo_enabled'] = $values['duo_enabled'] == "1";
+            $values['spot_enabled'] = $values['spot_enabled'] == "1";
+            $values['play_enabled'] = $values['play_enabled'] == "1";
 
             $validator = Validator::make(
                 $values,
