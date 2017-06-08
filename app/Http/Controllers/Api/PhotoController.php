@@ -150,9 +150,8 @@ class PhotoController extends Controller
 
             if($request->has("caption"))
             {
-                $this->handleHashtags($photo->created_at, $photo->photo_id);
+                $this->handleHashtags($photo->caption, $photo->photo_id);
             }
-
 
             if($request->has("latitude") && $request->has("latitude") && \Auth::user()->spot_enabled)
             {
