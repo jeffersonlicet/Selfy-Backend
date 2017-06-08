@@ -645,6 +645,7 @@ class PhotoController extends Controller
     private function handlePhotoMentions(Photo $photo)
     {
         $usernames = Expression::parseText($photo->caption, 'mentions');
+
         foreach ($usernames as $u)
         {
             if($user = User::where('username',$u)->first())
