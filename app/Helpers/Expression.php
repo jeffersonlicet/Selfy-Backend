@@ -15,7 +15,7 @@ class Expression
      *
      * @var  string
      */
-    const REGEX_USERNAME_MENTION = '/(^|[^a-z0-9_])[@＠]([a-z0-9_]{1,20})([@＠\xC0-\xD6\xD8-\xF6\xF8-\xFF]?)/iu';
+    const REGEX_USERNAME_MENTION = '/(^|[^a-z0-9_])[@＠]([a-z0-9_]{1,20})/iu';
 
     /**
      * Expression to match a hashtag.

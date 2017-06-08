@@ -149,7 +149,7 @@ class Photo extends Model
      */
     public static function collection(User $user, $user_id, $limit, $offset)
     {
-        return Photo::feedDefinition($user, $user_id)->filterReportsDefinition()->where(['adult_content' => 0])->with('User', 'Place', 'Challenges', 'Challenges.Object', 'Hashtags')->offset($offset)->limit($limit)->orderBy('photo_id', 'desc')->get();
+        return Photo::feedDefinition($user, $user_id)->filterReportsDefinition()->where(['adult_content' => 0])->with('User', 'Place', 'Challenges', 'Challenges.Object')->offset($offset)->limit($limit)->orderBy('photo_id', 'desc')->get();
     }
 
     /**
@@ -180,7 +180,7 @@ class Photo extends Model
     public static function single($id)
     {
 
-        return Photo::with('User', 'Place', 'Challenges', 'Challenges.Object', 'Hashtags')->find($id);
+        return Photo::with('User', 'Place', 'Challenges', 'Challenges.Object')->find($id);
         /** @noinspection end */
     }
 
@@ -196,7 +196,7 @@ class Photo extends Model
     public static function related($photo_id, $user_id, $relation, $limit)
     {
 
-        return Photo::with('User', 'Place', 'Challenges', 'Challenges.Object', 'Hashtags')->where(['user_id'=> $user_id, ['photo_id', $relation, $photo_id]])->limit($limit)->orderBy('photo_id', 'desc')->get();
+        return Photo::with('User', 'Place', 'Challenges', 'Challenges.Object')->where(['user_id'=> $user_id, ['photo_id', $relation, $photo_id]])->limit($limit)->orderBy('photo_id', 'desc')->get();
         /** @noinspection end */
     }
 
