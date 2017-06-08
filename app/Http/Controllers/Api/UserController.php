@@ -25,14 +25,16 @@ class UserController extends Controller
 {
     public function test()
     {
-
+        $username = "h52";
+        var_dump(is_numeric($username));
     }
 
     /**
      * Return a user information
      *
-     * @param $id
+     * @param $data
      * @return \Illuminate\Http\JsonResponse
+     * @internal param $id
      */
     public function show($data)
     {
@@ -52,9 +54,8 @@ class UserController extends Controller
                 ]);
             }
 
-            if(is_string($data))
-                $result = User::with('Face')->where('username', $data)->first();
-            else  $result = User::with('Face')->find($data);
+            $result = is_numeric($data) ? User::with('Face')->find($data) :
+                User::with('Face')->where('username', $data)->first();
 
             if ($result)
             {
