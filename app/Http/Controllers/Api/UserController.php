@@ -3,33 +3,29 @@
 namespace App\Http\Controllers\Api;
 
 use App;
-use App\Mail\FbIntegrationConfirmMail;
 use App\Models\Challenge;
-use App\Models\Hashtag;
-use App\Models\PhotoHashtag;
 use App\Models\User;
 use App\Models\UserChallenge;
 use App\Models\UserFace;
 use App\Models\UserFollower;
 use App\Models\UserFollowing;
-use App\Models\UserInformation;
 use App\Models\UserInvitation;
-use App\Models\UserPhotoMention;
 use App\Notifications\DuoInvitationNotification;
 use App\Notifications\FollowInvitationNotification;
 use App\Notifications\FollowNotification;
 use Exception;
+use Expression;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Input;
 use Illuminate\Validation\Rule;
 use Validator;
-
 class UserController extends Controller
 {
     public function test()
     {
+
     }
 
     /**

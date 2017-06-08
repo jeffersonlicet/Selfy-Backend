@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\Expression;
 use App\Http\Controllers\Controller;
 use App\Jobs\CheckAdultContent;
 use App\Jobs\CheckDuo;
@@ -25,20 +26,6 @@ use GuzzleHttp\Psr7\Request as GuzzleRequest;
 
 class PhotoController extends Controller
 {
-    /**
-     * Expression to match a username.
-     *
-     * @var  string
-     */
-    const REGEX_USERNAME_MENTION = '/(^|[^a-z0-9_])[@＠]([a-z0-9_]{1,20})([@＠\xC0-\xD6\xD8-\xF6\xF8-\xFF]?)/iu';
-
-    /**
-     * Expression to match a hashtag.
-     *
-     * @var  string
-     */
-    const REGEX_HASHTAG = '/(^|[^0-9A-Z&\/\?]+)([#＃]+)([0-9A-Z_]*[A-Z_]+[a-z0-9_üÀ-ÖØ-öø-ÿ]*)/iu';
-
     /**
      * Show the photo feed
      *
@@ -657,22 +644,7 @@ class PhotoController extends Controller
      */
     private function handlePhotoMentions(Photo $photo)
     {
-        $caption = trim(strtolower($photo->caption));
-        $result = [];
-        preg_match_all(self::REGEX_USERNAME_MENTION, $caption, $result);
-
-        list($_all, $_before, $username, $after) = array_pad($result, 4, '');
-
-        $usernames = array();
-
-        for ($i = 0; $i < count($username); $i ++) {
-            # If $after is not empty, there is an invalid character.
-            if (!empty($after[$i])) continue;
-            array_push($usernames, $username[$i]);
-        }
-
-        $usernames = array_unique($usernames);
-
+        $usernames = Expression::parseText($photo->caption, 'mentions');
         foreach ($usernames as $u)
         {
             if($user = User::where('username',$u)->first())
@@ -700,38 +672,30 @@ class PhotoController extends Controller
      */
     private function handlePhotoHashtags(Photo $photo)
     {
-        $caption = trim(strtolower($photo->caption));
-        $result = [];
+        $hashtags = Expression::parseText($photo->caption, 'hashtags');
 
-        preg_match_all(self::REGEX_HASHTAG, $caption, $result);
-
-        if(count($result) > 0)
+        foreach($hashtags as $word)
         {
-            if(!isset($result[3]) || count($result[3]) == 0) return;
-
-            $words = array_unique($result[3]);
-            foreach($words as $word)
+            if(!$hashtag = Hashtag::where('hashtag_text', $word)->first())
             {
-                if(!$hashtag = Hashtag::where('hashtag_text', $word)->first())
-                {
-                    $hashtag = new Hashtag();
-                    $hashtag->hashtag_text = $word;
-                }
-
-                $hashtag->hashtag_relevance++;
-                $hashtag->save();
-
-                if(!$relation = PhotoHashtag::where([
-                    'photo_id' => $photo->photo_id,
-                    'hashtag_id' => $hashtag->hashtag_id])->first())
-                {
-                    $relation = new PhotoHashtag();
-                    $relation->photo_id = $photo->photo_id;
-                    $relation->hashtag_id = $hashtag->hashtag_id;
-                    $relation->save();
-                }
-
+                $hashtag = new Hashtag();
+                $hashtag->hashtag_text = $word;
             }
+
+            $hashtag->hashtag_relevance++;
+            $hashtag->save();
+
+            if(!$relation = PhotoHashtag::where([
+                'photo_id' => $photo->photo_id,
+                'hashtag_id' => $hashtag->hashtag_id])->first())
+            {
+                $relation = new PhotoHashtag();
+                $relation->photo_id = $photo->photo_id;
+                $relation->hashtag_id = $hashtag->hashtag_id;
+                $relation->save();
+            }
+
         }
+
     }
 }

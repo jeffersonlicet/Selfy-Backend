@@ -236,6 +236,7 @@ return [
         'JWTAuth'   => Tymon\JWTAuth\Facades\JWTAuth::class,
         'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
         'FCM' => LaravelFCM\Facades\FCM::class,
+        'Expression' => App\Helpers\Expression::class
     ],
 
     'foursquare_client' => env('FOURSQUARE_CLIENT_ID'),

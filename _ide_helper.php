@@ -11835,6 +11835,13 @@ namespace LaravelFCM\Facades {
     }         
 }
     
+namespace App\Helpers {
+
+    class Expression {
+        
+    }         
+}
+    
     
 namespace {
 
@@ -13890,6 +13897,8 @@ namespace {
     class JWTFactory extends \Tymon\JWTAuth\Facades\JWTFactory {}
     
     class FCM extends \LaravelFCM\Facades\FCM {}
+    
+    class Expression extends \App\Helpers\Expression {}
     
 }
 
