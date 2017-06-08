@@ -34,14 +34,14 @@ class UserController extends Controller
      * @param $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show($id)
+    public function show($data)
     {
         try
         {
             $validator =
                 Validator::make(
-                    ['id' => $id],
-                    ['id' => ['required', 'numeric']]
+                    ['data' => $data],
+                    ['data' => ['required']]
                 );
 
             if(!$validator->passes())
@@ -52,8 +52,11 @@ class UserController extends Controller
                 ]);
             }
 
+            if(is_string($data))
+                $result = User::with('Face')->where('username', $data)->first();
+            else  $result = User::with('Face')->find($data);
 
-            if ($result = User::with('Face')->find($id))
+            if ($result)
             {
                 return response()->json([
                     'status' => TRUE,
