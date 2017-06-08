@@ -28,14 +28,8 @@ use Validator;
 
 class UserController extends Controller
 {
-
     public function test()
     {
-        $photo_id = 45;
-        $caption  = "hola jeff@licet @,licet @jeff @all @jeffersonlicet @all";
-
-
-
     }
 
     /**

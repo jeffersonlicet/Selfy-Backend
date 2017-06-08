@@ -707,9 +707,9 @@ class PhotoController extends Controller
 
         if(count($result) > 0)
         {
-            if(!isset($result[1]) || count($result[1]) == 0) return;
+            if(!isset($result[3]) || count($result[3]) == 0) return;
 
-            $words = array_unique($result[1]);
+            $words = array_unique($result[3]);
             foreach($words as $word)
             {
                 if(!$hashtag = Hashtag::where('hashtag_text', $word)->first())
