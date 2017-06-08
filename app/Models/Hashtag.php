@@ -16,6 +16,8 @@ class Hashtag extends Model
 {
     protected $primaryKey = "hashtag_id";
 
+    protected $hidden = ['created_at', 'updated_at', 'hashtag_status', 'hashtag_relevance'];
+
     /**
      * @var array
      */
