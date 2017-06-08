@@ -29,8 +29,8 @@ class UserController extends Controller
 {
     public function test()
     {
-        $photo_id = 67;
-        $caption  = "hola #selfie #love #Selfie #SelfyWithFriends";
+        $photo_id = 45;
+        $caption  = "hola #az( #arroz";
         $caption = trim(strtolower($caption));
         $result = [];
 
