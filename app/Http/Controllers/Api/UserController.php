@@ -27,27 +27,25 @@ class UserController extends Controller
 {
     public function test()
     {
-        $values['username'] = Input::get("username");
-
-        $validator = Validator::make(
-            $values, [ 'username' =>	'required|allowed_username|unique:users,username']
-        );
-
-        if(!$validator->passes())
+        $caption  = "hola #selfie #love #Selfie #SelfyWithFriends";
+        $caption = trim(strtolower($caption));
+        $result = [];
+        preg_match_all("/#(\\w+)/", $caption, $result);
+        if(count($result) > 0)
         {
-            return response()->json([
-                'status' => FALSE,
-                'report' => $validator->messages()->first()
-            ]);
+            foreach($result[1] as $word)
+            {
+               if(!$hashtag = App\Models\Hashtag::where('hashtag_text', $word)->first())
+                {
+                    $hashtag = new App\Models\Hashtag();
+                    $hashtag->hashtag_text = $word;
+                    $hashtag->hashtag_relevance++;
+                    $hashtag->save();
+                }
+
+            }
         }
 
-        else
-        {
-            print($values['username']);
-            print("is valid");
-        }
-
-        return response();
     }
 
     /**

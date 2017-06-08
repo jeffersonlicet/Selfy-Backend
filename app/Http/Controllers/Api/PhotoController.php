@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Jobs\CheckAdultContent;
 use App\Jobs\CheckDuo;
 use App\Jobs\CheckSpot;
+use App\Models\Hashtag;
 use App\Models\Photo;
+use App\Models\PhotoHashtag;
 use App\Models\PhotoReport;
 use App\Models\User;
 use App\Models\UserInvitation;
@@ -76,7 +78,6 @@ class PhotoController extends Controller
         }
     }
 
-
     /**
      * Get the recent photo collections
      *
@@ -143,6 +144,7 @@ class PhotoController extends Controller
             if($request->has("caption"))
             {
                 $photo->caption = $input['caption'];
+                $this->handleHashtags($photo->created_at, $photo->photo_id);
             }
 
             $photo->saveOrFail();
@@ -151,6 +153,7 @@ class PhotoController extends Controller
             {
                $this->dispatch(new CheckSpot($photo, [floatval($input['latitude']), floatval($input['longitude'])]));
             }
+
             if(\Auth::user()->duo_enabled)
             {
                 $this->dispatch(new CheckDuo($photo, rand(0, config('app.oxford_available_keys') - 1)));
@@ -569,7 +572,6 @@ class PhotoController extends Controller
                 ]);
             }
 
-            
             $photo = Photo::find($id);
 
             if(!$photo)
@@ -624,6 +626,42 @@ class PhotoController extends Controller
                 'status' => FALSE,
                 'report' => $e->getMessage()
             ]);
+        }
+    }
+
+    private function handleHashtags($caption, $photo_id)
+    {
+        $caption = trim(strtolower($caption));
+        $result = [];
+        preg_match_all("/#(\\w+)/", $caption, $result);
+
+        if(count($result) > 0)
+        {
+            if(!isset($result[1]) || count($result[1]) == 0) return;
+
+            $words = array_unique($result[1]);
+            foreach($words as $word)
+            {
+                if(!$hashtag = Hashtag::where('hashtag_text', $word)->first())
+                {
+                    $hashtag = new Hashtag();
+                    $hashtag->hashtag_text = $word;
+                }
+
+                $hashtag->hashtag_relevance++;
+                $hashtag->save();
+
+                if(!$relation = PhotoHashtag::where([
+                    'photo_id' => $photo_id,
+                    'hashtag_id' => $hashtag->hashtag_id])->first())
+                {
+                    $relation = new PhotoHashtag();
+                    $relation->photo_id = $photo_id;
+                    $relation->hashtag_id = $hashtag->hashtag_id;
+                    $relation->save();
+                }
+
+            }
         }
     }
 }
