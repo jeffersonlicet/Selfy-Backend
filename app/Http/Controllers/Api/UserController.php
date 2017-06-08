@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App;
 use App\Mail\FbIntegrationConfirmMail;
 use App\Models\Challenge;
+use App\Models\Hashtag;
+use App\Models\PhotoHashtag;
 use App\Models\User;
 use App\Models\UserChallenge;
 use App\Models\UserFace;
@@ -27,20 +29,37 @@ class UserController extends Controller
 {
     public function test()
     {
+        $photo_id = 67;
         $caption  = "hola #selfie #love #Selfie #SelfyWithFriends";
         $caption = trim(strtolower($caption));
         $result = [];
+
         preg_match_all("/#(\\w+)/", $caption, $result);
+
         if(count($result) > 0)
         {
-            foreach($result[1] as $word)
+            if(!isset($result[1]) || count($result[1]) == 0) return;
+
+            $words = array_unique($result[1]);
+            foreach($words as $word)
             {
-               if(!$hashtag = App\Models\Hashtag::where('hashtag_text', $word)->first())
+                if(!$hashtag = Hashtag::where('hashtag_text', $word)->first())
                 {
-                    $hashtag = new App\Models\Hashtag();
+                    $hashtag = new Hashtag();
                     $hashtag->hashtag_text = $word;
-                    $hashtag->hashtag_relevance++;
-                    $hashtag->save();
+                }
+
+                $hashtag->hashtag_relevance++;
+                $hashtag->save();
+
+                if(!$relation = PhotoHashtag::where([
+                    'photo_id' => $photo_id,
+                    'hashtag_id' => $hashtag->hashtag_id])->first())
+                {
+                    $relation = new PhotoHashtag();
+                    $relation->photo_id = $photo_id;
+                    $relation->hashtag_id = $hashtag->hashtag_id;
+                    $relation->save();
                 }
 
             }

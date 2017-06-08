@@ -633,6 +633,7 @@ class PhotoController extends Controller
     {
         $caption = trim(strtolower($caption));
         $result = [];
+
         preg_match_all("/#(\\w+)/", $caption, $result);
 
         if(count($result) > 0)
