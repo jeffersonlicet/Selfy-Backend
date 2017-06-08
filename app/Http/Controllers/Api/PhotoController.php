@@ -12,6 +12,8 @@ use App\Models\PhotoHashtag;
 use App\Models\PhotoReport;
 use App\Models\User;
 use App\Models\UserInvitation;
+use App\Models\UserPhotoMention;
+use App\Notifications\UserPhotoMentionNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Validation\Rule;
@@ -23,6 +25,20 @@ use GuzzleHttp\Psr7\Request as GuzzleRequest;
 
 class PhotoController extends Controller
 {
+    /**
+     * Expression to match a username.
+     *
+     * @var  string
+     */
+    const REGEX_USERNAME_MENTION = '/(^|[^a-z0-9_])[@＠]([a-z0-9_]{1,20})([@＠\xC0-\xD6\xD8-\xF6\xF8-\xFF]?)/iu';
+
+    /**
+     * Expression to match a hashtag.
+     *
+     * @var  string
+     */
+    const REGEX_HASHTAG = '/(^|[^0-9A-Z&\/\?]+)([#＃]+)([0-9A-Z_]*[A-Z_]+[a-z0-9_üÀ-ÖØ-öø-ÿ]*)/iu';
+
     /**
      * Show the photo feed
      *
@@ -150,7 +166,8 @@ class PhotoController extends Controller
 
             if($request->has("caption"))
             {
-                $this->handleHashtags($photo->caption, $photo->photo_id);
+                $this->handlePhotoHashtags($photo);
+                $this->handlePhotoMentions($photo);
             }
 
             if($request->has("latitude") && $request->has("latitude") && \Auth::user()->spot_enabled)
@@ -633,12 +650,60 @@ class PhotoController extends Controller
         }
     }
 
-    private function handleHashtags($caption, $photo_id)
+    /**
+     * Detect user mentions in the photo caption
+     *
+     * @param Photo $photo
+     */
+    private function handlePhotoMentions(Photo $photo)
     {
-        $caption = trim(strtolower($caption));
+        $caption = trim(strtolower($photo->caption));
+        $result = [];
+        preg_match_all(self::REGEX_USERNAME_MENTION, $caption, $result);
+
+        list($_all, $_before, $username, $after) = array_pad($result, 4, '');
+
+        $usernames = array();
+
+        for ($i = 0; $i < count($username); $i ++) {
+            # If $after is not empty, there is an invalid character.
+            if (!empty($after[$i])) continue;
+            array_push($usernames, $username[$i]);
+        }
+
+        $usernames = array_unique($usernames);
+
+        foreach ($usernames as $u)
+        {
+            if($user = User::where('username',$u)->first())
+            {
+                if(!$mention = UserPhotoMention::where([
+                    'user_id' => $user->id,
+                    'photo_id' => $photo->photo_id])->first())
+                {
+                    $mention = new UserPhotoMention();
+                    $mention->user_id = $user->user_id;
+                    $mention->photo_id = $photo->photo_id;
+                    $mention->save();
+
+                    if($user->user_id != \Auth::user()->user_id)
+                        $user->notify(new UserPhotoMentionNotification(\Auth::user(), $photo));
+                }
+            }
+        }
+    }
+
+    /**
+     * Detect hashtags in the photo caption
+     *
+     * @param Photo $photo
+     */
+    private function handlePhotoHashtags(Photo $photo)
+    {
+        $caption = trim(strtolower($photo->caption));
         $result = [];
 
-        preg_match_all("/#(\\w+)/", $caption, $result);
+        preg_match_all(self::REGEX_HASHTAG, $caption, $result);
 
         if(count($result) > 0)
         {
@@ -657,11 +722,11 @@ class PhotoController extends Controller
                 $hashtag->save();
 
                 if(!$relation = PhotoHashtag::where([
-                    'photo_id' => $photo_id,
+                    'photo_id' => $photo->photo_id,
                     'hashtag_id' => $hashtag->hashtag_id])->first())
                 {
                     $relation = new PhotoHashtag();
-                    $relation->photo_id = $photo_id;
+                    $relation->photo_id = $photo->photo_id;
                     $relation->hashtag_id = $hashtag->hashtag_id;
                     $relation->save();
                 }

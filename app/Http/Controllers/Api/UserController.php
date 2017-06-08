@@ -14,6 +14,7 @@ use App\Models\UserFollower;
 use App\Models\UserFollowing;
 use App\Models\UserInformation;
 use App\Models\UserInvitation;
+use App\Models\UserPhotoMention;
 use App\Notifications\DuoInvitationNotification;
 use App\Notifications\FollowInvitationNotification;
 use App\Notifications\FollowNotification;
@@ -27,43 +28,13 @@ use Validator;
 
 class UserController extends Controller
 {
+
     public function test()
     {
         $photo_id = 45;
-        $caption  = "hola #az( #arroz";
-        $caption = trim(strtolower($caption));
-        $result = [];
+        $caption  = "hola jeff@licet @,licet @jeff @all @jeffersonlicet @all";
 
-        preg_match_all("/#(\\w+)/", $caption, $result);
 
-        if(count($result) > 0)
-        {
-            if(!isset($result[1]) || count($result[1]) == 0) return;
-
-            $words = array_unique($result[1]);
-            foreach($words as $word)
-            {
-                if(!$hashtag = Hashtag::where('hashtag_text', $word)->first())
-                {
-                    $hashtag = new Hashtag();
-                    $hashtag->hashtag_text = $word;
-                }
-
-                $hashtag->hashtag_relevance++;
-                $hashtag->save();
-
-                if(!$relation = PhotoHashtag::where([
-                    'photo_id' => $photo_id,
-                    'hashtag_id' => $hashtag->hashtag_id])->first())
-                {
-                    $relation = new PhotoHashtag();
-                    $relation->photo_id = $photo_id;
-                    $relation->hashtag_id = $hashtag->hashtag_id;
-                    $relation->save();
-                }
-
-            }
-        }
 
     }
 
