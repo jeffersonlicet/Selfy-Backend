@@ -910,14 +910,30 @@ class UserController extends Controller
                 ]);
             }
 
-            $users   =  \Auth::user()->Following->pluck('following_id');
-            $users = $users->merge(\Auth::user()->Followers->pluck('follower_id'))->unique();
+            //$users   =  \Auth::user()->Following->pluck('following_id');
+            //$users = $users->merge(\Auth::user()->Followers->pluck('follower_id'))->unique();
+           // $result = User::where('username', 'LIKE', '%'.$query.'%')->whereIn('user_id', $users)->limit($limit)->offset($limit*$page)->get();
 
-            $result = User::where('username', 'LIKE', '%'.$query.'%')->whereIn('user_id', $users)->limit($limit)->offset($limit*$page)->get();
+            $a = UserFollower::where('following_id', \Auth::user()->user_id)->whereHas(
+                'User', function($q) use ($query){
+                    $q->where('username', 'LIKE', '%'.$query.'%');
+            })->with('User')->get();
+
+            $b = UserFollowing::where('follower_id', \Auth::user()->user_id)->whereHas(
+                'User', function($q) use ($query){
+                    $q->where('username', 'LIKE', '%'.$query.'%');
+            })->with('User')->get();
+
+            $result = [];
+            foreach ($a->merge($b) as $el)
+            {
+                if(!in_array($el->User, $result))
+                    $result[] = $el->User;
+            }
 
             return response()->json([
                 'status' => TRUE,
-                'connections' => $result->isEmpty() ? [] : $result->toArray()
+                'connections' => $result
             ]);
 
         }
