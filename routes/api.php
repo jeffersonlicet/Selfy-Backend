@@ -57,6 +57,7 @@ Route::group(
         Route::get('users/suggestions', 'Api\UserController@suggestions');
         Route::get('users/duo', 'Api\UserController@duo');
         Route::get('users/search', 'Api\UserController@search');
+        Route::get('users/search_mentions', 'Api\UserController@search_mention_suggestion');
         Route::get('users/featured', 'Api\UserController@featured');
         Route::post('user/update_username', 'Api\UserController@update_username');
         Route::post('user/update_challenges', 'Api\UserController@update_challenges');

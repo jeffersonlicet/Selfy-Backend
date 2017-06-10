@@ -885,6 +885,51 @@ class UserController extends Controller
         }
     }
 
+
+    /**
+     * Search friends when type @user
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function search_mention_suggestion()
+    {
+        try
+        {
+            $query    = Input::get('query', 0);
+            $limit   = Input::get('limit', config('app.photos_best_per_page'));
+            $page    = Input::get('page', 0);
+
+            $validator = Validator::make(
+                ['query' => $query, 'limit' => $limit, 'page'=> $page],
+                ['query' => ['required', 'string'], 'limit' => ['required', 'numeric', 'between:1,20'], 'page' => ['required', 'numeric']]);
+
+            if(!$validator->passes())
+            {
+                return response()->json([
+                    'status' => TRUE,
+                    'report' => $validator->messages()->first()
+                ]);
+            }
+
+            $users   =  \Auth::user()->Following->pluck('following_id');
+            $users = $users->merge(\Auth::user()->Followers->pluck('follower_id'))->unique();
+
+            $result = User::where('username', 'LIKE', '%'.$query.'%')->whereIn('user_id', $users)->limit($limit)->offset($limit*$page)->get();
+
+            return response()->json([
+                'status' => TRUE,
+                'connections' => $result->isEmpty() ? [] : $result->toArray()
+            ]);
+
+        }
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
+
     /**
      * Return duo enabled users
      * @return \Illuminate\Http\JsonResponse
