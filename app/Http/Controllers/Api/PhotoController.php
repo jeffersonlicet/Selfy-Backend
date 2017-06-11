@@ -666,6 +666,43 @@ class PhotoController extends Controller
         }
     }
 
+    public function hashtag_search()
+    {
+        try
+        {
+            $query    = Input::get('query', 0);
+            $limit   = Input::get('limit', config('app.photos_best_per_page'));
+            $page    = Input::get('page', 0);
+
+            $validator = Validator::make(
+                ['query' => $query, 'limit' => $limit, 'page'=> $page],
+                ['query' => ['required', 'string'], 'limit' => ['required', 'numeric', 'between:1,20'], 'page' => ['required', 'numeric']]);
+
+            if(!$validator->passes())
+            {
+                return response()->json([
+                    'status' => TRUE,
+                    'report' => $validator->messages()->first()
+                ]);
+            }
+
+            $hashtags = Hashtag::where('hashtag_text', 'LIKE', '%'.$query.'%')->get();
+
+            return response()->json([
+                'status' => TRUE,
+                'hashtags' => $hashtags->isEmpty() ? [] : $hashtags->toArray()
+            ]);
+
+        }
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
+
     /**
      * Detect hashtags in the photo caption
      *
