@@ -115,7 +115,8 @@ class UserController extends Controller
     {
         try
         {
-            $values = $request->only(['bio', 'firstname' , 'lastname', 'face_url', 'duo_enabled', 'spot_enabled', 'account_private', 'save_photos', 'email']);
+            $values = $request->only(['bio', 'firstname' , 'lastname', 'face_url', 'duo_enabled', 'spot_enabled',
+                'account_private', 'save_photos', 'play_enabled']);
             $values['duo_enabled'] = $values['duo_enabled'] == "1";
             $values['spot_enabled'] = $values['spot_enabled'] == "1";
             $values['account_private'] = $values['account_private'] == "1";
@@ -128,11 +129,81 @@ class UserController extends Controller
                         'lastname'				=>	'required|string',
                         'duo_enabled'           =>	'required',
                         'spot_enabled'          =>	'required',
+                        'play_enabled'          =>	'required',
                         'account_private'       =>	'required',
                         'save_photos' =>	'required',
-                        'email' => 'required|email|unique:users,email'
                     ]
                 );
+
+            if($values['account_private'])
+            {
+                $followers_id = \Auth::user()->Followers->pluck('follower_id');
+
+                foreach($followers_id as $id)
+                {
+                    if(!UserInvitation::where(['user_id' => $id, 'profile_id' => \Auth::user()->user_id])->first())
+                    {
+                        $invitation = new UserInvitation();
+                        $invitation->user_id = $id;
+                        $invitation->invitation_status = config('constants.INVITATION_STATUS.ACCEPTED');
+                        $invitation->profile_id = \Auth::user()->user_id;
+                        $invitation->save();
+                    }
+                }
+            }
+
+            if(!$validator->passes())
+            {
+                return response()->json([
+                    'status' => FALSE,
+                    'report' => $validator->messages()->first()
+                ]);
+            }
+
+            \Auth::user()->update($values);
+            \Auth::user()->touch();
+            \Auth::user()->save();
+
+            return response()->json([
+                'status' => TRUE,
+                'report' => 'resource_updated'
+            ]);
+        }
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update_creation(Request $request)
+    {
+        try
+        {
+            $values = $request->only(['bio', 'firstname' , 'lastname', 'face_url', 'duo_enabled', 'spot_enabled', 'account_private', 'save_photos', 'email']);
+            $values['duo_enabled'] = $values['duo_enabled'] == "1";
+            $values['spot_enabled'] = $values['spot_enabled'] == "1";
+            $values['account_private'] = $values['account_private'] == "1";
+            $values['save_photos'] = $values['save_photos'] == "1";
+
+            $validator = Validator::make(
+                $values,
+                [
+                    'firstname'				=>	'required|string',
+                    'lastname'				=>	'required|string',
+                    'duo_enabled'           =>	'required',
+                    'spot_enabled'          =>	'required',
+                    'account_private'       =>	'required',
+                    'save_photos' =>	'required',
+                    'email' => 'required|email|unique:users,email'
+                ]
+            );
 
             if($values['account_private'])
             {

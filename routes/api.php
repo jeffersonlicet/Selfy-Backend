@@ -66,7 +66,9 @@ Route::group(
         Route::post('user/update_facebook_token', 'Api\UserController@update_facebook_token');
         Route::post('user/face', 'Api\UserController@face');
         Route::post('user/update', 'Api\UserController@update');
-        Route::post('user/firebase', 'Api\UserController@firebase');
+    Route::post('user/update_creation', 'Api\UserController@update_creation');
+
+    Route::post('user/firebase', 'Api\UserController@firebase');
         Route::post('user/follow', 'Api\UserController@follow');
         Route::post('user/unfollow', 'Api\UserController@unfollow');
         Route::post('user/exists_implicit', 'Api\AuthController@sync_facebook_implicit');
