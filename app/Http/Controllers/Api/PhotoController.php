@@ -686,7 +686,7 @@ class PhotoController extends Controller
                 ]);
             }
 
-            $hashtags = Hashtag::where('hashtag_text', 'LIKE', '%'.$query.'%')->get();
+            $hashtags = Hashtag::where('hashtag_text', 'LIKE', '%'.$query.'%')->where('hashtag_status', 0)->get();
 
             return response()->json([
                 'status' => TRUE,
