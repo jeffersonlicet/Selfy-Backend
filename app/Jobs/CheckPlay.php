@@ -2,12 +2,14 @@
 
 namespace App\Jobs;
 
+use App\Helpers\Vision;
 use App\Models\Challenge;
 use App\Models\ChallengePlay;
 use App\Models\Photo;
 use App\Models\ObjectCategory;
 use App\Models\PlayObject;
 use App\Models\UserChallenge;
+use App\Notifications\PlayNotification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -40,13 +42,7 @@ class CheckPlay implements ShouldQueue
     public function handle()
     {
 
-        $client     = new GuzzleClient(['base_uri' => "http://starbits.southcentralus.cloudapp.azure.com/api/"]);
-        $adapter    = new GuzzleAdapter($client);
-
-        $request    = new GuzzleRequest('POST', 'recognize', ["content-type" => 'application/json'],
-            json_encode(['photo_url' => $this->photo->url]));
-
-        $response   = $adapter->sendRequest($request);
+        $response = Vision::recognize($this->photo);
 
         switch ($response->getStatusCode())
         {
@@ -56,7 +52,7 @@ class CheckPlay implements ShouldQueue
 
                 if($content->status)
                 {
-                    $words = $content->result;
+                    $words = $content->content;
                     $check = 0;
                     foreach ($words as $word)
                     {
@@ -113,6 +109,7 @@ class CheckPlay implements ShouldQueue
                                             \Auth::user()->save();
 
                                             //Dispatch notification
+                                            \Auth::user()->notify(new PlayNotification($this->photo));
                                         }
                                     }
                                 }
