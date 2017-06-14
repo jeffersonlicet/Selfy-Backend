@@ -589,7 +589,6 @@ class PhotoController extends Controller
 
             $client     = new GuzzleClient(['base_uri' => "http://starbits.southcentralus.cloudapp.azure.com/api/"]);
             $adapter    = new GuzzleAdapter($client);
-            $headers = [];
             $request    = new GuzzleRequest('POST', 'clothes', ["content-type" => 'application/json'], json_encode(['photo_url' => $photo->url]));
             $response   = $adapter->sendRequest($request);
 

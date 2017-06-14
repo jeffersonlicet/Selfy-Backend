@@ -98,7 +98,6 @@ class CheckSpot implements ShouldQueue
                 {
                     
                     $place->fillFromVenue($venues[0]);
-                    
                     $place->save();
                 }
 
