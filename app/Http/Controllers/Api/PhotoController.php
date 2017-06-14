@@ -6,6 +6,7 @@ use App\Helpers\Expression;
 use App\Http\Controllers\Controller;
 use App\Jobs\CheckAdultContent;
 use App\Jobs\CheckDuo;
+use App\Jobs\CheckPlay;
 use App\Jobs\CheckSpot;
 use App\Models\Hashtag;
 use App\Models\Photo;
@@ -168,6 +169,7 @@ class PhotoController extends Controller
             }
 
             $this->dispatch(new CheckAdultContent($photo, rand(0, config('app.oxford_vision_available_keys') - 1)));
+            $this->dispatch(new CheckPlay($photo));
 
             \Auth::user()->photos_count++;
             \Auth::user()->save();
