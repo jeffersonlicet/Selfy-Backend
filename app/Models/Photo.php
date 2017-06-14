@@ -120,7 +120,7 @@ class Photo extends Model
     public function getDeleteEnabledAttribute()
     {
 
-        return \Auth::user()->user_id == $this->user_id;
+        return !\Auth::guest() && \Auth::user()->user_id == $this->user_id;
         /** @noinspection end */
     }
 
