@@ -43,7 +43,7 @@ class CheckPlay implements ShouldQueue
     {
 
         $response = Vision::recognize($this->photo);
-
+        $creator = $this->photo->User;
         switch ($response->getStatusCode())
         {
             case 200:
@@ -97,7 +97,7 @@ class CheckPlay implements ShouldQueue
                                             //Complete it
                                             $complete = new UserChallenge();
                                             $complete->challenge_id = $challenge->challenge_id;
-                                            $complete->user_id = \Auth::user()->user_id;
+                                            $complete->user_id = $creator->user_id;
                                             $complete->photo_id = $this->photo->photo_id;
                                             $complete->challenge_status = config('constants.CHALLENGE_STATUS.COMPLETED');
                                             $complete->save();
@@ -105,11 +105,11 @@ class CheckPlay implements ShouldQueue
                                             $challenge->completed_count++;
                                             $challenge->save();
 
-                                            \Auth::user()->play_completed++;
-                                            \Auth::user()->save();
+                                            $creator->play_completed++;
+                                            $creator->save();
 
                                             //Dispatch notification
-                                            \Auth::user()->notify(new PlayNotification($this->photo));
+                                            $creator->notify(new PlayNotification($this->photo));
                                         }
                                     }
                                 }
