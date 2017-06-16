@@ -1,6 +1,7 @@
 <meta charset="utf-8">
 <meta name="description" content="">
-<meta name="author" content="Scotch">
+<meta name="author" content="Sparkly Team">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>{{$pageTitle}}</title>
         <!-- Load CSS -->
         <link rel="stylesheet" href="{{ URL::asset('/css/app.css') }}">
