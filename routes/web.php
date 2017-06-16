@@ -20,7 +20,7 @@ Route::get('android', function () {
 });
 
 Route::get('/', function () {
-    return view('pages.welcome')->with(['pageTitle' => 'Welcome to Selfy']);
+    return view('pages.welcome')->with(['pageTitle' => 'Welcome to Selfy', 'metaTags'=> true ]);
 });
 
 Route::get('/facebook/link', 'App\UserController@confirm_facebook_link');

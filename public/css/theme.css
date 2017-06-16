@@ -33,3 +33,156 @@
 .navbar-brand>img {
     padding: 7px 14px;
 }
+
+.navbar.navbar-transparent {
+    background-color: transparent;
+}
+
+.navbar.navbar-transparent .nav li a{
+    color: #989898;
+    font-weight:lighter;
+}
+
+.container-landing{
+    background-color: #EEEEEE;
+}
+
+section {
+    position: relative;
+    width: 100%;
+    min-height: auto;
+    overflow-y: hidden!important;
+    color: white;
+}
+
+section .header-content {
+    padding: 20px 0 50px;
+    position: relative;
+}
+
+section.section-1 .header-content{
+    padding: 150px 0 50px;
+}
+
+@media (max-width: 980px) {
+    section.section-1 .header-content {
+        padding: 0 0 50px;
+        position: relative;
+    }
+}
+
+section .header-content .header-content-inner {
+    position: relative;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+section .header-content .header-content-inner h1, section .header-content .header-content-inner h3 {
+    font-family: 'Quicksand', sans-serif;
+}
+
+section .header-content .header-content-inner h1 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 40px;
+    font-weight:bold;
+    color:#49638F;
+}
+
+section .header-content .header-content-inner h3 {
+    color: #989898;
+    margin-bottom: 15px;
+}
+
+section .header-content .header-content-inner a:last-child{
+    margin-left: 5px;
+}
+
+section .device-container {
+    max-width: 500px;
+    margin: 0 auto 50px;
+}
+
+section.section-1 .header-content .header-content-inner h1{
+    font-size: 60px;
+}
+
+section.section-2 {
+    background-color: #e0e0e0;
+    padding-top: 80px;
+}
+
+#continue2{
+    margin-top: 50px;
+}
+
+section.section-3 {
+    padding-top: 0!important;
+    background: url(../images/collage_s.png) no-repeat left center #49638F;
+    background-size: contain;
+}
+
+section.section-3 .header-content .header-content-inner h1,
+section.section-3 .header-content .header-content-inner h3,
+section.section-5 .header-content .header-content-inner h1,
+section.section-5 .header-content .header-content-inner h3
+{
+    color: #FFFFFF;
+}
+
+section.section-4 .header-content .header-content-inner h1
+{
+    color: #e91e63;
+}
+
+section.section-3 .header-content {
+    padding: 180px 0 50px;
+    position: relative;
+}
+
+section.section-4 {
+    padding-top: 80px;
+    background: #FFF url(../images/duo_s.png) no-repeat  70% 100px;
+    background-size: contain;
+}
+
+section.section-5 {
+    padding-top: 80px;
+    background: #EEEEEE url(../images/back_spot.jpg) no-repeat center center;
+    background-size: cover;
+}
+
+section.section-5 .container-fluid {
+    padding-top: 80px;
+    background: url(../images/spot_s.png) no-repeat  20% 100px;
+    background-size: contain;
+}
+
+section.section-6 {
+    padding-top: 80px;
+    background: #FFF url(../images/spot_s.png) no-repeat  10% 100px;
+    background-size: contain;
+}
+
+
+@media (max-width: 980px) {
+    section.section-3 .header-content .header-content-inner h1,
+    section.section-3 .header-content .header-content-inner h3,
+    section.section-4 .header-content .header-content-inner h1,
+    section.section-4 .header-content .header-content-inner h3
+    {
+       background: #FFFFFF;
+        color: #49638F;
+        padding: 15px;
+    }
+
+}
+
+@media (max-width: 780px) {
+    section.section-1 .device-container,
+    section.section-2 .device-container,
+    section.section-3 .device-container{
+        max-width: 200px;
+    }
+
+}

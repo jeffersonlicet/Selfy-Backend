@@ -4,8 +4,7 @@
         @include('atoms.head')
     </head>
     <body>
-        <div class="container-fluid">
-            @yield('content')
-        </div>
+         @include('atoms.landing_head')
+        @yield('content')
     </body>
 </html>
