@@ -3,8 +3,13 @@
 @section("content")
     <section class="section-1" id="home">
         <div class="container">
+            <div class="row visible-xs">
+                <div class="col-md-5 col-sm-4 device-container col-xs-12">
+                    <img  src="{{ URL::asset('/images/view1_principal_r_s.png') }}" class="img-responsive" alt="home photo">
+                </div>
+            </div>
             <div class="row">
-                <div class="col-md-5 col-md-offset-1 col-sm-offset-1 col-sm-6 col-xs-6 col-xs-offset-1">
+                <div class="col-md-5 col-md-offset-1 col-sm-offset-1 col-sm-6 col-xs-12">
                     <div class="header-content">
                         <div class="header-content-inner">
                             <h1>#Selfy</h1>
@@ -14,7 +19,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-5 col-sm-4 device-container col-xs-4">
+                <div class="col-md-5 col-sm-4 device-container hidden-xs">
                     <img  src="{{ URL::asset('/images/view1_principal_r_s.png') }}" class="img-responsive" alt="home photo">
                 </div>
             </div>
@@ -73,8 +78,8 @@
                     </div>
                 </div>
 
-                <div class="col-md-7 col-sm-4 bottom-device">
-
+                <div class="col-md-5 col-sm-4 device-container col-xs-4">
+                    <img  src="{{ URL::asset('/images/duo.png') }}" class="img-responsive" alt="home photo">
                 </div>
             </div>
         </div>

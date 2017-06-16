@@ -142,7 +142,7 @@ section.section-3 .header-content {
 
 section.section-4 {
     padding-top: 80px;
-    background: #FFF url(../images/duo_s.png) no-repeat  70% 100px;
+    *background: #FFF url(../images/duo_s.png) no-repeat  70% 100px;
     background-size: contain;
 }
 
@@ -179,7 +179,15 @@ section.section-6 {
 }
 
 @media (max-width: 780px) {
-    section.section-1 .device-container,
+    section.section-1 .device-container{
+        max-width:100%;
+    }
+
+    section.section-1 .device-container img{
+        max-width: 200px;
+        margin: 0 auto;
+    }
+
     section.section-2 .device-container,
     section.section-3 .device-container{
         max-width: 200px;
