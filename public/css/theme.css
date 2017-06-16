@@ -187,6 +187,28 @@ section.section-6 {
         max-width: 200px;
         margin: 0 auto;
     }
+    section.section-1 .header-content .header-content-inner{
+        text-align: center;
+    }
+    section.section-1 .header-content .header-content-inner h1{
+        font-size: 30px;
+        margin-top: 10px;
+    }
+
+    section.section-1 .header-content .header-content-inner h3{
+        font-size: 20px;
+        margin-top: 5px;
+
+    }
+
+    .navbar-transparent{
+        background-color: #607d8b!important;
+
+    }
+
+    .navbar.navbar-transparent .nav li a{
+        color: #FFF;
+    }
 
     section.section-2 .device-container,
     section.section-3 .device-container{

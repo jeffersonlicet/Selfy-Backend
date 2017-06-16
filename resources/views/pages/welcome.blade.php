@@ -4,7 +4,7 @@
     <section class="section-1" id="home">
         <div class="container">
             <div class="row visible-xs">
-                <div class="col-md-5 col-sm-4 device-container col-xs-12">
+                <div class="col-xs-4 col-xs-offset-4">
                     <img  src="{{ URL::asset('/images/view1_principal_r_s.png') }}" class="img-responsive" alt="home photo">
                 </div>
             </div>

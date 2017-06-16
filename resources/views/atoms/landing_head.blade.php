@@ -2,9 +2,7 @@
     <div class="container-fluid">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-warning-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
+                <i class="material-icons">menu</i>
             </button>
         </div>
         <ul class="nav navbar-nav navbar-right navbar-collapse collapse navbar-warning-collapse">
