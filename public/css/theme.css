@@ -142,6 +142,11 @@ section.section-4 .header-content .header-content-inner h1
     color: #e91e63;
 }
 
+section.section-6 .header-content .header-content-inner h1
+{
+    color: #f44336;
+}
+
 section.section-3 .header-content {
     padding: 180px 0 50px;
     position: relative;
@@ -149,6 +154,7 @@ section.section-3 .header-content {
 
 section.section-4 {
     padding-top: 80px;
+    background:#EEE;
 }
 
 section.section-5 {
@@ -163,7 +169,7 @@ section.section-5 {
 
 section.section-6 {
     padding-top: 80px;
-    background-size: contain;
+    background: #eee;
 }
 
 @media (max-width: 980px) {
@@ -188,15 +194,22 @@ section.section-6 {
         margin: 0 auto;
     }
 
+    section.section-6 .device-container img
+    {
+        max-width: 200px;
+        margin: 0 auto;
+    }
+
     section.section-4 .device-container,
-    section.section-5 .device-container
+    section.section-5 .device-container,
+    section.section-6 .device-container
     {
         max-width:100%;
         margin: 0 auto;
     }
 
     section.section-4 .device-container img{
-        max-width: 200px;
+        max-width: 230px;
         margin: 0 auto;
     }
 
@@ -204,14 +217,16 @@ section.section-6 {
     section.section-2 .header-content .header-content-inner,
     section.section-3 .header-content .header-content-inner,
     section.section-4 .header-content .header-content-inner,
-    section.section-5 .header-content .header-content-inner{
+    section.section-5 .header-content .header-content-inner,
+    section.section-6 .header-content .header-content-inner{
         text-align: center;
     }
     section.section-1 .header-content .header-content-inner h1,
     section.section-2 .header-content .header-content-inner h1,
     section.section-3 .header-content .header-content-inner h1,
     section.section-4 .header-content .header-content-inner h1,
-    section.section-5 .header-content .header-content-inner h1{
+    section.section-5 .header-content .header-content-inner h1,
+    section.section-6 .header-content .header-content-inner h1 {
         font-size: 30px;
         margin-top: 10px;
     }
@@ -219,7 +234,9 @@ section.section-6 {
     section.section-1 .header-content .header-content-inner h3,
     section.section-2 .header-content .header-content-inner h3,
     section.section-3 .header-content .header-content-inner h3,
-    section.section-4 .header-content .header-content-inner h3{
+    section.section-4 .header-content .header-content-inner h3,
+    section.section-5 .header-content .header-content-inner h3,
+    section.section-6 .header-content .header-content-inner h3{
         font-size: 20px;
         margin-top: 5px;
     }

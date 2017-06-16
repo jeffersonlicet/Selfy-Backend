@@ -4,7 +4,7 @@
     <section class="section-1" id="home">
         <div class="container">
             <div class="row visible-xs">
-                <div class="col-xs-4 col-xs-offset-4">
+                <div class="col-xs-6 col-xs-offset-3">
                     <img  src="{{ URL::asset('/images/view1_principal_r_s.png') }}" class="img-responsive" alt="home photo">
                 </div>
             </div>
@@ -76,7 +76,7 @@
                     <div class="header-content">
                         <div class="header-content-inner">
                             <h1>Duo</h1>
-                            <h3>A Duo is a face-based challenge. <br /> Selfy uses face recognition technology to encourage people to complete Duo challenges that can be completed by taking photos with your family, friends or another Selfy user.</h3>
+                            <h3>A Duo is a face-based challenge. <br /><br /> Selfy uses face recognition technology to encourage people to complete Duo challenges that can be completed by taking photos with your family, friends or another Selfy user.</h3>
                             <a href="javascript:void(0)" class="btn btn-info btn-fab" id="continue2"><i class="material-icons">keyboard_arrow_down</i></a>
                         </div>
                     </div>
@@ -96,18 +96,16 @@
                 </div>
             </div>
             <div class="row">
-
-
-                <div class="col-md-4 col-sm-4 device-container hidden-xs">
+                <div class="col-md-5 col-sm-5 device-container hidden-xs">
                     <img  src="{{ URL::asset('/images/spot_collage.png') }}" class="img-responsive" alt="home photo">
                 </div>
 
-                <div class="col-md-6 col-sm-6 col-md-offset-1 col-sm-offset-1">
+                <div class="col-md-5 col-sm-6 col-md-offset-1 col-sm-offset-1">
                     <div class="header-content">
                         <div class="header-content-inner">
                             <h1>Spot</h1>
-                            <h3>A Spot is a place-based challenge.<br /> To complete a Spot challenge you must visit the indicated place and take a picture there. We will use your location to detect if you meet the challenge.</h3>
-                            <a href="javascript:void(0)" class="btn btn-info btn-fab" id="continue2"><i class="material-icons">keyboard_arrow_down</i></a>
+                            <h3>A Spot is a place-based challenge.<br /><br /> To complete a Spot challenge you must visit the indicated place and take a picture there. We will use your location to detect if you meet the challenge.</h3>
+                            <a href="javascript:void(0)" class="btn btn-default btn-fab" id="continue2"><i class="material-icons">keyboard_arrow_down</i></a>
                         </div>
                     </div>
                 </div>
@@ -116,18 +114,26 @@
     </section>
     <section class="section-6" id="play">
         <div class="container">
+            <div class="row visible-xs">
+                <div class="col-xs-12 device-container">
+                    <img  src="{{ URL::asset('/images/play_s.png') }}" class="img-responsive" alt="home photo">
+                </div>
+            </div>
             <div class="row">
 
-                <div class="col-md-7 col-sm-4 bottom-device"></div>
-                <div class="col-md-4">
+
+                <div class="col-md-6 col-sm-6 col-md-offset-1 col-sm-offset-1">
                     <div class="header-content">
                         <div class="header-content-inner">
-                            <h1>Duo</h1>
-                            <h3>A Duo is a face-based challenge. <br /> Selfy uses face recognition technology to encourage people to complete Duo challenges that can be completed by taking photos with your family, friends or another Selfy user.</h3>
-                            <a href="javascript:void(0)" class="btn btn-default btn-fab" id="continue2"><i class="material-icons">keyboard_arrow_down</i></a>
+                            <h1>Play</h1>
+                            <h3>The theme-based challenges. <br /> <br /> The Play challenges are different and fun, from taking photos with objects, a picture with your pet or maybe a photo eating a burger. <br />We use AI to process these challenges.</h3>
+                            <a href="javascript:void(0)" class="btn btn-info btn-alert" id="continue2"><i class="material-icons">keyboard_arrow_down</i></a>
                         </div>
-
                     </div>
+                </div>
+
+                <div class="col-md-4 col-sm-4 device-container hidden-xs">
+                    <img  src="{{ URL::asset('/images/play_s.png') }}" class="img-responsive" alt="home photo">
                 </div>
             </div>
         </div>
