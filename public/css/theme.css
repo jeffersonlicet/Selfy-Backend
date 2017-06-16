@@ -153,13 +153,16 @@ section.section-4 {
 
 section.section-5 {
     padding-top: 80px;
-    background: #EEEEEE url(../images/back_spot.jpg) no-repeat center center;
-    background-size: cover;
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#4527a0+2,4527a0+31,e91e63+99 */
+    background: rgb(69,39,160); /* Old browsers */
+    background: -moz-linear-gradient(-45deg, rgba(69,39,160,1) 2%, rgba(69,39,160,1) 31%, rgba(233,30,99,1) 99%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(-45deg, rgba(69,39,160,1) 2%,rgba(69,39,160,1) 31%,rgba(233,30,99,1) 99%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(135deg, rgba(69,39,160,1) 2%,rgba(69,39,160,1) 31%,rgba(233,30,99,1) 99%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4527a0', endColorstr='#e91e63',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
 }
 
 section.section-6 {
     padding-top: 80px;
-    background: #FFF url(../images/spot_s.png) no-repeat  10% 100px;
     background-size: contain;
 }
 
@@ -179,20 +182,16 @@ section.section-6 {
         padding-top: 20px;
     }
 
-    section.section-1 .device-container,
-    section.section-4 .device-container
-    {
-        max-width:100%;
-    }
-
     section.section-1 .device-container img
     {
-        max-width: 350px;
+        max-width: 450px;
         margin: 0 auto;
     }
 
-    section.section-4 .device-container
+    section.section-4 .device-container,
+    section.section-5 .device-container
     {
+        max-width:100%;
         margin: 0 auto;
     }
 
@@ -204,13 +203,15 @@ section.section-6 {
     section.section-1 .header-content .header-content-inner,
     section.section-2 .header-content .header-content-inner,
     section.section-3 .header-content .header-content-inner,
-    section.section-4 .header-content .header-content-inner{
+    section.section-4 .header-content .header-content-inner,
+    section.section-5 .header-content .header-content-inner{
         text-align: center;
     }
     section.section-1 .header-content .header-content-inner h1,
     section.section-2 .header-content .header-content-inner h1,
     section.section-3 .header-content .header-content-inner h1,
-    section.section-4 .header-content .header-content-inner h1{
+    section.section-4 .header-content .header-content-inner h1,
+    section.section-5 .header-content .header-content-inner h1{
         font-size: 30px;
         margin-top: 10px;
     }
@@ -232,8 +233,13 @@ section.section-6 {
     }
 
     section.section-2 .device-container,
-    section.section-3 .device-container{
+    section.section-3 .device-container {
         max-width: 200px;
+    }
+
+    section.section-5 .device-container img{
+        max-width: 300px;
+        margin: 0 auto;
     }
 
     section.section-3 {

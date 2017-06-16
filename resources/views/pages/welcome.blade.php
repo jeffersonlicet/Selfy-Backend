@@ -92,14 +92,14 @@
         <div class="container">
             <div class="row visible-xs">
                 <div class="col-xs-12 device-container">
-                    <img  src="{{ URL::asset('/images/duo_s.png') }}" class="img-responsive" alt="home photo">
+                    <img  src="{{ URL::asset('/images/spot_collage.png') }}" class="img-responsive" alt="home photo">
                 </div>
             </div>
             <div class="row">
 
 
                 <div class="col-md-4 col-sm-4 device-container hidden-xs">
-                    <img  src="{{ URL::asset('/images/duo_s.png') }}" class="img-responsive" alt="home photo">
+                    <img  src="{{ URL::asset('/images/spot_collage.png') }}" class="img-responsive" alt="home photo">
                 </div>
 
                 <div class="col-md-6 col-sm-6 col-md-offset-1 col-sm-offset-1">
