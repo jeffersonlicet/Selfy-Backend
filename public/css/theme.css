@@ -92,6 +92,7 @@ section .header-content .header-content-inner h1 {
 section .header-content .header-content-inner h3 {
     color: #989898;
     margin-bottom: 15px;
+    line-height: 30px;
 }
 
 section .header-content .header-content-inner a:last-child{
@@ -110,6 +111,12 @@ section.section-1 .header-content .header-content-inner h1{
 section.section-2 {
     background-color: #e0e0e0;
     padding-top: 80px;
+}
+section.section-2  .header-content .header-content-inner h1 {
+    color: #607d8b;
+}
+section.section-2  .header-content .header-content-inner h3 {
+    color: #666666;
 }
 
 #continue2{
@@ -142,8 +149,6 @@ section.section-3 .header-content {
 
 section.section-4 {
     padding-top: 80px;
-    *background: #FFF url(../images/duo_s.png) no-repeat  70% 100px;
-    background-size: contain;
 }
 
 section.section-5 {
@@ -152,24 +157,15 @@ section.section-5 {
     background-size: cover;
 }
 
-section.section-5 .container-fluid {
-    padding-top: 80px;
-    background: url(../images/spot_s.png) no-repeat  20% 100px;
-    background-size: contain;
-}
-
 section.section-6 {
     padding-top: 80px;
     background: #FFF url(../images/spot_s.png) no-repeat  10% 100px;
     background-size: contain;
 }
 
-
 @media (max-width: 980px) {
     section.section-3 .header-content .header-content-inner h1,
-    section.section-3 .header-content .header-content-inner h3,
-    section.section-4 .header-content .header-content-inner h1,
-    section.section-4 .header-content .header-content-inner h3
+    section.section-3 .header-content .header-content-inner h3
     {
        background: #FFFFFF;
         color: #49638F;
@@ -179,31 +175,56 @@ section.section-6 {
 }
 
 @media (max-width: 780px) {
-    section.section-1 .device-container{
+    section.section-4 {
+        padding-top: 20px;
+    }
+
+    section.section-1 .device-container,
+    section.section-4 .device-container
+    {
         max-width:100%;
     }
 
-    section.section-1 .device-container img{
+    section.section-1 .device-container img
+    {
+        max-width: 350px;
+        margin: 0 auto;
+    }
+
+    section.section-4 .device-container
+    {
+        margin: 0 auto;
+    }
+
+    section.section-4 .device-container img{
         max-width: 200px;
         margin: 0 auto;
     }
-    section.section-1 .header-content .header-content-inner{
+
+    section.section-1 .header-content .header-content-inner,
+    section.section-2 .header-content .header-content-inner,
+    section.section-3 .header-content .header-content-inner,
+    section.section-4 .header-content .header-content-inner{
         text-align: center;
     }
-    section.section-1 .header-content .header-content-inner h1{
+    section.section-1 .header-content .header-content-inner h1,
+    section.section-2 .header-content .header-content-inner h1,
+    section.section-3 .header-content .header-content-inner h1,
+    section.section-4 .header-content .header-content-inner h1{
         font-size: 30px;
         margin-top: 10px;
     }
 
-    section.section-1 .header-content .header-content-inner h3{
+    section.section-1 .header-content .header-content-inner h3,
+    section.section-2 .header-content .header-content-inner h3,
+    section.section-3 .header-content .header-content-inner h3,
+    section.section-4 .header-content .header-content-inner h3{
         font-size: 20px;
         margin-top: 5px;
-
     }
 
     .navbar-transparent{
         background-color: #607d8b!important;
-
     }
 
     .navbar.navbar-transparent .nav li a{
@@ -213,6 +234,10 @@ section.section-6 {
     section.section-2 .device-container,
     section.section-3 .device-container{
         max-width: 200px;
+    }
+
+    section.section-3 {
+        background-size: cover;
     }
 
 }
