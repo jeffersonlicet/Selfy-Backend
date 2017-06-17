@@ -20,7 +20,7 @@ Route::get('android', function () {
 });
 
 Route::get('/', function () {
-    return view('pages.welcome')->with(['pageTitle' => 'Selfy', 'metaTags'=> true ]);
+    return view('pages.welcome')->with(['pageTitle' => 'Selfy', 'metaTags'=> false ]);
 });
 
 Route::post('/ajax/contact', 'App\UserController@contact');
