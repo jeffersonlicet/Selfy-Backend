@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\App;
 
 use App\Http\Controllers\Controller;
+use App\Mail\ContactMail;
 use App\Mail\FbIntegrationConfirmMail;
 use App\Models\UserKey;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Mail;
+use Validator;
 
 class UserController extends Controller
 {
@@ -42,5 +45,23 @@ class UserController extends Controller
         else
             return view('pages.message')->with(['pageTitle'=> 'Selfy', 'messageTitle' => 'Oops!',
                 'messageBody' => 'The token has expired or is invalid.'])->render();
+    }
+
+    public function contact(Request $request)
+    {
+        $input = $request->all();
+
+        $validator = Validator::make($input, [
+            'name' => 'required',
+            'email'=> 'required|email',
+            'message' =>'required'
+        ]);
+
+        if(!$validator->passes())
+            return response()->json(['status'=> FALSE, 'report' => $validator->messages()->first()]);
+
+        Mail::send(new ContactMail($input['name'], $input['email'], $input['message']));
+
+        return response()->json(['status'=> TRUE]);
     }
 }

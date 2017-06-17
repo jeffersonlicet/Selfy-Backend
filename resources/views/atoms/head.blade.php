@@ -19,6 +19,7 @@
 <meta name="msapplication-TileColor" content="#ffffff">
 <meta name="msapplication-TileImage" content="/ms-icon-144x144.png') }}">
 <meta name="theme-color" content="#ffffff">
+<meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{$pageTitle}}</title>
         <!-- Load CSS -->
         <link rel="stylesheet" href="{{ URL::asset('/css/core.css') }}">
@@ -35,3 +36,7 @@
         <meta property="og:title" content="Selfy for android" />
         <meta property="og:type" content="website" />
         @endif
+
+        <script type="text/javascript">
+            var APP_URL = {!! json_encode(url('/')) !!};
+        </script>

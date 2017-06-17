@@ -5,7 +5,6 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 require('bootstrap');
-require('bootstrap-sass');
 require('bootstrap-material-design');
 
 const WOW = require('wowjs');
@@ -16,4 +15,5 @@ $().ready(function () {
     $.material.init();
     $.material.ripples();
     $('[data-toggle="tooltip"]').tooltip();
+    console.log("libs.js dispatched");
 });
