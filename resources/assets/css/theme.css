@@ -25,12 +25,12 @@
 .navbar-brand {
     padding: 0px;
 }
-.navbar-brand>img {
+.navbar-brand > img {
     height: 100%;
     padding: 15px;
     width: auto;
 }
-.navbar-brand>img {
+.navbar-brand > img {
     padding: 7px 14px;
 }
 
@@ -90,7 +90,7 @@ section .header-content .header-content-inner h1 {
 }
 
 section .header-content .header-content-inner h3 {
-    color: #989898;
+    color: #666666;
     margin-bottom: 15px;
     line-height: 30px;
 }
@@ -115,7 +115,8 @@ section.section-2 {
 section.section-2  .header-content .header-content-inner h1 {
     color: #607d8b;
 }
-section.section-2  .header-content .header-content-inner h3 {
+section.section-2  .header-content .header-content-inner h3,
+section.section-4  .header-content .header-content-inner h3 {
     color: #666666;
 }
 
@@ -128,6 +129,16 @@ section.section-3 {
     background: url(../images/collage_s.png) no-repeat left center #49638F;
     background-size: contain;
 }
+
+section.section-7 {
+    padding-top: 80px;
+    background :#EEE;
+}
+
+section.section-7 .header-content .header-content-inner{
+    text-align: center;
+}
+
 
 section.section-3 .header-content .header-content-inner h1,
 section.section-3 .header-content .header-content-inner h3,
@@ -169,7 +180,23 @@ section.section-5 {
 
 section.section-6 {
     padding-top: 80px;
-    background: #eee;
+    background: #e1e1e1;
+}
+
+.social-wrapper {
+    margin-top: 250px;
+}
+.social-link {
+    padding: 10px;
+    opacity:.6;
+}
+.social-link:hover {
+    text-decoration: none;
+}
+
+.social-link img{
+    max-width: 30px;
+    fill: #c8c8c8;
 }
 
 @media (max-width: 980px) {
@@ -181,6 +208,10 @@ section.section-6 {
         padding: 15px;
     }
 
+}
+
+.footer-style{
+    padding-bottom: 10px;
 }
 
 @media (max-width: 780px) {
@@ -263,4 +294,10 @@ section.section-6 {
         background-size: cover;
     }
 
+    .footer-style{
+        text-align: center;
+    }
+
 }
+
+.wow { visibility: hidden; }

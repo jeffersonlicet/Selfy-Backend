@@ -4,7 +4,8 @@
         @include('atoms.head')
     </head>
     <body>
-         @include('atoms.landing_head')
+        @include('atoms.landing_head')
         @yield('content')
+        @include('atoms.footer')
     </body>
 </html>

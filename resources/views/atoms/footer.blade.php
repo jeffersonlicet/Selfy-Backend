@@ -1,7 +1,13 @@
-<div class="navbar navbar-footer navbar-fixed-bottom">
-    <div class="container-fluid">
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="javascript:void(0)">2017 &copy; The Selfy Team.</a></li>
-            </ul>
+    <div class="container footer-style">
+        <div class="col-md-6 col-sm-12">
+            <br />
+            2017 &copy; The Selfy Team. A Sparkly creation.
+        </div>
+
+        <div class="col-md-6 col-sm-12">
+            <a href="javascript:void(0)" class="btn btn-default">About us</a>
+            <a href="javascript:void(0)" class="btn btn-default">Contact</a>
+            <a href="javascript:void(0)" class="btn btn-default">Privacy</a>
+            <a href="javascript:void(0)" class="btn btn-default">Help</a>
+        </div>
     </div>
-</div>
