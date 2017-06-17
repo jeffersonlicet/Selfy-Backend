@@ -41,7 +41,7 @@
         <meta property="og:url" content="http://getselfy.net" />
         <meta property="og:title" content="Selfy" />
         <meta property="og:description" content="The smart and challenging photo sharing app." />
-        <meta property="og:image" content="{{ URL::asset('/images/fb_image_sc.jpg') }}" />
+        <meta property="og:image" content="{{ URL::asset('/images/facebook_image.jpg') }}" />
         <meta property="fb:app_id" content="823207314366069" />
 
         <script type="text/javascript">
