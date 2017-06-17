@@ -30,12 +30,18 @@
         <script src="{{ URL::asset('/js/app.js') }}"></script>
 
         @if ($metaTags)
-        <meta property="al:android:url" content="http://getselfy.net">
-        <meta property="al:android:package" content="com.sparkly.selfy">
-        <meta property="al:android:app_name" content="Selfy">
-        <meta property="og:title" content="Selfy for android" />
-        <meta property="og:type" content="website" />
+            <meta property="al:android:url" content="http://getselfy.net">
+            <meta property="al:android:package" content="com.sparkly.selfy">
+            <meta property="al:android:app_name" content="Selfy">
+            <meta property="og:title" content="Selfy for android" />
+            <meta property="og:type" content="website" />
         @endif
+
+        <!-- Facebook metaTags -->
+        <meta property="og:url"                content="http://www.getselfy.net" />
+        <meta property="og:title"              content="Selfy" />
+        <meta property="og:description"        content="The smart and challenging photo sharing app." />
+        <meta property="og:image"              content="{{ URL::asset('/images/fb_image_sc.jpg') }}" />
 
         <script type="text/javascript">
             var APP_URL = {!! json_encode(url('/')) !!};
