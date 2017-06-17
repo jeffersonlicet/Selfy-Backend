@@ -144,7 +144,7 @@
                     <div class="header-content">
                         <div class="header-content-inner">
                             <h1>Get Selfy now</h1>
-                            <h3>And start sharing amazing photos in our community. What are you waiting?</h3>
+                            <h3>And start sharing amazing photos with the community. What are you waiting?</h3>
                             <a href="javascript:void(0)" class="btn btn-raised btn-primary">Available soon</a>
                             </div>
                     </div>

@@ -38,7 +38,7 @@ class ContactMail extends Mailable
         return
             $this->to('hello@sprkly.net')->from('hello@sprkly.net', 'Selfy contact')->subject("Selfy - Contact form")->markdown('vendor.mail.contact')
                 ->with([
-                    'greeting' => 'New message from '. $this->name . '('.$this->email.')',
+                    'greeting' => 'New message from '. $this->name . ' ('.$this->email.')',
                     'body' => $this->body,
                 ]);
     }
