@@ -38,7 +38,7 @@
         @endif
 
         <!-- Facebook metaTags -->
-        <meta property="og:url" content="http://www.getselfy.net" />
+        <meta property="og:url" content="http://getselfy.net" />
         <meta property="og:title" content="Selfy" />
         <meta property="og:description" content="The smart and challenging photo sharing app." />
         <meta property="og:image" content="{{ URL::asset('/images/fb_image_sc.jpg') }}" />
