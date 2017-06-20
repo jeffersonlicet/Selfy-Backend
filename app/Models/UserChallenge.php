@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property User $user
  * @property Challenge Challenge
  * @property User User
+ * @property Photo $Photo
  */
 class UserChallenge extends Model
 {
@@ -39,5 +40,13 @@ class UserChallenge extends Model
     public function User()
     {
         return $this->belongsTo('App\Models\User', 'user_id', 'user_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function Photo()
+    {
+        return $this->belongsTo('App\Models\Photo', 'photo_id', 'photo_id');
     }
 }

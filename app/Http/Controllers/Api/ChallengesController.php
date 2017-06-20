@@ -317,4 +317,106 @@ class ChallengesController extends Controller
             ]);
         }
     }
+
+    /**
+     * Get top photos that meets the $challenge_id challenge
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function top_photos()
+    {
+        try
+        {
+            $limit   = Input::get('limit', config('app.photos_best_per_page'));
+            $page    = Input::get('page', 0);
+            $challenge = Input::get('challenge_id');
+
+            $validator = Validator::make(['limit' => $limit, 'page'=> $page, 'challenge_id' => $challenge],
+                    ['limit' => ['required', 'numeric', 'between:1,20'], 'page' => ['required', 'numeric'],
+                        'challenge_id' => 'required|numeric']
+                );
+
+            if(!$validator->passes())
+            {
+                return response()->json([
+                    'status' => TRUE,
+                    'report' => $validator->messages()->first()
+                ]);
+            }
+
+            $result = UserChallenge::where('challenge_id', $challenge)->has('Photo')->with(['Photo' => function ($q) {
+                $q->orderBy('likes_count', 'desc')->orderBy('views_count', 'desc')->orderBy('comments_count', 'desc');
+            }])->get();
+
+            $curated = [];
+
+            foreach ($result as $item)
+            {
+                $curated[] = $item->Photo;
+            }
+
+            return response()->json([
+                'status' => TRUE,
+                'photos' => $curated
+            ]);
+
+        }
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * Get recent photos that meets the $challenge_id challenge
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function recent_photos()
+    {
+        try
+        {
+            $limit   = Input::get('limit', config('app.photos_best_per_page'));
+            $page    = Input::get('page', 0);
+            $challenge = Input::get('challenge_id');
+
+            $validator = Validator::make(['limit' => $limit, 'page'=> $page, 'challenge_id' => $challenge],
+                ['limit' => ['required', 'numeric', 'between:1,20'], 'page' => ['required', 'numeric'],
+                    'challenge_id' => 'required|numeric']
+            );
+
+            if(!$validator->passes())
+            {
+                return response()->json([
+                    'status' => TRUE,
+                    'report' => $validator->messages()->first()
+                ]);
+            }
+
+            $result = UserChallenge::where('challenge_id', $challenge)->has('Photo')->with('Photo')->get();
+
+            $curated = [];
+
+            foreach ($result as $item)
+            {
+                $curated[] = $item->Photo;
+            }
+
+            return response()->json([
+                'status' => TRUE,
+                'photos' => $curated
+            ]);
+
+        }
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
 }
