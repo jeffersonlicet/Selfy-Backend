@@ -44,8 +44,7 @@ class ChallengesController extends Controller
                     'likes' => $validator->messages()->first()
                 ]);
             }
-
-
+            
             if ($result = Challenge::with('Object')->find($id))
             {
                 return response()->json([

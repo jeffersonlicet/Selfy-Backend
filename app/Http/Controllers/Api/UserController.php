@@ -25,8 +25,9 @@ class UserController extends Controller
 {
     public function test()
     {
-        $username = "h52";
-        var_dump(is_numeric($username));
+        $a = App\Models\ChallengePlay::find(4);
+
+        return response()->json($a->toArray());
     }
 
     /**
