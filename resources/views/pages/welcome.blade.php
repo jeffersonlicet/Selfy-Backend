@@ -4,7 +4,7 @@
         <div class="container">
             <div class="row visible-xs">
                 <div class="col-xs-6 col-xs-offset-3">
-                    <img  src="{{ URL::asset('/images/view1_principal_r_s.png') }}" class="img-responsive" alt="home photo">
+                    <img  src="{{ URL::asset('/images/view1_principal_r_p.jpg') }}" class="img-responsive" alt="home photo">
                 </div>
             </div>
             <div class="row">
@@ -19,7 +19,7 @@
                     </div>
                 </div>
                 <div class="col-md-5 col-sm-4 device-container hidden-xs wow fadeIn">
-                    <img  src="{{ URL::asset('/images/view1_principal_r_s.png') }}" class="img-responsive" alt="home photo">
+                    <img  src="{{ URL::asset('/images/view1_principal_r_p.jpg') }}" class="img-responsive" alt="home photo">
                 </div>
             </div>
         </div>
