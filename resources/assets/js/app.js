@@ -78,7 +78,7 @@ window.contact =  {
             dataType: 'json',
             success: function (data) {
                 if(data.status){
-                    formBody.html('<h1>Message sent. Thank you.</h1>').slideDown();
+                    formBody.html('<h1>'+CONTACT_SENT_LANG+'</h1>').slideDown();
                     loader.slideUp();
                     $(context.button).hide();
 
@@ -87,12 +87,12 @@ window.contact =  {
                     text.val("");
 
                 } else {
-                    formBody.html('<h1>Error sending message.</h1>').slideDown();
+                    formBody.html('<h1>'+CONTACT_ERROR_LANG+'</h1>').slideDown();
                     loader.slideUp();
                 }
             },
             error: function (data) {
-                formBody.html('<h1>Error sending message.</h1>').slideDown();
+                formBody.html('<h1>'+CONTACT_ERROR_LANG+'</h1>').slideDown();
                 loader.slideUp();
                 console.log('Error:', data);
             }
