@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider;
 use Validator;
 
