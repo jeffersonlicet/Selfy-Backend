@@ -42,5 +42,5 @@ return [
     /*
      * Cookie name
      */
-    'cookie_name' => env('LANG_DETECTOR_COOKIE', 'locale'),
+    'cookie_name' => env('LANG_DETECTOR_COOKIE', 'self_locale'),
 ];

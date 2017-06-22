@@ -27,8 +27,6 @@ Route::post('/ajax/contact', 'App\UserController@contact');
 
 Route::get('/facebook/link', 'App\UserController@confirm_facebook_link');
 
-
-
 Route::group(['prefix' => 'admin', 'namespace' => 'Admin' , 'middleware' => 'web'], function (){
     Route::get('/login', [
         'as' => 'login',
