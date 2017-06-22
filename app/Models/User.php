@@ -53,6 +53,8 @@ use Zizaco\Entrust\Traits\EntrustUserTrait;
  * @property int gender
  * @property int facebook
  * @property int twitter
+ * @property UserInformation $information
+ * @property string $facebook_token
  */
 class User extends Authenticatable
 {
@@ -76,13 +78,17 @@ class User extends Authenticatable
     /**
      * @var array
      */
-    protected $fillable = ['user_group', 'username', 'email', 'password', 'firstname', 'lastname', 'bio', 'firebase_token', 'created_at', 'updated_at', 'user_locale', 'spot_completed', 'duo_completed', 'play_completed', 'spot_todo', 'duo_todo', 'play_todo', 'reset_password_token', 'reset_password_sent_at', 'duo_enabled', 'spot_enabled', 'account_private', 'save_photos'];
+    protected $fillable = ['user_group', 'username', 'email', 'password', 'firstname', 'lastname', 'bio',
+        'firebase_token', 'created_at', 'updated_at', 'user_locale', 'spot_completed', 'duo_completed',
+        'play_completed', 'spot_todo', 'duo_todo', 'play_todo', 'reset_password_token', 'reset_password_sent_at',
+        'duo_enabled', 'spot_enabled', 'account_private', 'save_photos', 'facebook_token', 'play_enabled'];
 
     /**
      * @var array
      */
     protected $hidden = [
-       'deleted_at', 'password', 'reset_password_token', 'firebase_token', 'email', 'reset_password_sent_at', 'created_at', 'updated_at'
+       'deleted_at', 'password', 'reset_password_token', 'firebase_token', 'reset_password_sent_at',
+        'created_at', 'updated_at', 'facebook_token'
     ];
 
     /**
@@ -200,9 +206,23 @@ class User extends Authenticatable
      *  Return if the user can perform a like action
      * @return bool
      */
+    public function getSecondaryEmailAttribute()
+    {
+        if($this->facebook == config('constants.SOCIAL_STATUS.COMPLETED'))
+        {
+            return UserInformation::where('user_id', $this->user_id)->first()->facebook_email;
+        }
+
+        return null;
+    }
+
+    /**
+     *  Append property
+     *  Return if the user can perform a like action
+     * @return bool
+     */
     public function getFollowEnabledAttribute()
     {
-
         return !\Auth::guest() && \Auth::user()->user_id != $this->user_id && !boolval(count(UserFollower::where(['follower_id' => \Auth::user()->user_id, 'following_id' => $this->user_id])->first()));
         /** @noinspection end */
     }

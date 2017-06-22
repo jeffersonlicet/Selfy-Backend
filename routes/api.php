@@ -34,6 +34,8 @@ Route::group(
             ['only' => ['store','update','destroy','show']]);
 
         Route::get('photos', 'Api\PhotoController@index');
+        Route::get('photos/hashtag_search', 'Api\PhotoController@hashtag_search');
+
         Route::get('photos/recent', 'Api\PhotoController@recent');
 
         Route::resource('comment', 'Api\CommentController',
@@ -52,17 +54,24 @@ Route::group(
 
         Route::get('likes', 'Api\LikeController@index');
         Route::post('user/avatar', 'Api\UserController@avatar');
-//
+
+        Route::get('users/fb_suggestions', 'Api\UserController@facebook_suggestion');
         Route::get('users/suggestions', 'Api\UserController@suggestions');
         Route::get('users/duo', 'Api\UserController@duo');
         Route::get('users/search', 'Api\UserController@search');
+        Route::get('users/search_mentions', 'Api\UserController@search_mention_suggestion');
         Route::get('users/featured', 'Api\UserController@featured');
         Route::post('user/update_username', 'Api\UserController@update_username');
+        Route::post('user/update_challenges', 'Api\UserController@update_challenges');
+        Route::post('user/update_facebook_token', 'Api\UserController@update_facebook_token');
         Route::post('user/face', 'Api\UserController@face');
         Route::post('user/update', 'Api\UserController@update');
+        Route::post('user/update_creation', 'Api\UserController@update_creation');
+
         Route::post('user/firebase', 'Api\UserController@firebase');
         Route::post('user/follow', 'Api\UserController@follow');
         Route::post('user/unfollow', 'Api\UserController@unfollow');
+        Route::post('user/exists_implicit', 'Api\AuthController@sync_facebook_implicit');
 
         Route::get('user/followers', 'Api\UserController@followers');
         Route::get('user/following', 'Api\UserController@following');
@@ -78,7 +87,9 @@ Route::group(
         Route::post('challenge/decline', 'Api\ChallengesController@decline');
         Route::post('challenge/remove', 'Api\ChallengesController@remove');
 
-        Route::resource('challenge', 'Api\ChallengesController',['only' => ['show']]);
+        Route::get('challenge/top_photos', 'Api\ChallengesController@top_photos');
+        Route::get('challenge/recent_photos', 'Api\ChallengesController@recent_photos');
 
-        Route::get('notifications', 'Api\NotificationsController@index');  
-    });
+        Route::resource('challenge', 'Api\ChallengesController',['only' => ['show']]);
+            Route::get('notifications', 'Api\NotificationsController@index');
+        });

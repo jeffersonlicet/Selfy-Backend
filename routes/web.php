@@ -15,9 +15,15 @@ Route::get('about/privacy', function () {
     return view('privacy');
 });
 
-Route::get('/', function () {
-    return view('pages.welcome')->with(['pageTitle' => 'Welcome to Selfy']);
+Route::get('android', function () {
+    return view('pages.android')->with(['metaTags' => true, 'pageTitle' => 'Selfy for Android']);
 });
+
+Route::get('/', function () {
+    return view('pages.welcome')->with(['pageTitle' => 'Selfy', 'metaTags'=> false ]);
+});
+
+Route::post('/ajax/contact', 'App\UserController@contact');
 
 Route::get('/facebook/link', 'App\UserController@confirm_facebook_link');
 

@@ -86,6 +86,20 @@ class Photo extends Model
                 'photo_id');
     }
 
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function Hashtags()
+    {
+        return $this->belongsToMany(
+            'App\Models\Hashtag',
+            'photo_hashtags',
+            'photo_id',
+            'hashtag_id',
+            'photo_id');
+    }
+
     /**
      *  Append property
      *  Return if the user can perform a like action
@@ -106,7 +120,7 @@ class Photo extends Model
     public function getDeleteEnabledAttribute()
     {
 
-        return \Auth::user()->user_id == $this->user_id;
+        return !\Auth::guest() && \Auth::user()->user_id == $this->user_id;
         /** @noinspection end */
     }
 

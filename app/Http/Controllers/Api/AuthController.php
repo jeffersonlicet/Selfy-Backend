@@ -52,7 +52,9 @@ class AuthController extends Controller
 
                 $user->password = Hash::make($input['password']);
                 $user->user_locale = App::getLocale();
-                $user->avatar = 'http://i.imgur.com/4sfeHin.jpg';
+
+                $user->avatar = 'http://i.imgur.com/Q42Sl3B.jpg';
+
                 if ($user->save())
                 {
                     $public = JWTAuth::fromUser($user);
@@ -290,6 +292,7 @@ class AuthController extends Controller
             $userInfo = new UserInformation();
             $userInfo->facebook_id = $input['fb_id'];
             $userInfo->user_id = $user->user_id;
+            $userInfo->facebook_email = $input['email'];
             $userInfo->save();
 
             return response()->json([
@@ -327,8 +330,10 @@ class AuthController extends Controller
             if (!$validator->passes())
                 return response()->json(['status' => FALSE, 'report' => $validator->messages()->first()]);
 
-            if($user = User::with('information')->where('email', $input['identity'])->first())
+            $alternate = UserInformation::has('User')->with('User')->where('facebook_email', $input['identity'])->first();
+            if(($user = User::with('information')->where('email', $input['identity'])->first()) || $alternate)
             {
+                if($alternate) $user = $alternate->User;
                 $report = 'confirmation_required';
 
                 if($user->facebook == config('constants.SOCIAL_STATUS.COMPLETED'))
@@ -383,6 +388,7 @@ class AuthController extends Controller
                 }
 
                 elseif($user->facebook == config('constants.SOCIAL_STATUS.CONFIRMED')) $report = 'email_confirmed';
+                elseif($user->facebook == config('constants.SOCIAL_STATUS.IMPLICIT')) $report = 'is_implicit';
                 else
                 {
                     $keys = App\Models\UserKey::where(['key_type' => config('constants.KEY_TYPE.FACEBOOK_INTEGRATION_CONFIRM'),
@@ -409,6 +415,169 @@ class AuthController extends Controller
             return response()->json(['status' => TRUE, 'report'=> $report, 'user' => $user,
                 'public_key' => $public,
                 'private_key' => $private]);
+        }
+
+        catch(Exception $e)
+        {
+            return response()->json(['status' => FALSE, 'report' => $e->getMessage()]);
+        }
+    }
+
+
+    /**
+     * Determine if an account has facebook associated without
+     * altering tokens
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function sync_facebook_implicit(Request $request)
+    {
+        try
+        {
+            $input = $request->all();
+            $validator = Validator::make($input, ['identity' => 'required|email', 'facebook_id' => 'required']);
+
+            if (!$validator->passes())
+                return response()->json(['status' => FALSE, 'report' => $validator->messages()->first()]);
+
+            switch (\Auth::user()->facebook)
+            {
+                /**
+                 *  SOCIAL STATUS IMPLICIT: POSSIBLE CASES
+                 *
+                 * #1 There was no Facebook account existing with this email/facebook_id, so we create the information
+                 * data and the user will only login using his Selfy credentials.
+                 */
+                case config('constants.SOCIAL_STATUS.IMPLICIT'):
+                /**
+                 *  SOCIAL STATUS COMPLETED: POSSIBLE CASES
+                 *
+                 * #1 User created his account using Facebook.
+                 * #2 The user requested Facebook integration from the login page and then
+                 * requested any Facebook action inside the app so we forced the integration.
+                 */
+                case config('constants.SOCIAL_STATUS.COMPLETED'):
+                    if(\Auth::user()->information->facebook_id == $input['facebook_id'])
+
+                        return response()->json([
+                            'status' => TRUE,
+                            'report'=> 'exists',
+                            'user' => \Auth::user()->toArray()
+                        ]);
+
+                    break;
+
+                /**
+                 *  SOCIAL STATUS PENDING: POSSIBLE CASES
+                 *
+                 * #1 This email account may be the same that the provided facebook email, because we ask the user
+                 * to confirm in an attempt to login using Facebook. But the users logged in the app using Selfy
+                 * credentials, so now we ?are sure? that is the same user, lets force integration
+                 *
+                 */
+                case config('constants.SOCIAL_STATUS.PENDING'):
+                /**
+                 *  SOCIAL STATUS CONFIRMED: POSSIBLE CASES
+                 *
+                 * #1 This email account may be the same that the provided facebook email, because we ask the user
+                 * to confirm in an attempt to login using Facebook. And the user confirmed the email but there was no
+                 * Facebook actions, lets force integration .
+                 *
+                 */
+                case config('constants.SOCIAL_STATUS.CONFIRMED'):
+
+                    if(\Auth::user()->email == $input['identity'])
+                    {
+                        \Auth::user()->facebook = config('constants.SOCIAL_STATUS.COMPLETED');
+                        \Auth::user()->touch();
+                        \Auth::user()->save();
+
+                        $info = new UserInformation();
+                        $info->facebook_id = $input['facebook_id'];
+                        $info->user_id = \Auth::user()->user_id;
+                        $info->facebook_email = $input['identity'];
+                        $info->save();
+
+                        //Clean confirm integration keys
+                        $keys = UserKey::where([
+                            'key_type' => config('constants.KEY_TYPE.FACEBOOK_INTEGRATION_CONFIRM'),
+                            'user_id' => \Auth::user()->user_id
+                        ])->get();
+
+                        foreach($keys as $k) $k->delete();
+
+                        return response()->json([
+                            'status' => TRUE,
+                            'report'=> 'exists',
+                            'user' => \Auth::user()->toArray()
+                        ]);
+                    }
+
+                   /**
+                     * Integration error
+                    *
+                     * This facebook account is not the same one used to ask login integration
+                     */
+                    else
+                    {
+                        return response()->json([
+                            'status' => TRUE,
+                            'report'=> 'invalid_action',
+                        ]);
+                    }
+
+                    break;
+
+                /**
+                 *  SOCIAL STATUS UNSET: POSSIBLE CASES
+                 *
+                 * #1 The user does not have any facebook interaction request, first let's check if other user exist
+                 * with this email, then check facebook_id, if everything is clean, let's associate the accounts in a
+                 * implicit way, the user can only login using Selfy credentials.
+                 *
+                 */
+                case config('constants.SOCIAL_STATUS.UNSET'):
+
+                    if(\Auth::user()->email == $input['identity'] || (!User::where('email', $input['identity'])->first() && !UserInformation::where('facebook_id', $input['facebook_id'])->first()))
+                    {
+                       /* Let's create the link */
+                        \Auth::user()->facebook = config('constants.SOCIAL_STATUS.IMPLICIT');
+                        \Auth::user()->touch();
+                        \Auth::user()->save();
+
+                        $info = new UserInformation();
+                        $info->facebook_id = $input['facebook_id'];
+                        $info->user_id = \Auth::user()->user_id;
+                        $info->facebook_email = $input['identity'];
+                        $info->save();
+
+                        return response()->json([
+                            'status' => TRUE,
+                            'report'=> 'exists',
+                            'user' => \Auth::user()->toArray()
+                        ]);
+                    }
+
+
+                    /**
+                     * Integration error
+                     *
+                     * This facebook account is linked with other Selfy account
+                     */
+                    else
+                    {
+                        return response()->json(['status' => TRUE,
+                            'report'=> 'invalid_action',
+                        ]);
+                    }
+
+                    break;
+            }
+
+            return response()->json([
+                'status' => TRUE,
+                'report'=> 'invalid_action',
+            ]);
         }
 
         catch(Exception $e)
@@ -450,7 +619,6 @@ class AuthController extends Controller
                     $user->gender = 2;
             }
 
-            $user->email = $input['email'];
             $user->facebook = config('constants.SOCIAL_STATUS.COMPLETED');
 
             if ($request->has('firstname'))
@@ -492,6 +660,7 @@ class AuthController extends Controller
                 $userInfo = new UserInformation();
                 $userInfo->facebook_id = $input['fb_id'];
                 $userInfo->user_id = $user->user_id;
+                $userInfo->facebook_email = $input['email'];
                 $userInfo->save();
 
                 return response()->json([

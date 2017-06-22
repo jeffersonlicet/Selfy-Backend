@@ -165,7 +165,7 @@ class CheckDuo implements ShouldQueue
 
                                 /* Increment challenge completion count */
                                 $todoChallenge->Challenge->completed_count++;
-                                $todoChallenge->Challenge->save();
+                                $todoChallenge->Challenge->touch();
                                 $todoChallenge->Challenge->save();
 
                                 /* Increment user duo completion count */

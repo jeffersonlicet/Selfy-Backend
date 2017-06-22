@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Mail\FbIntegrationConfirmMail;
+use App;
 use App\Models\Challenge;
 use App\Models\User;
 use App\Models\UserChallenge;
@@ -14,55 +14,36 @@ use App\Notifications\DuoInvitationNotification;
 use App\Notifications\FollowInvitationNotification;
 use App\Notifications\FollowNotification;
 use Exception;
+use Expression;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Input;
 use Illuminate\Validation\Rule;
-use Mail;
 use Validator;
-
 class UserController extends Controller
 {
     public function test()
     {
-        $values['username'] = Input::get("username");
-
-        $validator = Validator::make(
-            $values, [ 'username' =>	'required|allowed_username|unique:users,username']
-        );
-
-        if(!$validator->passes())
-        {
-            return response()->json([
-                'status' => FALSE,
-                'report' => $validator->messages()->first()
-            ]);
-        }
-
-        else
-        {
-            print($values['username']);
-            print("is valid");
-        }
-
-        return response();
+        $username = "h52";
+        var_dump(is_numeric($username));
     }
 
     /**
      * Return a user information
      *
-     * @param $id
+     * @param $data
      * @return \Illuminate\Http\JsonResponse
+     * @internal param $id
      */
-    public function show($id)
+    public function show($data)
     {
         try
         {
             $validator =
                 Validator::make(
-                    ['id' => $id],
-                    ['id' => ['required', 'numeric']]
+                    ['data' => $data],
+                    ['data' => ['required']]
                 );
 
             if(!$validator->passes())
@@ -73,8 +54,10 @@ class UserController extends Controller
                 ]);
             }
 
+            $result = is_numeric($data) ? User::with('Face')->find($data) :
+                User::with('Face')->where('username', $data)->first();
 
-            if ($result = User::with('Face')->find($id))
+            if ($result)
             {
                 return response()->json([
                     'status' => TRUE,
@@ -132,7 +115,8 @@ class UserController extends Controller
     {
         try
         {
-            $values = $request->only(['bio', 'firstname' , 'lastname', 'face_url', 'duo_enabled', 'spot_enabled', 'account_private', 'save_photos']);
+            $values = $request->only(['bio', 'firstname' , 'lastname', 'face_url', 'duo_enabled', 'spot_enabled',
+                'account_private', 'save_photos', 'play_enabled']);
             $values['duo_enabled'] = $values['duo_enabled'] == "1";
             $values['spot_enabled'] = $values['spot_enabled'] == "1";
             $values['account_private'] = $values['account_private'] == "1";
@@ -145,6 +129,7 @@ class UserController extends Controller
                         'lastname'				=>	'required|string',
                         'duo_enabled'           =>	'required',
                         'spot_enabled'          =>	'required',
+                        'play_enabled'          =>	'required',
                         'account_private'       =>	'required',
                         'save_photos' =>	'required',
                     ]
@@ -197,6 +182,124 @@ class UserController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
+    public function update_creation(Request $request)
+    {
+        try
+        {
+            $values = $request->only(['bio', 'firstname' , 'lastname', 'face_url', 'duo_enabled', 'spot_enabled', 'account_private', 'save_photos', 'email']);
+            $values['duo_enabled'] = $values['duo_enabled'] == "1";
+            $values['spot_enabled'] = $values['spot_enabled'] == "1";
+            $values['account_private'] = $values['account_private'] == "1";
+            $values['save_photos'] = $values['save_photos'] == "1";
+
+            $validator = Validator::make(
+                $values,
+                [
+                    'firstname'				=>	'required|string',
+                    'lastname'				=>	'required|string',
+                    'duo_enabled'           =>	'required',
+                    'spot_enabled'          =>	'required',
+                    'account_private'       =>	'required',
+                    'save_photos' =>	'required',
+                    'email' => 'required|email|unique:users,email'
+                ]
+            );
+
+            if($values['account_private'])
+            {
+                $followers_id = \Auth::user()->Followers->pluck('follower_id');
+
+                foreach($followers_id as $id)
+                {
+                    if(!UserInvitation::where(['user_id' => $id, 'profile_id' => \Auth::user()->user_id])->first())
+                    {
+                        $invitation = new UserInvitation();
+                        $invitation->user_id = $id;
+                        $invitation->invitation_status = config('constants.INVITATION_STATUS.ACCEPTED');
+                        $invitation->profile_id = \Auth::user()->user_id;
+                        $invitation->save();
+                    }
+                }
+            }
+
+            if(!$validator->passes())
+            {
+                return response()->json([
+                    'status' => FALSE,
+                    'report' => $validator->messages()->first()
+                ]);
+            }
+
+            \Auth::user()->update($values);
+            \Auth::user()->touch();
+            \Auth::user()->save();
+
+            return response()->json([
+                'status' => TRUE,
+                'report' => 'resource_updated'
+            ]);
+        }
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update_challenges(Request $request)
+    {
+        try
+        {
+            $values = $request->only(['play_enabled', 'duo_enabled', 'spot_enabled']);
+            $values['duo_enabled'] = $values['duo_enabled'] == "1";
+            $values['spot_enabled'] = $values['spot_enabled'] == "1";
+            $values['play_enabled'] = $values['play_enabled'] == "1";
+
+            $validator = Validator::make(
+                $values,
+                [
+                    'duo_enabled'           =>	'required',
+                    'spot_enabled'          =>	'required',
+                    'play_enabled'       =>	'required',
+                ]
+            );
+
+            if(!$validator->passes())
+            {
+                return response()->json([
+                    'status' => FALSE,
+                    'report' => $validator->messages()->first()
+                ]);
+            }
+
+            \Auth::user()->update($values);
+            \Auth::user()->touch();
+            \Auth::user()->save();
+
+            return response()->json([
+                'status' => TRUE,
+                'report' => 'resource_updated'
+            ]);
+        }
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function update_username(Request $request)
     {
         try
@@ -205,7 +308,7 @@ class UserController extends Controller
             $values['username'] = strtolower($values['username']);
 
             $validator = Validator::make(
-                $values, [ 'username' =>	'required|allowed_username']
+                $values, [ 'username' =>	'required|allowed_username|unique:users,username']
             );
 
             if(!$validator->passes())
@@ -225,6 +328,47 @@ class UserController extends Controller
             }
 
             else return response()->json(['status' => TRUE,'report' => 'invalid_action']);
+        }
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update_facebook_token(Request $request)
+    {
+        try
+        {
+            $values = $request->only(['facebook_token', 'facebook_id']);
+
+            $validator = Validator::make(
+                $values, ['facebook_token' => 'required', 'facebook_id' => 'required']
+            );
+
+            if (!$validator->passes()) {
+                return response()->json([
+                    'status' => FALSE,
+                    'report' => $validator->messages()->first()
+                ]);
+            }
+
+            if(\Auth::user()->facebook != config('constants.SOCIAL_STATUS.UNSET'))
+            {
+                \Auth::user()->facebook_token = $values['facebook_token'];
+                \Auth::user()->touch();
+                \Auth::user()->save();
+
+                return response()->json(['status' => TRUE,'report' => 'resource_updated']);
+            }
+            else
+                return response()->json(['status' => FALSE,'report' => 'validation_required']);
         }
         catch (\Exception $e)
         {
@@ -812,6 +956,63 @@ class UserController extends Controller
         }
     }
 
+
+    /**
+     * Search friends when type @user
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function search_mention_suggestion()
+    {
+        try
+        {
+            $query    = Input::get('query', 0);
+            $limit   = Input::get('limit', config('app.photos_best_per_page'));
+            $page    = Input::get('page', 0);
+
+            $validator = Validator::make(
+                ['query' => $query, 'limit' => $limit, 'page'=> $page],
+                ['query' => ['required', 'string'], 'limit' => ['required', 'numeric', 'between:1,20'], 'page' => ['required', 'numeric']]);
+
+            if(!$validator->passes())
+            {
+                return response()->json([
+                    'status' => TRUE,
+                    'report' => $validator->messages()->first()
+                ]);
+            }
+
+            $a = UserFollower::where('following_id', \Auth::user()->user_id)->whereHas(
+                'User', function($q) use ($query){
+                    $q->where('username', 'LIKE', '%'.$query.'%');
+            })->with('User')->get();
+
+            $b = UserFollowing::where('follower_id', \Auth::user()->user_id)->whereHas(
+                'User', function($q) use ($query){
+                    $q->where('username', 'LIKE', '%'.$query.'%');
+            })->with('User')->get();
+
+            $result = [];
+            foreach ($a->merge($b) as $el)
+            {
+                if(!in_array($el->User, $result))
+                    $result[] = $el->User;
+            }
+
+            return response()->json([
+                'status' => TRUE,
+                'connections' => $result
+            ]);
+
+        }
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
+
     /**
      * Return duo enabled users
      * @return \Illuminate\Http\JsonResponse
@@ -955,6 +1156,78 @@ class UserController extends Controller
                 'status' => TRUE,
                 'connections' => $suggestion->isEmpty() ? [] : $suggestion->toArray()
             ]);
+
+        }
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function facebook_suggestion()
+    {
+        try
+        {
+            $limit = Input::get('limit', 10);
+            $page = Input::get('page', 0);
+
+            $validator =
+                Validator::make(
+                    ['limit' => $limit, 'page' => $page],
+                    ['limit' => ['required', 'numeric', 'between:1,20'], 'page' => ['required', 'numeric']
+
+                    ]
+                );
+
+            if (!$validator->passes()) {
+                return response()->json([
+                    'status' => TRUE,
+                    'report' => $validator->messages()->first()
+                ]);
+            }
+
+            if(\Auth::user()->facebook_token == null)
+            {
+                return response()->json([
+                    'status' => TRUE,
+                    'report' => 'facebook_required'
+                ]);
+            }
+
+            $fb = App::make('SammyK\LaravelFacebookSdk\LaravelFacebookSdk');
+
+            try
+            {
+                $response = $fb->get('/me/friends?fields=id&limit=5000', \Auth::user()->facebook_token);
+
+                if($response->getHttpStatusCode() == 200)
+                {
+                    $fbUsers    = \GuzzleHttp\json_decode($response->getBody())->data;
+
+                    $user_ids   = [];
+                    $curated    = [];
+
+                    foreach ($fbUsers as $user)
+                        $user_ids[] = $user->id;
+
+                    $users = App\Models\UserInformation::has('User')->whereIn('facebook_id', $user_ids)
+                        ->with(['User' => function($query) {
+                            $following  = \Auth::user()->Following->pluck('following_id');
+                            $following[] = \Auth::user()->user_id;
+                            $query->whereNotIn('user_id', $following);
+                        }])->limit($limit)->offset($limit*$page)->get();
+
+                    foreach ($users as $u)
+                        $curated[] = $u->User;
+
+                    return response()->json(['status' => TRUE, 'connections' => $curated]);
+                }
+            } catch (\Facebook\Exceptions\FacebookSDKException $e) {
+                return response()->json(['status' => FALSE, 'report' =>$e->getMessage()]);
+            }
 
         }
         catch (\Exception $e)

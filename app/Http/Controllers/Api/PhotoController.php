@@ -2,14 +2,20 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\Expression;
 use App\Http\Controllers\Controller;
 use App\Jobs\CheckAdultContent;
 use App\Jobs\CheckDuo;
+use App\Jobs\CheckPlay;
 use App\Jobs\CheckSpot;
+use App\Models\Hashtag;
 use App\Models\Photo;
+use App\Models\PhotoHashtag;
 use App\Models\PhotoReport;
 use App\Models\User;
 use App\Models\UserInvitation;
+use App\Models\UserPhotoMention;
+use App\Notifications\UserPhotoMentionNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Validation\Rule;
@@ -75,7 +81,6 @@ class PhotoController extends Controller
             ]);
         }
     }
-
 
     /**
      * Get the recent photo collections
@@ -147,16 +152,24 @@ class PhotoController extends Controller
 
             $photo->saveOrFail();
 
+            if($request->has("caption"))
+            {
+                $this->handlePhotoHashtags($photo);
+                $this->handlePhotoMentions($photo);
+            }
+
             if($request->has("latitude") && $request->has("latitude") && \Auth::user()->spot_enabled)
             {
                $this->dispatch(new CheckSpot($photo, [floatval($input['latitude']), floatval($input['longitude'])]));
             }
+
             if(\Auth::user()->duo_enabled)
             {
                 $this->dispatch(new CheckDuo($photo, rand(0, config('app.oxford_available_keys') - 1)));
             }
 
             $this->dispatch(new CheckAdultContent($photo, rand(0, config('app.oxford_vision_available_keys') - 1)));
+            $this->dispatch(new CheckPlay($photo));
 
             \Auth::user()->photos_count++;
             \Auth::user()->save();
@@ -569,7 +582,6 @@ class PhotoController extends Controller
                 ]);
             }
 
-            
             $photo = Photo::find($id);
 
             if(!$photo)
@@ -579,7 +591,6 @@ class PhotoController extends Controller
 
             $client     = new GuzzleClient(['base_uri' => "http://starbits.southcentralus.cloudapp.azure.com/api/"]);
             $adapter    = new GuzzleAdapter($client);
-            $headers = [];
             $request    = new GuzzleRequest('POST', 'clothes', ["content-type" => 'application/json'], json_encode(['photo_url' => $photo->url]));
             $response   = $adapter->sendRequest($request);
 
@@ -625,5 +636,105 @@ class PhotoController extends Controller
                 'report' => $e->getMessage()
             ]);
         }
+    }
+
+    /**
+     * Detect user mentions in the photo caption
+     *
+     * @param Photo $photo
+     */
+    private function handlePhotoMentions(Photo $photo)
+    {
+        $usernames = Expression::parseText($photo->caption, 'mentions');
+
+        foreach ($usernames as $u)
+        {
+            if($user = User::where('username',$u)->first())
+            {
+                if(!$mention = UserPhotoMention::where([
+                    'user_id' => $user->id,
+                    'photo_id' => $photo->photo_id])->first())
+                {
+                    $mention = new UserPhotoMention();
+                    $mention->user_id = $user->user_id;
+                    $mention->photo_id = $photo->photo_id;
+                    $mention->save();
+
+                    if($user->user_id != \Auth::user()->user_id)
+                        $user->notify(new UserPhotoMentionNotification(\Auth::user(), $photo));
+                }
+            }
+        }
+    }
+
+    public function hashtag_search()
+    {
+        try
+        {
+            $query    = Input::get('query', 0);
+            $limit   = Input::get('limit', config('app.photos_best_per_page'));
+            $page    = Input::get('page', 0);
+
+            $validator = Validator::make(
+                ['query' => $query, 'limit' => $limit, 'page'=> $page],
+                ['query' => ['required', 'string'], 'limit' => ['required', 'numeric', 'between:1,20'], 'page' => ['required', 'numeric']]);
+
+            if(!$validator->passes())
+            {
+                return response()->json([
+                    'status' => TRUE,
+                    'report' => $validator->messages()->first()
+                ]);
+            }
+
+            $hashtags = Hashtag::where('hashtag_text', 'LIKE', '%'.$query.'%')->where('hashtag_status', 0)->get();
+
+            return response()->json([
+                'status' => TRUE,
+                'hashtags' => $hashtags->isEmpty() ? [] : $hashtags->toArray()
+            ]);
+
+        }
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * Detect hashtags in the photo caption
+     *
+     * @param Photo $photo
+     */
+    private function handlePhotoHashtags(Photo $photo)
+    {
+        $hashtags = Expression::parseText($photo->caption, 'hashtags');
+
+        foreach($hashtags as $word)
+        {
+            if(!$hashtag = Hashtag::where('hashtag_text', $word)->first())
+            {
+                $hashtag = new Hashtag();
+                $hashtag->hashtag_text = $word;
+            }
+
+            $hashtag->hashtag_relevance++;
+            $hashtag->save();
+
+            if(!$relation = PhotoHashtag::where([
+                'photo_id' => $photo->photo_id,
+                'hashtag_id' => $hashtag->hashtag_id])->first())
+            {
+                $relation = new PhotoHashtag();
+                $relation->photo_id = $photo->photo_id;
+                $relation->hashtag_id = $hashtag->hashtag_id;
+                $relation->save();
+            }
+
+        }
+
     }
 }

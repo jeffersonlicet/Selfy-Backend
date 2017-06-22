@@ -32,6 +32,7 @@ return [
         'PENDING'        => 1,
         'COMPLETED'      => 2,
         'CONFIRMED'      => 3,
+        'IMPLICIT'      => 4,
     ],
 
     'KEY_TYPE' => [

@@ -19,9 +19,10 @@ class ChallengePlay extends Model
      */
     protected $table = 'play';
 
+    protected $primaryKey = 'play_id';
+
     /**
      * @var array
      */
     protected $fillable = ['title', 'description', 'sample'];
-
 }
