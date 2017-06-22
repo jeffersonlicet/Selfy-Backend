@@ -36,6 +36,10 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin' , 'middleware' => 'web
         'as' => 'SelfyAdminLoginPost',
         'uses' => 'LoginAdminController@login'
     ]);
+    Route::post('/login', [
+        'as' => 'SelfyAdminLogout',
+        'uses' => 'LoginAdminController@logout'
+    ]);
 
 });
 
@@ -50,9 +54,9 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin' , 'middleware' => 'App
         'as' => 'login',
         'uses' => 'AdminController@index'
     ]);
-    Route::get('roles', 'RolesController@index');
-    Route::post('roles', 'RolesController@createRole');
-    Route::post('roles/edit/{id}', 'RolesController@editRole');
+    Route::get('roles', ['uses' => 'RolesController@index', 'as' => 'SelfyAdminRoles']);
+    Route::post('roles', ['uses' => 'RolesController@createRole', 'as' => 'SelfyAdminRolesCreate'] );
+    Route::post('roles/edit/{id}', 'RolesController@edit');
     Route::post('roles/removeRole/{id}', 'RolesController@removeRole');
     Route::post('roles/rolePermissions/{id}', 'RolesController@rolePermissions');
 

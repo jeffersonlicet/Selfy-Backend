@@ -11,6 +11,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Repositories\UserRepository;
+use App\Services\AclManager;
 
 class UsersController extends Controller
 {
@@ -24,6 +25,15 @@ class UsersController extends Controller
     {
         $user = $this->repository->all(['id', 'name', 'email']);
 
-        return view('users.index', compact('user'))->with('activeMenu', 'sidebar.users.list');
+        return view('user.index', compact('user'))->with('activeMenu', 'sidebar.users.list');
+    }
+
+    public function edit(AclManager $aclManager, $id)
+    {
+        $user = $this->repository->find($id);
+        return view('user.edit')
+            ->with('user', $user)
+            ->with('roles', $aclManager->getRolesForSelect())
+            ->with('activeMenu', 'sidebar.users');
     }
 }

@@ -8,13 +8,22 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Permission;
 use App\Models\Role;
+use App\Repositories\RoleRepository;
+use App\Validation\ValidatorException;
 use DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RolesController extends Controller
 {
+    protected $repository;
+    public function __construct(RoleRepository $repository)
+    {
+        $this->repository = $repository;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,7 +41,7 @@ class RolesController extends Controller
                 $a[] = $role_permissionr;
             }
         }
-        return view('functions.roles',
+        return view('admin.roles.index',
             [
                 'roles' => $roles,
                 'permissions' => $permissions,
@@ -47,14 +56,19 @@ class RolesController extends Controller
      */
     public function createRole(Request $request)
     {
-        $name               = $request->input('rolename');
-        $description        = $request->input('description');
-        $role               = new Role();
-        $role->name         = $name;
-        $role->display_name = 'Project '.$name; // optional
-        $role->description  = $description; // optional
-        $role->save();
-        return back()->withInput();
+        try {
+            $this->validate($request, [
+                'name' => 'required',
+                'display_name' => 'required',
+                'permission_id' => 'required'
+            ]);
+            DB::transaction(function () use ($request) {
+                $this->repository->create($request->all());
+            });
+        } catch (ValidatorException $e) {
+            return redirect()->back()->withErrors($e->getMessageBag());
+        }
+        return redirect()->to(config('selfy-admin.routePrefix', 'admin') . '/roles');
     }
     /**
      *
@@ -65,20 +79,14 @@ class RolesController extends Controller
      */
     public function rolePermissions(Request $request, $id)
     {
-        $permissions = $request->get('already_values');
-        $permissionId = array();
-        DB::table('permission_role')->where('role_id', '=', $id)->delete();
-        if ($permissions){
-            $temp = DB::table('permissions')
-                ->whereIn('id', $permissions)
-                ->get();
-            foreach ($temp as $tmp) {
-                $permissionId[] = $tmp->id;
-            }
-            $role = Role::where('id', '=', $id)->first();
-            $role->attachPermissions($permissionId);
-        }
-        return back()->withInput();
+        $role = $this->repository->find($id);
+        $permissions = Permission::all()->pluck('display_name', 'id')->toArray();
+        return view('permissions.assign')
+            ->with('type', 'role')
+            ->with('model', $role)
+            ->with('permissions', $role->perms->pluck('id')->toArray())
+            ->with('permissionsList', $permissions)
+            ->with('activeMenu', 'sidebar.users.roles');
     }
     /**
      * Display the specified resource.
@@ -98,33 +106,49 @@ class RolesController extends Controller
      */
     public function edit($id)
     {
-        //
+        return view('roles.edit')
+            ->with('role', $this->repository->find($id))
+            ->with('activeMenu', 'sidebar.users.roles');
     }
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function editRole(Request $request, $id)
+
+    public function update($id, Request $request)
     {
-        $name = $request->input('rolename');
-        $description = $request->input('description');
-        DB::table('roles')
-            ->where('id', $id)
-            ->update(['name' => $name, 'description' => $description]);
-        return back()->withInput();
+        if(Auth::user()->can('update-roles')) {
+
+            $this->validate($request, [
+                'name' => 'required',
+                'display_name' => 'required',
+                'permission_id' => 'required'
+            ]);
+
+            $role = $this->repository->update($request->all(),$id);
+
+            if($role->permissions->count()) {
+
+                $role->permissions()->detach($role->permissions()->lists('permission_id')->toArray());
+            }
+
+            $role->attachPermissions($request->input('permission_id'));
+
+            return redirect('admin/roles');
+        }
     }
+
     /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function removeRole($id)
+    public function removeRole($id, $permission)
     {
-        DB::table('roles')->where('id', '=', $id)->delete();
-        return back()->withInput();
+        if(Auth::user()->can('delete-roles')) {
+
+            $role = $this->repository->find($id);
+            $role->perms()->detach($permission);
+
+            return redirect('admin/roles');
+        }
+        return redirect('auth/logout');
     }
 }
