@@ -10,6 +10,7 @@ use DB;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Zizaco\Entrust\Traits\EntrustUserTrait;
 
 /**
  * @property boolean duo_enabled
@@ -55,8 +56,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  */
 class User extends Authenticatable
 {
+    use SoftDeletes  { restore as private restoreB; }
+    use EntrustUserTrait { restore as private restoreA; }
     use Notifiable;
-    use SoftDeletes;
+
+
 
     protected $primaryKey = 'user_id';
 
@@ -96,6 +100,12 @@ class User extends Authenticatable
             ->limit($limit)
             ->orderBy('completed_count', 'DESC')
             ->get();
+    }
+
+    public function restore()
+    {
+        $this->restoreA();
+        $this->restoreB();
     }
 
     /**

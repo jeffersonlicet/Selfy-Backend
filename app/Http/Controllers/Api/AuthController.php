@@ -38,7 +38,6 @@ class AuthController extends Controller
                 $user = new User();
                 $user->username = $input['username'];
 
-
                 if ($request->has('email'))
                     $user->email = $input['email'];
 

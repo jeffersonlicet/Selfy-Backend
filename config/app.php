@@ -124,6 +124,8 @@ return [
 
     'log_level' => env('APP_LOG_LEVEL', 'debug'),
 
+    'routePrefix' => 'backend',
+
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers
@@ -182,6 +184,9 @@ return [
         Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
         LaravelFCM\FCMServiceProvider::class,
         Squigg\AzureQueueLaravel\AzureQueueServiceProvider::class,
+
+        Zizaco\Entrust\EntrustServiceProvider::class,
+
     ],
 
     /*
@@ -233,6 +238,7 @@ return [
         'JWTAuth'   => Tymon\JWTAuth\Facades\JWTAuth::class,
         'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
         'FCM' => LaravelFCM\Facades\FCM::class,
+        'Entrust'   => Zizaco\Entrust\EntrustFacade::class,
     ],
 
     'foursquare_client' => env('FOURSQUARE_CLIENT_ID'),

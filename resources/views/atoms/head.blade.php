@@ -1,6 +1,7 @@
 <meta charset="utf-8">
 <meta name="description" content="">
 <meta name="author" content="Scotch">
+<meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{$pageTitle}}</title>
         <!-- Load CSS -->
         <link rel="stylesheet" href="{{ URL::asset('/css/app.css') }}">
