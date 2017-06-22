@@ -4,7 +4,7 @@
         <div class="container">
             <div class="row visible-xs">
                 <div class="col-xs-6 col-xs-offset-3">
-                    <img  src="{{ URL::asset('/images/view1_principal_r_p.jpg') }}" class="img-responsive" alt="home photo">
+                    <img  src="{{ URL::asset('/images/view1_principal_r_interlaced.png') }}" class="img-responsive" alt="home photo">
                 </div>
             </div>
             <div class="row">
@@ -19,7 +19,7 @@
                     </div>
                 </div>
                 <div class="col-md-5 col-sm-4 device-container hidden-xs wow fadeIn">
-                    <img  src="{{ URL::asset('/images/view1_principal_r_p.jpg') }}" class="img-responsive" alt="home photo">
+                    <img  src="{{ URL::asset('/images/view1_principal_r_interlaced.png') }}" class="img-responsive" alt="home photo">
                 </div>
             </div>
         </div>
@@ -28,7 +28,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-4 col-sm-4 device-container wow fadeIn">
-                    <img  src="{{ URL::asset('/images/view2_principal_s.png') }}" class="img-responsive" alt="home photo">
+                    <img  src="{{ URL::asset('/images/view2_principal_interlaced.png') }}" class="img-responsive" alt="home photo">
                 </div>
 
                 <div class="col-md-5 col-md-offset-1 col-sm-offset-1 col-sm-5">
@@ -67,7 +67,7 @@
         <div class="container">
             <div class="row visible-xs">
                 <div class="col-xs-12 device-container">
-                    <img  src="{{ URL::asset('/images/duo_s.png') }}" class="img-responsive" alt="home photo">
+                    <img  src="{{ URL::asset('/images/duo_interlaced.png') }}" class="img-responsive" alt="home photo">
                 </div>
             </div>
             <div class="row">
@@ -82,7 +82,7 @@
                 </div>
 
                 <div class="col-md-4 col-sm-4 device-container hidden-xs wow fadeIn">
-                    <img  src="{{ URL::asset('/images/duo_s.png') }}" class="img-responsive" alt="home photo">
+                    <img  src="{{ URL::asset('/images/duo_interlaced.png') }}" class="img-responsive" alt="home photo">
                 </div>
             </div>
         </div>
@@ -91,12 +91,12 @@
         <div class="container">
             <div class="row visible-xs">
                 <div class="col-xs-12 device-container">
-                    <img  src="{{ URL::asset('/images/spot_collage.png') }}" class="img-responsive" alt="home photo">
+                    <img  src="{{ URL::asset('/images/spot_collage_interlaced.png') }}" class="img-responsive" alt="home photo">
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-5 col-sm-5 device-container hidden-xs wow fadeIn">
-                    <img  src="{{ URL::asset('/images/spot_collage.png') }}" class="img-responsive" alt="home photo">
+                    <img  src="{{ URL::asset('/images/spot_collage_interlaced.png') }}" class="img-responsive" alt="home photo">
                 </div>
 
                 <div class="col-md-5 col-sm-6 col-md-offset-1 col-sm-offset-1">
@@ -115,7 +115,7 @@
         <div class="container">
             <div class="row visible-xs">
                 <div class="col-xs-12 device-container">
-                    <img  src="{{ URL::asset('/images/play_s.png') }}" class="img-responsive" alt="home photo">
+                    <img  src="{{ URL::asset('/images/play_interlaced.png') }}" class="img-responsive" alt="home photo">
                 </div>
             </div>
             <div class="row">
@@ -132,7 +132,7 @@
                 </div>
 
                 <div class="col-md-4 col-sm-4 device-container hidden-xs wow fadeIn">
-                    <img  src="{{ URL::asset('/images/play_s.png') }}" class="img-responsive" alt="home photo">
+                    <img  src="{{ URL::asset('/images/play_interlaced.png') }}" class="img-responsive" alt="home photo">
                 </div>
             </div>
         </div>
