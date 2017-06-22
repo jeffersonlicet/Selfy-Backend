@@ -13,8 +13,10 @@
         "laravel/tinker": "~1.0",
         "laravelcollective/html": "^5.4.0",
         "php-http/guzzle6-adapter": "^1.1",
+        "sammyk/laravel-facebook-sdk": "^3.4",
         "tymon/jwt-auth": "0.5.*",
         "vluzrmos/language-detector": "^1.0",
+        "xethron/migrations-generator": "^2.0",
         "zizaco/entrust": "5.2.x-dev"
     },
     "require-dev": {

@@ -180,13 +180,14 @@ return [
         Vluzrmos\LanguageDetector\Providers\LanguageDetectorServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-        // Authentication
         Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
         LaravelFCM\FCMServiceProvider::class,
         Squigg\AzureQueueLaravel\AzureQueueServiceProvider::class,
+        SammyK\LaravelFacebookSdk\LaravelFacebookSdkServiceProvider::class,
+        Way\Generators\GeneratorsServiceProvider::class,
+        Xethron\MigrationsGenerator\MigrationsGeneratorServiceProvider::class,
 
         Zizaco\Entrust\EntrustServiceProvider::class,
-
         Collective\Html\HtmlServiceProvider::class,
 
     ],
@@ -243,6 +244,8 @@ return [
         'Entrust'   => Zizaco\Entrust\EntrustFacade::class,
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
+        'Expression' => App\Helpers\Expression::class,
+        'Vision' => App\Helpers\Vision::class,
     ],
 
     'foursquare_client' => env('FOURSQUARE_CLIENT_ID'),
