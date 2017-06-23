@@ -11,6 +11,7 @@
         "jeffersonlicet/azure-queue-laravel": "@dev",
         "laravel/framework": "5.4.*",
         "laravel/tinker": "~1.0",
+        "laravelcollective/html": "^5.4.0",
         "php-http/guzzle6-adapter": "^1.1",
         "tymon/jwt-auth": "0.5.*",
         "vluzrmos/language-detector": "^1.0",
