@@ -52,12 +52,6 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin' , 'middleware' => 'App
         'as' => 'login',
         'uses' => 'AdminController@index'
     ]);
-
-    Route::get('/dashboard', [
-        'as' => 'SelfyDashboard',
-        'uses' => 'AdminController@index'
-    ]);
-
     Route::get('roles', 'RolesController@index');
     Route::post('roles', 'RolesController@createRole');
     Route::post('roles/edit/{id}', 'RolesController@editRole');
