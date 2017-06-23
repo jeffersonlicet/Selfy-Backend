@@ -187,6 +187,8 @@ return [
 
         Zizaco\Entrust\EntrustServiceProvider::class,
 
+        Collective\Html\HtmlServiceProvider::class,
+
     ],
 
     /*
@@ -239,6 +241,8 @@ return [
         'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
         'FCM' => LaravelFCM\Facades\FCM::class,
         'Entrust'   => Zizaco\Entrust\EntrustFacade::class,
+        'Form' => Collective\Html\FormFacade::class,
+        'Html' => Collective\Html\HtmlFacade::class,
     ],
 
     'foursquare_client' => env('FOURSQUARE_CLIENT_ID'),

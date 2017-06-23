@@ -27,23 +27,6 @@ Route::post('/ajax/contact', 'App\UserController@contact');
 
 Route::get('/facebook/link', 'App\UserController@confirm_facebook_link');
 
-Route::group(['prefix' => 'admin', 'namespace' => 'Admin' , 'middleware' => 'auth'], function (){
-    Route::get('/dashboard', [
-        'as' => 'SelfyDashboard',
-        'uses' => 'AdminController@index'
-    ]);
-
-    Route::get('roles', 'RolesController@index');
-    Route::post('roles', 'RolesController@createRole');
-    Route::post('roles/edit/{id}', 'RolesController@editRole');
-    Route::post('roles/removeRole/{id}', 'RolesController@removeRole');
-    Route::post('roles/rolePermissions/{id}', 'RolesController@rolePermissions');
-
-    Route::get('permissions', 'PermissionsController@index');
-    Route::post('permissions', 'PermissionsController@createPermission');
-    Route::post('permissions/edit/{id}', 'PermissionsController@editPermission');
-    Route::post('permissions/removePermission/{id}', 'PermissionsController@removePermission');
-});
 
 
 Route::group(['prefix' => 'admin', 'namespace' => 'Admin' , 'middleware' => 'web'], function (){
@@ -52,7 +35,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin' , 'middleware' => 'web
         'uses' => 'LoginAdminController@formLogin'
     ]);
     Route::post('/login', [
-        'as' => 'login',
+        'as' => 'SelfyAdminLoginPost',
         'uses' => 'LoginAdminController@login'
     ]);
 
@@ -69,4 +52,20 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin' , 'middleware' => 'App
         'as' => 'login',
         'uses' => 'AdminController@index'
     ]);
+
+    Route::get('/dashboard', [
+        'as' => 'SelfyDashboard',
+        'uses' => 'AdminController@index'
+    ]);
+
+    Route::get('roles', 'RolesController@index');
+    Route::post('roles', 'RolesController@createRole');
+    Route::post('roles/edit/{id}', 'RolesController@editRole');
+    Route::post('roles/removeRole/{id}', 'RolesController@removeRole');
+    Route::post('roles/rolePermissions/{id}', 'RolesController@rolePermissions');
+
+    Route::get('permissions', 'PermissionsController@index');
+    Route::post('permissions', 'PermissionsController@createPermission');
+    Route::post('permissions/edit/{id}', 'PermissionsController@editPermission');
+    Route::post('permissions/removePermission/{id}', 'PermissionsController@removePermission');
 });
