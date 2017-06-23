@@ -35,7 +35,7 @@ Route::group(
 
         Route::get('photos', 'Api\PhotoController@index');
         Route::get('photos/hashtag_search', 'Api\PhotoController@hashtag_search');
-
+        Route::get('photos/hashtag', 'Api\PhotoController@photos_hashtag');
         Route::get('photos/recent', 'Api\PhotoController@recent');
 
         Route::resource('comment', 'Api\CommentController',

@@ -17,6 +17,7 @@ use App\Models\UserInvitation;
 use App\Models\UserPhotoMention;
 use App\Notifications\UserPhotoMentionNotification;
 use Carbon\Carbon;
+use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Validation\Rule;
@@ -208,8 +209,6 @@ class PhotoController extends Controller
                     'likes' => $validator->messages()->first()
                 ]);
             }
-
-
 
             if ($result = Photo::single($id))
             {
@@ -666,6 +665,11 @@ class PhotoController extends Controller
         }
     }
 
+    /**
+     * Return hint typed hashtag suggestions
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function hashtag_search()
     {
         try
@@ -703,6 +707,11 @@ class PhotoController extends Controller
         }
     }
 
+    /**
+     * Return a list of the top hashtags
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function popular_hashtags()
     {
         try
@@ -722,13 +731,74 @@ class PhotoController extends Controller
                 ]);
             }
 
-            $result = PhotoHashtag::has('Photo')->with(['Photo' => function ($q) {
-                $q->orderBy('likes_count', 'desc')->orderBy('views_count', 'desc')->orderBy('comments_count', 'desc');
-            }])->get();
+            $result = DB::table('hashtags')
+                ->join('photo_hashtags', 'hashtags.hashtag_id', '=', 'photo_hashtags.hashtag_id')
+                ->where('photo_hashtags.created_at', '>=', Carbon::today())
+                ->select('hashtags.hashtag_text', 'hashtags.hashtag_id')
+                ->groupBy('hashtags.hashtag_text', 'hashtags.hashtag_id')
+                ->limit($limit)->offset($limit*$page)->get();
 
             return response()->json([
                 'status' => TRUE,
                 'hashtags' => $result->isEmpty() ? [] : $result->toArray()
+            ]);
+
+        }
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * Return the photos of {hashtag} specific or hashtag LIKE if not in DB
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function photos_hashtag(){
+        try
+        {
+            $limit   = Input::get('limit', config('app.photos_best_per_page'));
+            $page    = Input::get('page', 0);
+            $hashtag = Input::get('hashtag');
+
+            $validator = Validator::make(
+                ['limit' => $limit, 'page'=> $page, 'hashtag' => $hashtag],
+                ['hashtag' => 'required','limit' => ['required', 'numeric', 'between:1,20'],
+                    'page' => ['required', 'numeric']]);
+
+            if(!$validator->passes())
+            {
+                return response()->json([
+                    'status' => TRUE,
+                    'report' => $validator->messages()->first()
+                ]);
+            }
+
+            if(!$h = Hashtag::where('hashtag_text', $hashtag)->first())
+            {
+                $h = Hashtag::where('hashtag_text', 'LIKE', '%'.$hashtag.'%')->first();
+            }
+
+            $curated = [];
+
+            if($h)
+            {
+                $result = PhotoHashtag::where('hashtag_id', $h->hashtag_id)->with('Photo')->has('Photo')
+                    ->limit($limit)->offset($limit*$page)->get();
+
+                foreach($result as $entry)
+                {
+                    $curated[] = $entry->Photo;
+                }
+
+            }
+
+            return response()->json([
+                'status' => TRUE,
+                'photos' => $curated
             ]);
 
         }
