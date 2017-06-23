@@ -8,6 +8,7 @@ use App\Jobs\CheckAdultContent;
 use App\Jobs\CheckDuo;
 use App\Jobs\CheckPlay;
 use App\Jobs\CheckSpot;
+use App\Models\ChallengePlay;
 use App\Models\Hashtag;
 use App\Models\Photo;
 use App\Models\PhotoHashtag;
@@ -737,10 +738,20 @@ class PhotoController extends Controller
                 ->select('hashtags.hashtag_text', 'hashtags.hashtag_id')
                 ->groupBy('hashtags.hashtag_text', 'hashtags.hashtag_id')
                 ->limit($limit)->offset($limit*$page)->get();
+            $curated = [];
+
+            foreach($result as $item)
+            {
+                $curated[] = [
+                    'hashtag_id' => $item->hashtag_id,
+                    'hashtag_text' => $item->hashtag_text,
+                    'is_play'=> !(ChallengePlay::where('play_hashtag', $item->hashtag_id)->first() == null)
+                ];
+            }
 
             return response()->json([
                 'status' => TRUE,
-                'hashtags' => $result->isEmpty() ? [] : $result->toArray()
+                'hashtags' => $curated
             ]);
 
         }
