@@ -16,6 +16,7 @@ use App\Models\User;
 use App\Models\UserInvitation;
 use App\Models\UserPhotoMention;
 use App\Notifications\UserPhotoMentionNotification;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Validation\Rule;
@@ -159,17 +160,15 @@ class PhotoController extends Controller
             }
 
             if($request->has("latitude") && $request->has("latitude") && \Auth::user()->spot_enabled)
-            {
-               $this->dispatch(new CheckSpot($photo, [floatval($input['latitude']), floatval($input['longitude'])]));
-            }
+                $this->dispatch(new CheckSpot($photo, [floatval($input['latitude']), floatval($input['longitude'])]));
 
             if(\Auth::user()->duo_enabled)
-            {
                 $this->dispatch(new CheckDuo($photo, rand(0, config('app.oxford_available_keys') - 1)));
-            }
+
+            if(\Auth::user()->play_enabled)
+                $this->dispatch(new CheckPlay($photo));
 
             $this->dispatch(new CheckAdultContent($photo, rand(0, config('app.oxford_vision_available_keys') - 1)));
-            $this->dispatch(new CheckPlay($photo));
 
             \Auth::user()->photos_count++;
             \Auth::user()->save();
@@ -692,6 +691,44 @@ class PhotoController extends Controller
             return response()->json([
                 'status' => TRUE,
                 'hashtags' => $hashtags->isEmpty() ? [] : $hashtags->toArray()
+            ]);
+
+        }
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function popular_hashtags()
+    {
+        try
+        {
+            $limit   = Input::get('limit', config('app.photos_best_per_page'));
+            $page    = Input::get('page', 0);
+
+            $validator = Validator::make(
+                ['limit' => $limit, 'page'=> $page],
+                ['limit' => ['required', 'numeric', 'between:1,20'], 'page' => ['required', 'numeric']]);
+
+            if(!$validator->passes())
+            {
+                return response()->json([
+                    'status' => TRUE,
+                    'report' => $validator->messages()->first()
+                ]);
+            }
+
+            $result = PhotoHashtag::has('Photo')->with(['Photo' => function ($q) {
+                $q->orderBy('likes_count', 'desc')->orderBy('views_count', 'desc')->orderBy('comments_count', 'desc');
+            }])->get();
+
+            return response()->json([
+                'status' => TRUE,
+                'hashtags' => $result->isEmpty() ? [] : $result->toArray()
             ]);
 
         }

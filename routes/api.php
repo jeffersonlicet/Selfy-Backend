@@ -90,6 +90,8 @@ Route::group(
         Route::get('challenge/top_photos', 'Api\ChallengesController@top_photos');
         Route::get('challenge/recent_photos', 'Api\ChallengesController@recent_photos');
 
+        Route::get('hashtags/top', 'Api\PhotoController@popular_hashtags');
+
         Route::resource('challenge', 'Api\ChallengesController',['only' => ['show']]);
             Route::get('notifications', 'Api\NotificationsController@index');
         });

@@ -25,7 +25,7 @@ class PhotoHashtag extends Model
      */
     public function photo()
     {
-        return $this->belongsTo('App\Model\Photo', 'photo_id', 'photo_id');
+        return $this->belongsTo('App\Models\Photo', 'photo_id', 'photo_id');
     }
 
     /**
@@ -33,6 +33,6 @@ class PhotoHashtag extends Model
      */
     public function hashtag()
     {
-        return $this->belongsTo('App\Model\Hashtag', 'hashtag_id', 'hashtag_id');
+        return $this->belongsTo('App\Models\Hashtag', 'hashtag_id', 'hashtag_id');
     }
 }
