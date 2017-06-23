@@ -6,7 +6,7 @@ return [
     'get_selfy' => 'Obtener Selfy',
     's2_title' => 'Fotos, amigos y más',
     's2_subtitle' => 'Descubre una nueva forma de compartir tus fotos en una plataforma inteligente, desafiante y divertida.',
-    's3_title' => 'Te gusta los retos?',
+    's3_title' => 'Te gustan los retos?',
     's3_subtitle' => 'Los retos son la nueva manera de interactuar en Selfy. Para completarlos debes compartir fotos con amigos, con tu mascota o tal vez en algún lugar genial.',
     's4_title' => 'Duo',
     's4_subtitle' => 'Un Duo es un desafío basado en tu rostro. <br/> <br/> Selfy utiliza tecnología de reconocimiento facial para animarte a completar retos Duo, para completarlos debes tomarte fotos con tu familia, amigos u otro usuario de Selfy.',

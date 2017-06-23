@@ -11,7 +11,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-         $this->call(UserSeeder::class);
          $this->createAdminRole();
          $this->createAclPermissions();
          $this->createUserPermission();
@@ -89,8 +88,6 @@ class DatabaseSeeder extends Seeder
         $listPhoto->display_name = 'List Photos';
         $listPhoto->description = 'List Photos and Manage them';
         $listPhoto->save();
-
-
 
         return [
             $editUser,
