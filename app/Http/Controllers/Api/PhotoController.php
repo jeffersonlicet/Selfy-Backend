@@ -735,18 +735,35 @@ class PhotoController extends Controller
             $result = DB::table('hashtags')
                 ->join('photo_hashtags', 'hashtags.hashtag_id', '=', 'photo_hashtags.hashtag_id')
                 ->where('photo_hashtags.created_at', '>=', Carbon::today())
-                ->select('hashtags.hashtag_text', 'hashtags.hashtag_id')
-                ->groupBy('hashtags.hashtag_text', 'hashtags.hashtag_id')
+                ->join('photos', 'photo_hashtags.photo_id', '=', 'photos.photo_id')
+                ->select('hashtags.hashtag_text', 'hashtags.hashtag_id', DB::raw('count(*) as hashtag_relevance'))
+                ->groupBy('hashtags.hashtag_text', 'hashtags.hashtag_id')->orderBy('hashtag_relevance', 'DESC')
                 ->limit($limit)->offset($limit*$page)->get();
-            $curated = [];
 
-            foreach($result as $item)
-            {
+            $curated = [];
+            $thumb_ids = [];
+
+            foreach($result as $item) {
+                $thumb = null;
+
+                if ($photo = PhotoHashtag::where('hashtag_id', $item->hashtag_id)->orderBy('created_at', 'DESC')
+                    ->with(['Photo' => function ($q) use ($thumb_ids) {
+                        $q->whereNotIn('photo_id', $thumb_ids);
+                    }])->has('Photo')->first()
+                ) {
+                   if($photo->Photo){
+                    $thumb = $photo->Photo->url;
+                    $thumb_ids[] = $photo->Photo->photo_id;}
+                 }
+
                 $curated[] = [
                     'hashtag_id' => $item->hashtag_id,
                     'hashtag_text' => $item->hashtag_text,
-                    'is_play'=> !(ChallengePlay::where('play_hashtag', $item->hashtag_id)->first() == null)
+                    'is_play'=> !(ChallengePlay::where('play_hashtag', $item->hashtag_id)->first() == null),
+                    'thumbnail' => $thumb,
+                    'relevance' => $item->hashtag_relevance
                 ];
+
             }
 
             return response()->json([

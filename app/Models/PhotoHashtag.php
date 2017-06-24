@@ -23,7 +23,7 @@ class PhotoHashtag extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function photo()
+    public function Photo()
     {
         return $this->belongsTo('App\Models\Photo', 'photo_id', 'photo_id');
     }
@@ -31,7 +31,7 @@ class PhotoHashtag extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function hashtag()
+    public function Hashtag()
     {
         return $this->belongsTo('App\Models\Hashtag', 'hashtag_id', 'hashtag_id');
     }
