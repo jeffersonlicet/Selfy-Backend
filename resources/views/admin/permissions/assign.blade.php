@@ -1,4 +1,4 @@
-@extends('LaravelAdmin::layouts.withsidebar')
+@extends('layouts.withsidebar')
 @section('pageTitle')
     {{isset($pageTitle) ? $pageTitle : 'Permissions'}}
 @endsection
@@ -53,7 +53,7 @@
                 </div>
                 {!! Form::open(['id' => 'AssignPermissionsForm']) !!}
                 <div class="modal-body">
-                    {{trans('LaravelAdmin::laravel-admin.AssignPermissionModalText')}}
+                    {{trans('SelfyAdmin::laravel-admin.AssignPermissionModalText')}}
                     <hr/>
                     <div class="form-group">
                         {!! Form::select('perms[]', [], null, ['id' => 'permissionsSelect', 'class' => 'form-control', 'multiple' => 'multiple']) !!}
