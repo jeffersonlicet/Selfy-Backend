@@ -19,6 +19,11 @@ class RoleRepository
     {
         $this->role = $role;
     }
+    //Falta crear Roles.
+    public function create(array $attributte = [])
+    {
+
+    }
 
     public function update(array $attributes, $id)
     {
