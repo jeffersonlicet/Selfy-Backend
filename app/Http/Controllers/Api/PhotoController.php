@@ -759,7 +759,7 @@ class PhotoController extends Controller
                 $curated[] = [
                     'hashtag_id' => $item->hashtag_id,
                     'hashtag_text' => $item->hashtag_text,
-                    'is_play'=> !(ChallengePlay::where('play_hashtag', $item->hashtag_id)->first() == null),
+                    'is_play'=> ChallengePlay::where('play_hashtag', $item->hashtag_id)->first() != null,
                     'thumbnail' => $thumb,
                     'relevance' => $item->hashtag_relevance
                 ];
