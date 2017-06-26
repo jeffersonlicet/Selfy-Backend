@@ -99,7 +99,7 @@ class User extends Authenticatable
     {
         return DB::table("user_challenges")
             ->where("user_challenges.challenge_status", "=", config('constants.CHALLENGE_STATUS.COMPLETED'))
-            //->where('user_challenges.updated_at', '>=', Carbon::today())
+            //->where('user_challenges.updated_at', '>=',  Carbon::now()->subDay())
             ->join('users', 'user_challenges.user_id', '=', 'users.user_id')
             ->select( 'users.user_id', 'users.username', 'users.avatar', DB::raw('count(*) as completed_count'))
             ->groupBy('users.user_id', 'users.username', 'users.avatar')
