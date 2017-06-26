@@ -734,7 +734,7 @@ class PhotoController extends Controller
 
             $result = DB::table('hashtags')
                 ->join('photo_hashtags', 'hashtags.hashtag_id', '=', 'photo_hashtags.hashtag_id')
-                ->where('photo_hashtags.created_at', '>=', Carbon::today())
+                ->where('photo_hashtags.created_at', '>=', Carbon::yesterday())
                 ->join('photos', 'photo_hashtags.photo_id', '=', 'photos.photo_id')
                 ->select('hashtags.hashtag_text', 'hashtags.hashtag_id', DB::raw('count(*) as hashtag_relevance'))
                 ->groupBy('hashtags.hashtag_text', 'hashtags.hashtag_id')->orderBy('hashtag_relevance', 'DESC')
