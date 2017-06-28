@@ -50,7 +50,16 @@ class NotificationsController extends Controller
 
                 switch ($n->type)
                 {
-                    case  'Modules\Core\Notifications\AcceptedInvitationNotification':
+                    case 'App\Notifications\PlayNotification':
+                        if($photo = Photo::with('Challenges', 'Challenges.object')->find($n->data['photo_id']))
+                        {
+                            $notification['photo'] = $photo->toArray();
+                        }
+
+                        else continue 2;
+
+                        break;
+                    case  'App\Notifications\AcceptedInvitationNotification':
                         $user = User::find($n->data['user_id']);
 
                         if($user != null)
@@ -62,7 +71,7 @@ class NotificationsController extends Controller
 
                         break;
 
-                    case  'Modules\Core\Notifications\FollowInvitationNotification':
+                    case  'App\Notifications\FollowInvitationNotification':
                         $invitation = UserInvitation::has('creator')->with('Creator')->where(['profile_id' => \Auth::user()->user_id, 'user_id' => $n->data['user_id']])->first();
 
                         if($invitation != null)
@@ -74,7 +83,7 @@ class NotificationsController extends Controller
 
                         break;
 
-                    case  'Modules\Core\Notifications\PhotoRevisionNotification':
+                    case  'App\Notifications\PhotoRevisionNotification':
                         if($photo = Photo::with('Challenges', 'Challenges.object')->find($n->data['photo_id']))
                         {
                             $notification['photo'] = $photo->toArray();
@@ -82,7 +91,7 @@ class NotificationsController extends Controller
 
                         else continue 2;
                         break;
-                    case  'Modules\Core\Notifications\DuoInvitationNotification':
+                    case  'App\Notifications\DuoInvitationNotification':
                         if($challenge = Challenge::with('Object')->find($n->data['challenge_id']))
                         {
                             if($challenge->Object != null && ($challenge->challenge_status == config('constants.CHALLENGE_STATUS.INVITED') || $challenge->challenge_status == config('constants.CHALLENGE_STATUS.ACCEPTED')))
@@ -92,7 +101,7 @@ class NotificationsController extends Controller
                         else continue 2;
                     break;
 
-                    case  'Modules\Core\Notifications\DuoNotification':
+                    case  'App\Notifications\DuoNotification':
 
                         if($photo = Photo::with('Challenges', 'Challenges.object')->find($n->data['photo_id']))
                         {
@@ -102,7 +111,7 @@ class NotificationsController extends Controller
                         else continue 2;
                     break;
 
-                    case 'Modules\Core\Notifications\SpotNotification':
+                    case 'App\Notifications\SpotNotification':
                         if($photo = Photo::with('Place')->find($n->data['photo_id']))
                         {
                             $notification['photo'] = $photo->toArray();
@@ -111,7 +120,7 @@ class NotificationsController extends Controller
 
                     break;
 
-                    case 'Modules\Core\Notifications\LikeNotification':
+                    case 'App\Notifications\LikeNotification':
                         $photo = Photo::find($n->data['photo_id']);
                         $user = User::find($n->data['user_id']);
 
@@ -124,7 +133,7 @@ class NotificationsController extends Controller
                         else continue 2;
                         break;
 
-                    case 'Modules\Core\Notifications\FollowNotification':
+                    case 'App\Notifications\FollowNotification':
 
                         if($user = User::find($n->data['user_id']))
                         {
@@ -134,7 +143,7 @@ class NotificationsController extends Controller
 
                     break;
 
-                    case 'Modules\Core\Notifications\CommentNotification':
+                    case 'App\Notifications\CommentNotification':
 
                         $photo = Photo::find($n->data['photo_id']);
                         $comment = UserComment::find($n->data['comment_id']) ;

@@ -17,17 +17,17 @@ use LaravelFCM\Message\PayloadNotificationBuilder;
 class PlayNotification extends Notification
 {
     use Queueable;
-    private $photo_id;
+    private $photo;
 
     /**
      * Create a new notification instance.
      *
-     * @param $photo_id
+     * @param $photo
      * @internal param Photo $photo
      */
-    public function __construct($photo_id)
+    public function __construct(Photo $photo)
     {
-        $this->photo_id = $photo_id;
+        $this->$photo = $photo;
     }
     /**
      * Get the notification's delivery channels.
@@ -62,7 +62,7 @@ class PlayNotification extends Notification
             $optionBuiler->setTimeToLive(60*20)->setPriority("high");
 
             $dataBuilder = new PayloadDataBuilder();
-            $dataBuilder->addData(['object' => $this->photo_id, 'type' => 'play']);
+            $dataBuilder->addData(['object' => $this->photo->photo_id, 'type' => 'play']);
             $notificationBuilder = new PayloadNotificationBuilder();
             $notificationBuilder->setTitle('Selfy')
                 ->setBody('New play completed')
@@ -76,7 +76,7 @@ class PlayNotification extends Notification
         }
 
         return [
-            'photo_id' => $this->photo_id,
+            'photo_id' => $this->photo->photo_id,
         ];
     }
 }
