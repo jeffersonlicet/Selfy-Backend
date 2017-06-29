@@ -1,6 +1,7 @@
 <?php
 namespace App\Helpers;
 use App\Models\Photo;
+use Log;
 use Mockery\Exception;
 use GuzzleHttp\Client as GuzzleClient;
 use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
@@ -21,12 +22,20 @@ class Vision
      */
     public static function recognize(Photo $photo)
     {
-        $client     = new GuzzleClient(['base_uri' => "http://starbits.southcentralus.cloudapp.azure.com/api/"]);
-        $adapter    = new GuzzleAdapter($client);
+        try
+        {
+            $client     = new GuzzleClient(['base_uri' => "http://starbits.southcentralus.cloudapp.azure.com/api/"]);
+            $adapter    = new GuzzleAdapter($client);
 
-        $request    = new GuzzleRequest('POST', 'detect', ["content-type" => 'application/json'],
-            json_encode(['photo_url' => $photo->url]));
+            $request    = new GuzzleRequest('POST', 'detect', ["content-type" => 'application/json'],
+                json_encode(['photo_url' => $photo->url]));
 
-       return $adapter->sendRequest($request);
+           return $adapter->sendRequest($request);
+        }
+        catch(Exception $ex)
+        {
+            Log::info("VM is disabled" . $ex->getMessage());
+            return null;
+        }
     }
 }
