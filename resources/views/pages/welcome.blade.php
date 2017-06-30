@@ -143,7 +143,10 @@
                         <div class="header-content-inner">
                             <h1>{{ __('app.s7_title') }}</h1>
                             <h3>{{ __('app.s7_subtitle') }} </h3>
-                            <a href="javascript:void(0)" class="btn btn-raised btn-primary">{{ __('app.s7_button')}}</a>
+                            <a href="https://play.google.com/store/apps/details?id=com.sparkly.selfy" target="_blank"
+                               >
+                                <img class="play_badge" src="{{ URL::asset('/images/google-play-badge.png') }}" alt="Google Play">
+                            </a>
                             </div>
                     </div>
                 </div>
