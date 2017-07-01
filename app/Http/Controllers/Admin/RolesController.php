@@ -17,9 +17,21 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * Class RolesController
+ * @package App\Http\Controllers\Admin
+ */
 class RolesController extends Controller
 {
+    /**
+     * @var RoleRepository
+     */
     protected $repository;
+
+    /**
+     * RolesController constructor.
+     * @param RoleRepository $repository
+     */
     public function __construct(RoleRepository $repository)
     {
         $this->repository = $repository;
@@ -31,40 +43,44 @@ class RolesController extends Controller
      */
     public function index()
     {
-        $a = array();
-        $roles = DB::table('roles')->get();
+        $role_permissions = array();
+        $roles = $this->repository->get();
         $permissions = DB::table('permissions')->get();
-        $role_permissions = Role::all();
-        foreach ($role_permissions as $role_permission) {
-            foreach ($role_permission->perms as $role_permissionr) {
+        $role_permission = Role::all();
+        foreach ($role_permission as $role_perm) {
+            foreach ($role_perm->perms as $role_permissionr) {
 //                $a[] = $role_permissionr->pivot->role_id;
-                $a[] = $role_permissionr;
+                $role_permissions[] = $role_permissionr;
             }
         }
         return view('admin.roles.index',
-            [
-                'roles' => $roles,
-                'permissions' => $permissions,
-                'role_permissions' => json_encode($a)
-            ]
+            compact('roles', 'permissions', 'role_permissions')
+
         );
+    }
+
+
+    /**
+     * @return $this
+     */
+    public function create()
+    {
+        return view('admin.roles.create')->with('activeMenu', 'sidebar.users.roles');
     }
     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function createRole(Request $request)
+    public function store(Request $request)
     {
         try {
             $this->validate($request, [
-                'name' => 'required',
+                'name' => 'required|unique:roles',
                 'display_name' => 'required',
-                'permission_id' => 'required'
+                'description' => 'required'
             ]);
-            DB::transaction(function () use ($request) {
-                $this->repository->create($request->all());
-            });
+            $this->repository->create($request->all());
         } catch (ValidatorException $e) {
             return redirect()->back()->withErrors($e->getMessageBag());
         }
@@ -81,7 +97,7 @@ class RolesController extends Controller
     {
         $role = $this->repository->find($id);
         $permissions = Permission::all()->pluck('display_name', 'id')->toArray();
-        return view('permissions.assign')
+        return view('admin.permissions.assign')
             ->with('type', 'role')
             ->with('model', $role)
             ->with('permissions', $role->perms->pluck('id')->toArray())
@@ -106,32 +122,24 @@ class RolesController extends Controller
      */
     public function edit($id)
     {
-        return view('roles.edit')
-            ->with('role', $this->repository->find($id))
-            ->with('activeMenu', 'sidebar.users.roles');
+        return view('admin.roles.edit')
+            ->with('role', $this->repository->find($id));
     }
 
+    /**
+     * @param $id
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function update($id, Request $request)
     {
-        if(Auth::user()->can('update-roles')) {
-
-            $this->validate($request, [
-                'name' => 'required',
-                'display_name' => 'required',
-                'permission_id' => 'required'
-            ]);
-
-            $role = $this->repository->update($request->all(),$id);
-
-            if($role->permissions->count()) {
-
-                $role->permissions()->detach($role->permissions()->lists('permission_id')->toArray());
-            }
-
-            $role->attachPermissions($request->input('permission_id'));
-
-            return redirect('admin/roles');
-        }
+        $this->validate($request, [
+            'name' => 'required',
+            'display_name' => 'required',
+            'description' => 'required'
+        ]);
+        $this->repository->update($request->all(),$id);
+        return redirect('admin/roles');
     }
 
     /**
@@ -143,7 +151,6 @@ class RolesController extends Controller
     public function removeRole($id, $permission)
     {
         if(Auth::user()->can('delete-roles')) {
-
             $role = $this->repository->find($id);
             $role->perms()->detach($permission);
 

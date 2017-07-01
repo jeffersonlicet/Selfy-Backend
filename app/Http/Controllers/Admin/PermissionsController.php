@@ -10,10 +10,36 @@ namespace App\Http\Controllers\Admin;
 
 
 use App\Http\Controllers\Controller;
+use App\Models\Permission;
+use App\Models\Role;
 use Illuminate\Http\Request;
 
+/**
+ * Class PermissionsController
+ * @package App\Http\Controllers\Admin
+ */
 class PermissionsController extends Controller
 {
+    /**
+     * @var Permission
+     */
+    protected $permission;
+
+    /**
+     * @var Role
+     */
+    protected $role;
+
+    /**
+     * PermissionsController constructor.
+     * @param Permission $permission
+     * @param Role $role
+     */
+    public function __construct(Permission $permission, Role $role)
+    {
+        $this->permission = $permission;
+        $this->role = $role;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -21,7 +47,7 @@ class PermissionsController extends Controller
      */
     public function index()
     {
-        $permissions = \DB::table('permissions')->get();
+        $permissions = $this->permission->get();
         return response()->json($permissions);
         //return view('vista.permissions', ['permissions' => $permissions]);
     }
@@ -30,12 +56,24 @@ class PermissionsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function createPermission(Request $request)
+
+    public function create()
+    {
+        return view('admin.permissions.create');
+    }
+
+
+
+    /**
+     * @param Request $request
+     * @return $this
+     */
+    public function store(Request $request)
     {
         $createPost = new Permission();
         $createPost->name         = $request->input('name');
         $createPost->display_name = $request->input('display_name'); // optional
-// Allow a user to...
+        // Allow a user to...
         $createPost->description  = $request->input('description'); // optional
         $createPost->save();
         return back()->withInput();
@@ -47,15 +85,27 @@ class PermissionsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function editPermission(Request $request, $id)
+    public function edit($id)
     {
-        $name = $request->input('name');
-        $display_name = $request->input('display_name');
-        $description = $request->input('description');
-        \DB::table('permissions')
-            ->where('id', $id)
-            ->update(['name' => $name, 'display_name' => $display_name, 'description' => $description]);
-        return back()->withInput();
+        return view('admin.permissions.edit')
+            ->with('permissions', $this->permission->find($id));
+    }
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function update(Request $request, $id)
+    {
+        $permission = $this->permission->find($id);
+        //dd($request->all());
+        $permission->name = $request->get('name');
+        $permission->display_name = $request->get('display_name');
+        $permission->description = $request->get('description');
+        $permission->save();
+
+        return redirect()->to(config('selfy-admin.routePrefix', 'admin') . '/permissions');
     }
     /**
      * Remove the specified resource from storage.
@@ -63,9 +113,9 @@ class PermissionsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function removePermission($id)
+    public function delete($id)
     {
-        \DB::table('permissions')->where('id', '=', $id)->delete();
+        $this->permission->where('id', '=', $id)->delete();
         return back()->withInput();
     }
 }

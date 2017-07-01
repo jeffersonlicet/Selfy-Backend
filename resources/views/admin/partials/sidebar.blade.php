@@ -9,6 +9,7 @@
         </div>
     </div>
     <ul class="sidebar-menu">
+
         @if(isset($activeMenu))
             {!! $menu->render('sidebar', $activeMenu) !!}
         @else
