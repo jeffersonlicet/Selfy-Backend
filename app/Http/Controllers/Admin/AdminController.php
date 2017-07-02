@@ -10,11 +10,21 @@ namespace App\Http\Controllers\Admin;
 
 
 use App\Http\Controllers\Controller;
+use App\Models\Challenge;
 
 class AdminController extends Controller
 {
     public function index()
     {
-        return view('admin.dashboard');
+        return view('admin.pages.dashboard')->with(['pageTitle' => 'Selfy administration']);
+    }
+
+    public function play()
+    {
+        $challenges = Challenge::where('object_type', config('constants.CHALLENGE_TYPES_STR.PLAY'))
+            ->paginate(15);
+
+        return view('admin.pages.play')->with(['pageTitle' => 'Play challenges',
+            'challenges' => $challenges]);
     }
 }

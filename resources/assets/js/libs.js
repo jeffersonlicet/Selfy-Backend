@@ -14,6 +14,6 @@ wow.init();
 $().ready(function () {
     $.material.init();
     $.material.ripples();
-    $('[data-toggle="tooltip"]').tooltip();
+    $('[data-toggle="tooltip"]').tooltip({container: 'body'});
     console.log("libs.js dispatched");
 });

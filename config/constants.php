@@ -42,5 +42,10 @@ return [
     'KEY_STATUS' => [
         'VALID' => 0,
         'EXPIRED' => 1,
+    ],
+
+    'DEV_CHALLENGE_STATUS' => [
+        'active' => 0,
+        'disabled' => 1,
     ]
 ];

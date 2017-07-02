@@ -49,11 +49,18 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'middleware' => 'web'
  * 'middleware' => 'App\Http\Middleware\AclMiddleware:list-users'
  * return Unauthorized action. si el usuario no tiene dichos permisos
  */
-Route::group(['prefix' => 'admin', 'namespace' => 'Admin' , 'middleware' => ['App\Http\Middleware\AuthMiddleware']], function () {
-    Route::get('/dashboard', [
-        'as' => 'login',
+Route::group(['prefix' => 'admin', 'namespace' => 'Admin' , 'middleware' => ['App\Http\Middleware\AuthMiddleware', 'role:system-administrator|system-moderator']], function () {
+
+    Route::get('/', [
+        'as' => 'DashboardIndex',
         'uses' => 'AdminController@index'
     ]);
+
+    Route::get('/play', [
+        'as' => 'AdminPlay',
+        'uses' => 'AdminController@play'
+    ]);
+
     Route::get('roles', ['uses' => 'RolesController@index', 'as' => 'SelfyAdminRoles', 'middleware' => 'App\Http\Middleware\AclMiddleware:roles-crud']); //Ejemplo Roles Crud
    // Route::post('roles', ['uses' => 'RolesController@createRole', 'as' => 'SelfyAdminRolesCreate'] );
     Route::get('roles/create', [

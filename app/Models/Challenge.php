@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $object_id
  * @property User|Place|ChallengePlay Object
  * @property int $challenge_status
+ * @property int $status
  */
 class Challenge extends Model
 {
@@ -32,7 +33,6 @@ class Challenge extends Model
      * @var array
      */
     protected $fillable = ['object_type', 'created_at', 'updated_at', 'completed_count', 'object_id'];
-
     protected $appends = ['challenge_status'];
 
     public function Object()
