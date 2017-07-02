@@ -27,14 +27,18 @@ Route::post('/ajax/contact', 'App\UserController@contact');
 
 Route::get('/facebook/link', 'App\UserController@confirm_facebook_link');
 
-Route::group(['prefix' => 'admin', 'namespace' => 'Admin' , 'middleware' => 'web'], function (){
+Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'middleware' => 'web'], function (){
     Route::get('/login', [
-        'as' => 'login',
+        'as' => 'SelfyAdminLogin',
         'uses' => 'LoginAdminController@formLogin'
     ]);
     Route::post('/login', [
         'as' => 'SelfyAdminLoginPost',
         'uses' => 'LoginAdminController@login'
+    ]);
+    Route::post('/logout', [
+        'as' => 'SelfyAdminLogout',
+        'uses' => 'LoginAdminController@logout'
     ]);
 
 });
@@ -45,19 +49,78 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin' , 'middleware' => 'web
  * 'middleware' => 'App\Http\Middleware\AclMiddleware:list-users'
  * return Unauthorized action. si el usuario no tiene dichos permisos
  */
-Route::group(['prefix' => 'admin', 'namespace' => 'Admin' , 'middleware' => 'App\Http\Middleware\AclMiddleware:roles-crud'], function () {
+Route::group(['prefix' => 'admin', 'namespace' => 'Admin' , 'middleware' => ['App\Http\Middleware\AuthMiddleware']], function () {
     Route::get('/dashboard', [
         'as' => 'login',
         'uses' => 'AdminController@index'
     ]);
-    Route::get('roles', 'RolesController@index');
-    Route::post('roles', 'RolesController@createRole');
-    Route::post('roles/edit/{id}', 'RolesController@editRole');
-    Route::post('roles/removeRole/{id}', 'RolesController@removeRole');
-    Route::post('roles/rolePermissions/{id}', 'RolesController@rolePermissions');
+    Route::get('roles', ['uses' => 'RolesController@index', 'as' => 'SelfyAdminRoles', 'middleware' => 'App\Http\Middleware\AclMiddleware:roles-crud']); //Ejemplo Roles Crud
+   // Route::post('roles', ['uses' => 'RolesController@createRole', 'as' => 'SelfyAdminRolesCreate'] );
+    Route::get('roles/create', [
+        'as' => 'SelfyAdminRolesCreate',
+        'uses' => 'RolesController@create',
+        'middleware' => 'App\Http\Middleware\AclMiddleware:roles-crud'
+    ]);//test
 
-    Route::get('permissions', 'PermissionsController@index');
-    Route::post('permissions', 'PermissionsController@createPermission');
-    Route::post('permissions/edit/{id}', 'PermissionsController@editPermission');
-    Route::post('permissions/removePermission/{id}', 'PermissionsController@removePermission');
+    Route::post('roles/create', [
+        'as' => 'SelfyAdminRolesCreatePost',
+        'uses' => 'RolesController@store',
+        'middleware' => 'App\Http\Middleware\AclMiddleware:roles-crud'
+    ]); //test
+
+    Route::post('roles/{id}/edit', [
+        'as' => 'SelfyAdminRolesUpdate',
+        'uses' => 'RolesController@update',
+        'middleware' => 'App\Http\Middleware\AclMiddleware:roles-crud'
+    ]);//test
+
+    Route::get('roles/{id}/edit', [
+        'as' => 'SelfyAdminRolesEdit',
+        'uses' => 'RolesController@edit',
+        'middleware' => 'App\Http\Middleware\AclMiddleware:roles-crud'
+    ]);//test
+
+    Route::get('roles/{id}/permissions', [
+        'as' => 'SelfyAdminRolesPermissions',
+        'uses' => 'RolesController@permissions',
+        'middleware' => 'App\Http\Middleware\AclMiddleware:roles-crud'
+    ]);//test
+
+    Route::put('roles/{id}/permissions', [
+        'as' => 'SelfyAdminRolesPermissionsUpdate',
+        'uses' => 'PermissionsController@permissionsUpdate',
+        'middleware' => 'App\Http\Middleware\AclMiddleware:roles-crud'
+    ]);//test
+
+    Route::post('roles/removeRole/{id}', 'RolesController@removeRole');
+    //Route::get('roles/rolePermissions/{id}', 'RolesController@rolePermissions');//test
+
+    Route::get('permissions', 'PermissionsController@index');//test
+    Route::get('permissions/create', [
+        'as' => 'SelfyAdminPermissionsCreate',
+        'uses' => 'PermissionsController@create',
+        'middleware' => 'App\Http\Middleware\AclMiddleware:permissions-crud'
+    ]); //test
+
+    Route::post('permissions/create', [
+        'as' => 'SelfyAdminPermissionsCreatePost',
+        'uses' => 'PermissionsController@store',
+        'middleware' => 'App\Http\Middleware\AclMiddleware:permissions-crud'
+    ]); //test
+
+    Route::get('permissions/{id}/edit', [
+        'as' => 'SelfyAdminPermissionsEdit',
+        'uses' => 'PermissionsController@edit',
+        'middleware' => 'App\Http\Middleware\AclMiddleware:permissions-crud'
+    ]);//test
+
+    Route::post('roles/{id}/edit', [
+        'as' => 'SelfyAdminPermissionsUpdate',
+        'uses' => 'PermissionsController@update',
+        'middleware' => 'App\Http\Middleware\AclMiddleware:permissions-crud'
+    ]);//test
+
+    Route::patch('permissions/removePermission/{id}', 'PermissionsController@removePermission');
+
+
 });

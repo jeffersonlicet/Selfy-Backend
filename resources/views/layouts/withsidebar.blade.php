@@ -32,9 +32,9 @@
 </head>
 <body class="skin-blue sidebar-mini">
 <div class="wrapper">
-    @include('LaravelAdmin::partials.nav')
+    @include('admin.partials.nav')
     <aside class="main-sidebar">
-        @include('LaravelAdmin::partials.sidebar')
+        @include('admin.partials.sidebar')
     </aside>
     <div class="content-wrapper">
         <section class="content-header">
@@ -60,6 +60,5 @@
 <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
 <script src="{{ asset('/js/all.js') }}"></script>
 @yield('scripts')
-@include('sweet::alert')
 </body>
 </html>

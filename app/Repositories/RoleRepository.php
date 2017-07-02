@@ -13,26 +13,44 @@ use App\Models\Role;
 
 class RoleRepository
 {
-    protected $role;
+    protected $model;
+
+    protected $page;
 
     public function __construct(Role $role)
     {
-        $this->role = $role;
+        $this->model = $role;
+    }
+
+    public function get()
+    {
+        return $this->model->get();
+    }
+    //Falta crear Roles.
+    public function create(array $attributes = [])
+    {
+        $model = $this->model->create($attributes);
+
+        return $model;
     }
 
     public function update(array $attributes, $id)
     {
-        $role = $this->find($id);
-        if ($attributes['display_name'] === $role->display_name) {
-            unset($attributes['display_name']);
-        }
-        return parent::update($attributes, $id);
+        $model = $this->model->findOrFail($id);
+        $model->fill($attributes);
+        $model->save();
+        return $model->fresh('perms');
     }
 
     public function find($id)
     {
-        return $this->role->findOrFail($id);
+        return $this->model->findOrFail($id);
     }
 
-
+    public function delete($id)
+    {
+        is_int($id) ? $model = $this->model->findOrFail($id) : $this->model->findOrFail($id);
+        $model->delete();
+        return true;
+    }
 }

@@ -1,13 +1,13 @@
 @extends('layouts.withsidebar')
 @section('pageTitle')
-{{isset($pageTitle) ? $pageTitle : 'Roles'}}
+{{isset($pageTitle) ? $pageTitle : 'Permissions'}}
 @endsection
 @section('content')
 
 <div class="container-fluid admin">
 	<div class="box">
 		<div class="box-header with-border">
-			<h3 class="box-title">{{trans('selfy-admin.editRoleTitle').' '.$role->name}}</h3>
+			<h3 class="box-title">{{trans('selfy-admin.editPermissionsTitle').' '.$permissions->name}}</h3>
 		</div>
 		<div class="box-body">
 			<div class="row">
@@ -23,7 +23,7 @@
 								</ul>
 							</div>
 						@endif
-                		{!! Form::model($role, ['route' => ['SelfyAdminRolesUpdate', $role->id]]) !!}
+                		{!! Form::model($permissions, ['route' => ['SelfyAdminPermissionsUpdate', $permissions->id]]) !!}
 	                        <div class="col-md-6 slugable">
 	                            <div class="form-group">
 	                                {!! Form::label('display_name', trans('selfy-admin.roleName')) !!}
@@ -33,14 +33,14 @@
 	                                @endif
 	                            </div>
 	                            <div class="form-group">
-	                                {!! Form::label('name', trans('selfy-admin.roleSlug')) !!}
+	                                {!! Form::label('name', trans('selfy-admin.permissionsSlug')) !!}
 	                                {!! Form::text('name', null, ['class' => 'form-control slug-target', 'readonly' => 'readonly']) !!}
 	                                @if($errors->has('display_name'))
 	                                    <span class="text-danger">{{$errors->first('display_name')}}</span>
 	                                @endif
 	                            </div>
 	                            <div class="form-group">
-	                                {!! Form::label('description', trans('selfy-admin.roleDescription')) !!}
+	                                {!! Form::label('description', trans('selfy-admin.permissionsDescription')) !!}
 	                                {!! Form::textarea('description', null,['class' => 'form-control']) !!}
 	                                @if($errors->has('description'))
 	                                    <span class="text-danger">{{$errors->first('description')}}</span>
