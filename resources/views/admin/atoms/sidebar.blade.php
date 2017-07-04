@@ -1,8 +1,6 @@
 <div class="nav-side-menu box-shadow--16dp">
     <div class="brand"><img src="{{ URL::asset('/images/admin-logo.png') }}"></div>
-
-    <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
-
+    <i class="material-icons toggle-btn sidebar-toggler" data-toggle="collapse" data-target="#menu-content">menu</i>
     <div class="menu-list">
         <ul id="menu-content" class="menu-content collapse out">
             <li @if(Route::currentRouteName()  === 'DashboardIndex') class="active" @endif><a href="{{ action('Admin\AdminController@index') }}"><i class="material-icons">dashboard</i> Dashboard</a></li>
@@ -28,7 +26,7 @@
 
             <li><a href="#"><i class="material-icons">label</i> Hashtags</a></li>
 
-            <li class="last-child" data-toggle="collapse" data-target="#user" class="collapsed">
+            <li class="last-child collapsed" data-toggle="collapse" data-target="#user">
                 <a href="#"><i class="material-icons">account_circle</i> Jefferson  <i class="material-icons arrow">arrow_drop_down</i></a>
             </li>
 

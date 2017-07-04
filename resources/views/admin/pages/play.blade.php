@@ -6,7 +6,7 @@
 
     </div>
     <a href="javascript:void(0)" class="btn btn-info btn-fab floating-button"><i class="material-icons">add</i></a>
-    <div class="">
+    <div class="container-fluid">
         <div class="col-md-12">
             <table class="table table-striped table-hover ">
                 <thead>
@@ -27,13 +27,13 @@
                 @foreach($challenges as $challenge)
                     <tr>
                         <td>{{ $challenge->challenge_id }}</td>
-                        <td title="{{ $challenge->object->play_title }}" data-toggle="tooltip"">{{ str_limit($challenge->object->play_title, 20, '...') }}</td>
+                        <td title="{{ $challenge->object->play_title }}" data-toggle="tooltip">{{ str_limit($challenge->object->play_title, 20, '...') }}</td>
                         <td><span class="label @if($challenge->status == config('constants.DEV_CHALLENGE_STATUS.active')) label-success @else label-danger @endif">{{ $status[$challenge->status]  }}</span></td>
                         <td><a href="javascript:void(0)" data-toggle="modal" data-target="#imagePreviewModal" onclick="window.mImage.open(this)" data-href="{{ $challenge->object->play_sample }}"><i class="material-icons">photo</i></a></td>
                         <td title="{{ $challenge->object->play_description }}" data-toggle="tooltip">{{ str_limit($challenge->object->play_description, 41, '...') }}</td>
                         <td>{{ $challenge->completed_count }}</td>
                         <td><a href="#">#{{ $challenge->object->hashtag->hashtag_text }}</a></td>
-                        <td><a href="#"><i class="material-icons">settings</i></a>
+                        <td><a href="{{  action('Admin\AdminController@playSingleton', ['playId' => $challenge->challenge_id]) }}"><i class="material-icons">settings</i></a>
 
                         </td>
                     </tr>

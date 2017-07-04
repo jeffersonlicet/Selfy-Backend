@@ -61,6 +61,21 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin' , 'middleware' => ['Ap
         'uses' => 'AdminController@play'
     ]);
 
+    Route::get('/play/{playId}', [
+        'as' => 'AdminPlaySingleton',
+        'uses' => 'AdminController@playSingleton'
+    ]);
+
+    Route::post('/play/{playId}', [
+        'as' => 'UpdatePlaySingleton',
+        'uses' => 'AdminController@updatePlaySingleton'
+    ]);
+
+    Route::post('/ajax/challenge/toggle', [
+        'as' => 'UpdateChallengeStatusSingleton',
+        'uses' => 'AdminController@updateChallengeStatusSingleton'
+    ]);
+
     Route::get('roles', ['uses' => 'RolesController@index', 'as' => 'SelfyAdminRoles', 'middleware' => 'App\Http\Middleware\AclMiddleware:roles-crud']); //Ejemplo Roles Crud
    // Route::post('roles', ['uses' => 'RolesController@createRole', 'as' => 'SelfyAdminRolesCreate'] );
     Route::get('roles/create', [

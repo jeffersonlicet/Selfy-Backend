@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "bootstrap-material-design": "^0.5.10",
-    "gentelella": "^1.3.0"
+    "gentelella": "^1.3.0",
+    "tasty-toast": "^1.0.2"
   }
 }

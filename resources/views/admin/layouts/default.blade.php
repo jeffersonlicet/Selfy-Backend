@@ -9,6 +9,7 @@
            <div id="main" class="row">
                @yield('content')
            </div>
+            @include('admin.atoms.footer')
         </div>
     </body>
 </html>
