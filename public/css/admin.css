@@ -17,6 +17,100 @@
     box-shadow: 0 16px 24px 2px rgba(0, 0, 0, .14), 0 6px 30px 5px rgba(0, 0, 0, .12), 0 8px 10px -5px rgba(0, 0, 0, .2)
 }
 
+
+.loader {
+    position: relative;
+    margin: 0 auto;
+    width: 50px;
+    display: none;
+}
+
+.loader:before {
+    content: '';
+    display: block;
+    padding-top: 100%;
+}
+
+.circular {
+    animation: rotate 2s linear infinite;
+    height: 100%;
+    transform-origin: center center;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
+.path {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+    animation: dash 1.5s ease-in-out infinite, color 6s ease-in-out infinite;
+    stroke-linecap: round;
+}
+
+@keyframes rotate {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes dash {
+    0% {
+        stroke-dasharray: 1, 200;
+        stroke-dashoffset: 0;
+    }
+    50% {
+        stroke-dasharray: 89, 200;
+        stroke-dashoffset: -35px;
+    }
+    100% {
+        stroke-dasharray: 89, 200;
+        stroke-dashoffset: -124px;
+    }
+}
+
+@keyframes color {
+    100%,
+    0% {
+        stroke: #bebebe;
+    }
+    40% {
+        stroke: #bebebe;
+    }
+    66% {
+        stroke: #bebebe;
+    }
+    80%,
+    90% {
+        stroke: #bebebe;
+    }
+}
+
+.modal {
+    text-align: center;
+}
+
+.modal::before {
+    content: "";
+    display: inline-block;
+    height: 100%;
+    margin-right: -4px;
+    vertical-align: middle;
+}
+
+.modal-dialog {
+    display: inline-block;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.modal-backdrop {
+    background-color: rgba(0,0,0,0.9);
+}
+
 .snackbar {
     background-color: #323232;
     color: #FFFFFF;
@@ -224,4 +318,10 @@ html {
     padding-left:30px;
     padding-right: 30px;
     margin-top: 10px;
+}
+
+#avatar-sidebar {
+    margin-left:15px;
+    margin-right:5px;
+    vertical-align:middle;
 }

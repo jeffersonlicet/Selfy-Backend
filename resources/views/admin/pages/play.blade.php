@@ -5,7 +5,7 @@
         <h4>Here you can create and manage the existing Play challenges.</h4>
 
     </div>
-    <a href="javascript:void(0)" class="btn btn-info btn-fab floating-button"><i class="material-icons">add</i></a>
+    <a href="{{ action('Admin\AdminController@createPlay') }}" class="btn btn-info btn-fab floating-button"><i class="material-icons">add</i></a>
     <div class="container-fluid">
         <div class="col-md-12">
             <table class="table table-striped table-hover ">
@@ -28,7 +28,7 @@
                     <tr>
                         <td>{{ $challenge->challenge_id }}</td>
                         <td title="{{ $challenge->object->play_title }}" data-toggle="tooltip">{{ str_limit($challenge->object->play_title, 20, '...') }}</td>
-                        <td><span class="label @if($challenge->status == config('constants.DEV_CHALLENGE_STATUS.active')) label-success @else label-danger @endif">{{ $status[$challenge->status]  }}</span></td>
+                        <td><a data-status="{{ $challenge->status }}" data-id="{{ $challenge->challenge_id}}" href="#" onclick="window.challenge.toggle(this)"><span  id="state-label-{{$challenge->challenge_id}}" class="label @if($challenge->status == config('constants.DEV_CHALLENGE_STATUS.active')) label-success @else label-danger @endif">{{ $status[$challenge->status]  }}</span></a></td>
                         <td><a href="javascript:void(0)" data-toggle="modal" data-target="#imagePreviewModal" onclick="window.mImage.open(this)" data-href="{{ $challenge->object->play_sample }}"><i class="material-icons">photo</i></a></td>
                         <td title="{{ $challenge->object->play_description }}" data-toggle="tooltip">{{ str_limit($challenge->object->play_description, 41, '...') }}</td>
                         <td>{{ $challenge->completed_count }}</td>

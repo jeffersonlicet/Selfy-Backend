@@ -10339,7 +10339,115 @@ $().ready(function () {
         window.sMessage.show($(e).attr('data-title'), $(e).attr('data-text'), $(e).attr('data-type'), $(e).attr('data-duration'));
     });
 });
+window.hashtag = {
+    working: false,
+    update: function update(el) {
+        if (this.working) return;
+        var selector = $('#update_hashtag_id');
+        var newId = selector.val();
 
+        this.working = true;
+        var context = this;
+
+        if (newId.length === 0) {
+            selector.focus();
+            context.working = false;
+            return;
+        }
+
+        $('#form-update-play-hashtag').hide();
+        $('#loading-update-play-hashtag').show();
+
+        var _data = {
+            hashtag_id: newId,
+            play_id: $('#play_id').val()
+        };
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $.ajax({
+            type: 'POST',
+            url: APP_URL + '/admin/ajax/play/update_hashtag',
+            data: _data,
+            dataType: 'json',
+            success: function success(data) {
+
+                if (data.status) {
+                    window.sMessage.show('Play hashtag updated', 'Hashtag #' + $('#play_id').val(), 'primary', 15000);
+
+                    $('#createHashtagModal').find('.close').click();
+                    $('#form-update-play-hashtag').show();
+                    $('#loading-update-play-hashtag').hide();
+                    $('#hashtag_text').val('');
+                } else {
+                    window.sMessage.show('Ouch!', 'Error creating hashtag', 'error', 3000);
+
+                    $('#form-update-play-hashtag').show();
+                    $('#loading-update-play-hashtag').hide();
+                }
+
+                context.working = false;
+            }
+        });
+    },
+    create: function create(el) {
+        if (this.working) return;
+
+        this.working = true;
+        var context = this;
+
+        var textInput = $('#hashtag_text');
+
+        if (textInput.val().length === 0) {
+            textInput.focus();
+            context.working = false;
+            return;
+        }
+
+        $('#form-create-hashtag').hide();
+        $('#loading-create-hashtag').show();
+
+        var _data = {
+            hashtag_text: textInput.val(),
+            hashtag_status: $('#hashtag_status').is(':checked'),
+            hashtag_group: $('#hashtag_group').is(':checked')
+        };
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $.ajax({
+            type: 'POST',
+            url: APP_URL + '/admin/ajax/hashtag/create',
+            data: _data,
+            dataType: 'json',
+            success: function success(data) {
+                if (data.status) {
+                    window.sMessage.show('Hashtag created', 'Hashtag #' + data.id, 'primary', 15000);
+
+                    $('#createHashtagModal').find('.close').click();
+                    $('#form-create-hashtag').show();
+                    $('#loading-create-hashtag').hide();
+                    $('#hashtag_text').val('');
+                } else {
+                    window.sMessage.show('Ouch!', 'Error creating hashtag', 'error', 3000);
+
+                    $('#form-create-hashtag').show();
+                    $('#loading-create-hashtag').hide();
+                }
+
+                context.working = false;
+            }
+        });
+    }
+};
 window.challenge = {
     working: false,
     toggle: function toggle(el) {
@@ -10362,11 +10470,11 @@ window.challenge = {
 
         if (status === "0") {
             $(el).attr('data-status', 1);
-            $('#state-label').removeClass('label-success').addClass('label-danger').html('Disabled');
+            $('#state-label-' + $(el).data('id')).removeClass('label-success').addClass('label-danger').html('Disabled');
             console.log('new status: 1');
         } else if (status === "1") {
             $(el).attr('data-status', 0);
-            $('#state-label').removeClass('label-danger').addClass('label-success').html('Active');
+            $('#state-label-' + $(el).data('id')).removeClass('label-danger').addClass('label-success').html('Active');
             console.log('new status: 0');
         }
 

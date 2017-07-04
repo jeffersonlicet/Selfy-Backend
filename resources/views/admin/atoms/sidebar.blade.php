@@ -27,7 +27,7 @@
             <li><a href="#"><i class="material-icons">label</i> Hashtags</a></li>
 
             <li class="last-child collapsed" data-toggle="collapse" data-target="#user">
-                <a href="#"><i class="material-icons">account_circle</i> Jefferson  <i class="material-icons arrow">arrow_drop_down</i></a>
+                <a href="#"><img id="avatar-sidebar" class="img-circle" src="{{ str_replace('.jpg', 'm.jpg', \Auth::user()->avatar) }}" width="25"> Jefferson  <i class="material-icons arrow">arrow_drop_down</i></a>
             </li>
 
             <ul class="sub-menu collapse" id="user">

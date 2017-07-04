@@ -47,5 +47,9 @@ return [
     'DEV_CHALLENGE_STATUS' => [
         'active' => 0,
         'disabled' => 1,
-    ]
+    ],
+     'HASHTAG_GROUP' => [
+         'normal' => 0,
+         'promoted' => 1,
+     ]
 ];

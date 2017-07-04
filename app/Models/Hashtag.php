@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $updated_at
  * @property integer $hashtag_status
  * @property mixed $hashtag_relevance
+ * @property int hashtag_group
  */
 class Hashtag extends Model
 {
