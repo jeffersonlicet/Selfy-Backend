@@ -24,4 +24,8 @@ class Hashtag extends Model
      */
     protected $fillable = ['hashtag_text', 'created_at', 'updated_at', 'hashtag_status'];
 
+    public function Play(){
+        return $this->belongsTo('App\Models\ChallengePlay', 'hashtag_id', 'play_hashtag');
+    }
+
 }

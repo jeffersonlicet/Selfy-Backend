@@ -23,10 +23,16 @@
                 <input class="form-control" name="play_description" id="play_description" type="text" required>
             </div>
 
-            <h3>Sample</h3>
+            <h3>Samples</h3>
             <div class="form-group label-floating">
-                <label class="control-label" for="play_sample">The play sample image</label>
+                <label class="control-label" for="play_sample">The play samples image/s</label>
                 <input class="form-control" name="play_sample" id="play_sample" type="text" required>
+            </div>
+
+            <h3>Play thumb</h3>
+            <div class="form-group label-floating">
+                <label class="control-label" for="play_thumb">The play thumb image</label>
+                <input class="form-control" name="play_thumb" id="play_thumb" type="text" required>
             </div>
 
             <button class="btn btn-raised btn-primary" type="submit">Save</button>

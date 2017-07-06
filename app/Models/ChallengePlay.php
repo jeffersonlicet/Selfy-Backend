@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $play_description
  * @property string $play_sample
  * @property Hashtag $hashtag_relation
+ * @property string play_thumb
  */
 class ChallengePlay extends Model
 {
@@ -34,6 +35,11 @@ class ChallengePlay extends Model
      */
     protected $appends = ['hashtag'];
 
+    public function getPlaySampleAttribute($value)
+    {
+        return explode(',', $value)[0];
+    }
+
     public function hashtag_relation()
     {
         return $this->hasOne('App\Models\Hashtag', 'hashtag_id', 'play_hashtag');
@@ -42,5 +48,10 @@ class ChallengePlay extends Model
     public function getHashtagAttribute()
     {
         return $this->hashtag_relation;
+    }
+
+    public function Objects()
+    {
+        return $this->hasMany('App\Models\PlayObject', 'play_id', 'play_id');
     }
 }

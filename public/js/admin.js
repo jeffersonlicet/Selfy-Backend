@@ -10377,14 +10377,14 @@ window.hashtag = {
             success: function success(data) {
 
                 if (data.status) {
-                    window.sMessage.show('Play hashtag updated', 'Hashtag #' + $('#play_id').val(), 'primary', 15000);
+                    window.sMessage.show('Play hashtag updated', 'Hashtag id #' + newId, 'primary', 15000);
 
-                    $('#createHashtagModal').find('.close').click();
+                    $('#changePlayHashtagModal').find('.close').click();
                     $('#form-update-play-hashtag').show();
                     $('#loading-update-play-hashtag').hide();
                     $('#hashtag_text').val('');
                 } else {
-                    window.sMessage.show('Ouch!', 'Error creating hashtag', 'error', 3000);
+                    window.sMessage.show('Ouch!', 'Error updating hashtag', 'error', 3000);
 
                     $('#form-update-play-hashtag').show();
                     $('#loading-update-play-hashtag').hide();
@@ -10499,6 +10499,204 @@ window.mImage = {
     open: function open(el) {
         $('#imagePreview').attr('src', $(el).attr('data-href'));
         $('#loading-view').hide();
+    }
+};
+window.play = {
+    working: false,
+    appendObject: function appendObject(el) {
+        if (this.working) return;
+
+        this.working = true;
+        var context = this;
+
+        var objectId = $('#object_id');
+        var playId = $('#play_id');
+
+        if (objectId.val().length === 0) {
+            objectId.focus();
+            context.working = false;
+            return;
+        }
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $.ajax({
+            type: 'POST',
+            url: APP_URL + '/admin/ajax/play/associate_object',
+            data: { object_id: objectId.val(), play_id: playId.val() },
+            dataType: 'json',
+            success: function success(data) {
+
+                $('#loadingModal').find('.close').click();
+
+                if (data.status) {
+                    window.sMessage.show('Done!', 'Object associated with challenge', 'primary', 15000);
+                } else {
+                    window.sMessage.show('ow!', 'Error associating object :(', 'primary', 15000);
+                }
+
+                context.working = false;
+            }
+        });
+    },
+    createObject: function createObject(el) {
+        if (this.working) return;
+
+        this.working = true;
+        var context = this;
+        var nameInput = $('#object_name');
+        var parentInput = $('#object_parent');
+
+        if (nameInput.val().length === 0) {
+            nameInput.focus();
+            context.working = false;
+            return;
+        }
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $.ajax({
+            type: 'POST',
+            url: APP_URL + '/admin/ajax/play/create_object',
+            data: { object_name: nameInput.val(), object_parent: parentInput.val() },
+            dataType: 'json',
+            success: function success(data) {
+
+                $('#loadingModal').find('.close').click();
+
+                if (data.status) {
+                    window.sMessage.show('Object created', 'Object  #' + data.id, 'primary', 15000);
+                } else {
+                    window.sMessage.show('ow!', 'Error creating object :(', 'primary', 15000);
+                }
+
+                context.working = false;
+            }
+        });
+    },
+    removeObject: function removeObject(el) {
+        if (this.working) return;
+
+        this.working = true;
+        var _play_id = $(el).data('play');
+        var _object_id = $(el).data('object');
+        var context = this;
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $('#object_' + _object_id).hide();
+
+        $.ajax({
+            type: 'POST',
+            url: APP_URL + '/admin/ajax/play/remove_object',
+            data: { play_id: _play_id, object_id: _object_id },
+            dataType: 'json',
+            success: function success(data) {
+                $('#loadingModal').find('.close').click();
+
+                if (data.status) {
+                    window.sMessage.show('Done', 'Association deleted', 'primary', 15000);
+                } else {
+                    window.sMessage.show('ow!', 'Error deleting assoc :(', 'primary', 15000);
+                }
+
+                context.working = false;
+            }
+        });
+    },
+    createObjectGenerated: function createObjectGenerated(el) {
+        if (this.working) return;
+
+        this.working = true;
+        var context = this;
+
+        var objectName = $(el).attr('data-name');
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $.ajax({
+            type: 'POST',
+            url: APP_URL + '/admin/ajax/play/create_object',
+            data: { object_name: objectName, object_parent: 0 },
+            dataType: 'json',
+            success: function success(data) {
+
+                $('#loadingModal').find('.close').click();
+
+                if (data.status) {
+                    var parent = $(el).closest('.tr');
+
+                    parent.find('.exists').html('<span class="label label-success">Yes</span>');
+                    parent.find('.create').html('-');
+                    parent.find('.associate').html('<a href="javascript:void(0)" data-text="' + objectName + '" onclick="window.play.appendObjectGenerated(this)" data-toggle="modal" data-target="#loadingModal" data-id="' + data.id + '"><i class="material-icons">link</i></a>');
+
+                    window.sMessage.show('Object created', 'Object  #' + data.id, 'primary', 15000);
+                } else {
+                    window.sMessage.show('ow!', 'Error creating object :(', 'primary', 15000);
+                }
+
+                context.working = false;
+            }
+        });
+    },
+    appendObjectGenerated: function appendObjectGenerated(el) {
+        if (this.working) return;
+
+        this.working = true;
+        var context = this;
+
+        var objectId = $(el).attr('data-id');
+        var playId = $('#play_id').val();
+        var _objectName = $(el).attr('data-text');
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $.ajax({
+            type: 'POST',
+            url: APP_URL + '/admin/ajax/play/associate_object',
+            data: { object_id: objectId, play_id: playId, object_name: _objectName },
+            dataType: 'json',
+            success: function success(data) {
+
+                $('#loadingModal').find('.close').click();
+
+                if (data.status) {
+                    var parent = $(el).closest('.tr');
+
+                    parent.find('.exists').html('<span class="label label-success">Yes</span>');
+                    parent.find('.associated').html('<span class="label label-success">Yes</span>');
+
+                    parent.find('.create').html('-');
+                    parent.find('.associate').html('-');
+
+                    window.sMessage.show('Done!', 'Object created and associated', 'primary', 15000);
+                } else {
+                    window.sMessage.show('ow!', 'Error creating object :(', 'primary', 15000);
+                }
+
+                context.working = false;
+            }
+        });
     }
 };
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))

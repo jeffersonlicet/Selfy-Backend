@@ -15,10 +15,12 @@
                     <th>Title</th>
                     <th>Status</th>
                     <th>Sample</th>
+                    <th>Thumb</th>
                     <th>Description</th>
                     <th>Completed</th>
                     <th>Hashtag</th>
-                    <th>Manage</th>
+                    <th>Edit</th>
+                    <th>Objects</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -30,10 +32,12 @@
                         <td title="{{ $challenge->object->play_title }}" data-toggle="tooltip">{{ str_limit($challenge->object->play_title, 20, '...') }}</td>
                         <td><a data-status="{{ $challenge->status }}" data-id="{{ $challenge->challenge_id}}" href="#" onclick="window.challenge.toggle(this)"><span  id="state-label-{{$challenge->challenge_id}}" class="label @if($challenge->status == config('constants.DEV_CHALLENGE_STATUS.active')) label-success @else label-danger @endif">{{ $status[$challenge->status]  }}</span></a></td>
                         <td><a href="javascript:void(0)" data-toggle="modal" data-target="#imagePreviewModal" onclick="window.mImage.open(this)" data-href="{{ $challenge->object->play_sample }}"><i class="material-icons">photo</i></a></td>
+                        <td><a href="javascript:void(0)" data-toggle="modal" data-target="#imagePreviewModal" onclick="window.mImage.open(this)" data-href="{{ $challenge->object->play_Thumb }}"><i class="material-icons">photo</i></a></td>
                         <td title="{{ $challenge->object->play_description }}" data-toggle="tooltip">{{ str_limit($challenge->object->play_description, 41, '...') }}</td>
                         <td>{{ $challenge->completed_count }}</td>
-                        <td><a href="#">#{{ $challenge->object->hashtag->hashtag_text }}</a></td>
-                        <td><a href="{{  action('Admin\AdminController@playSingleton', ['playId' => $challenge->challenge_id]) }}"><i class="material-icons">settings</i></a>
+                        <td>@if($challenge->object->hashtag)<a href="#">#{{ $challenge->object->hashtag->hashtag_text }}</a>@endif</td>
+                        <td><a href="{{  action('Admin\AdminController@playSingleton', ['playId' => $challenge->challenge_id]) }}"><i class="material-icons">edit</i></a>
+                        <td><a href="{{  action('Admin\AdminController@managePlayObjects', ['playId' => $challenge->challenge_id]) }}"><i class="material-icons">settings</i></a>
 
                         </td>
                     </tr>

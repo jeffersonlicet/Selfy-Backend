@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class PlayObject extends Model
 {
+    protected $primaryKey = 'play_object_id';
     /**
      * @var array
      */
@@ -22,7 +23,7 @@ class PlayObject extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function objectCategory()
+    public function ObjectCategory()
     {
         return $this->belongsTo('App\Models\ObjectCategory', 'category_id', 'category_id');
     }

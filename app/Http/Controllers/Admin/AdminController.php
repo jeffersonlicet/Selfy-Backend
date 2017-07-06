@@ -9,10 +9,14 @@
 namespace App\Http\Controllers\Admin;
 
 
+use App\Helpers\Vision;
 use App\Http\Controllers\Controller;
 use App\Models\Challenge;
 use App\Models\ChallengePlay;
 use App\Models\Hashtag;
+use App\Models\ObjectCategory;
+use App\Models\Photo;
+use App\Models\PlayObject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 
@@ -30,22 +34,38 @@ class AdminController extends Controller
 
     public function createPlaySingleton(Request $request)
     {
-        $values = $request->only(['play_title', 'play_description', 'play_sample']);
+        $values = $request->only(['play_title', 'play_description', 'play_sample', 'play_thumb']);
 
         $this->validate($request, [
             'play_title' => 'required',
             'play_description' => 'required',
-            'play_sample' => 'required'
+            'play_sample' => 'required',
+            'play_thumb' => 'required'
         ]);
 
         $play = new ChallengePlay();
+        $play->play_title = $values['play_title'];
+        $play->play_description = $values['play_description'];
+        $play->play_sample = $values['play_sample'];
+        $play->play_thumb = $values['play_thumb'];
+        $play->save();
+
+        $challenge = new Challenge();
+        $challenge->object_type = config('constants.CHALLENGE_TYPES_STR.PLAY');
+        $challenge->object_id   = $play->play_id;
+        $challenge->status = config('constants.DEV_CHALLENGE_STATUS.active');
+        $challenge->completed_count = 0;
+        $challenge->save();
 
         $message = (object) [
             'title' => 'Done',
-            'body' => 'Play data updated',
+            'body' => 'Play challenge created',
             'type' => 'success',
             'duration' => 5000
         ];
+
+        return view('admin.pages.playSingleton')
+            ->with(['pageTitle' => 'Play challenge', 'challenge' => $challenge, 'message' => $message]);
     }
 
     public function play()
@@ -70,14 +90,16 @@ class AdminController extends Controller
 
         return false;
     }
+
     public function updatePlaySingleton(Request $request, $playId)
     {
-        $values = $request->only(['play_title', 'play_description', 'play_sample']);
+        $values = $request->only(['play_title', 'play_description', 'play_sample', 'play_thumb']);
 
         $this->validate($request, [
             'play_title' => 'required',
             'play_description' => 'required',
-            'play_sample' => 'required'
+            'play_sample' => 'required',
+            'play_thumb' => 'required'
         ]);
 
         if($challenge = Challenge::with('Object')->find($playId))
@@ -121,7 +143,7 @@ class AdminController extends Controller
 
         if(!$hashtag = Hashtag::where('hashtag_text', $values['hashtag_text'])->first()){
             $hashtag = new Hashtag();
-            $hashtag->hashtag_text = $values['hashtag_text'];
+            $hashtag->hashtag_text = str_replace('#', '', $values['hashtag_text']);
             $hashtag->hashtag_group = filter_var($values['hashtag_group'], FILTER_VALIDATE_BOOLEAN)  ? 1 : 0;
             $hashtag->hashtag_status = filter_var($values['hashtag_status'], FILTER_VALIDATE_BOOLEAN)  ? 1 : 0;
             $hashtag->save();
@@ -143,6 +165,134 @@ class AdminController extends Controller
         }
 
         return response()->json(['status' => false]);
+    }
+
+    public function managePlayObjects($playId = 0)
+    {
+        if($challenge = Challenge::with('Object')->find($playId))
+        {
+            return view('admin.pages.playSingletonObjects')
+                ->with(['pageTitle' => 'Manage objects', 'challenge' => $challenge, 'message' => false]);
+        }
+        else
+            abort(404);
+
+        return false;
+    }
+
+    /**
+     * @param Request $request
+     * @called Ajax
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function removeObjectAssociation(Request $request)
+    {
+        $values = $request->only(['play_id', 'object_id']);
+
+        if($association = PlayObject::where(['play_id' => $values['play_id'], 'category_id' => $values['object_id']])->first())
+        {
+            $association->delete();
+            return response()->json(['status' => true]);
+        }
+
+        return response()->json(['status' => false]);
+    }
+
+    public function createPlayObject(Request $request)
+    {
+
+        $values = $request->only(['object_name', 'object_parent']);
+
+        if(!$object = ObjectCategory::where('category_name', $values['object_name'])->first())
+        {
+            $object = new ObjectCategory();
+            $object->category_parent = $values['object_parent'] >  0 ? $values['object_parent'] : null;
+            $object->category_name = $values['object_name'];
+            $object->save();
+
+            return response()->json(['status' => true, 'id' => $object->category_id]);
+        }
+        return response()->json(['status' => false, 'message' => 'Already exists']);
+    }
+    
+    public function associatePlayObject(Request $request)
+    {
+        $values = $request->only(['object_id',  'play_id',  'object_name']);
+
+        if($object = ObjectCategory::where('category_id', $values['object_id'])->first())
+        {
+            if(!$association = PlayObject::where(['play_id' => $values['play_id'], 'category_id' => $values['object_id']])->first())
+            {
+                $assoc = new PlayObject();
+                $assoc->play_id = $values['play_id'];
+                $assoc->category_id = $values['object_id'];
+                $assoc->save();
+
+                return response()->json(['status' => true]);
+            }
+        }
+
+        elseif(isset($values['object_name']) && !empty($values['object_name']))
+        {
+            $object = new ObjectCategory();
+            $object->category_parent = null;
+            $object->category_name = $values['object_name'];
+            $object->save();
+
+            $assoc = new PlayObject();
+            $assoc->play_id = $values['play_id'];
+            $assoc->category_id = $object->category_id;
+            $assoc->save();
+
+            return response()->json(['status' => true]);
+        }
+
+        return response()->json(['status' => false]);
+    }
+    
+    public function playGenerateObjects(Request $request, $playId = 0)
+    {
+        ini_set('max_execution_time', 180);
+        $images = explode(',', $request->get('image_sample'));
+        $collection = collect([]);
+        $saved = [];
+
+        foreach($images as $image)
+        {
+            $photo = new Photo();
+            $photo->url = $image;
+            $response = Vision::recognize($photo);
+
+            switch ($response->getStatusCode()) {
+                case 200:
+                    $content = \GuzzleHttp\json_decode($response->getBody()->getContents());
+                    if($content->status) {
+
+                        $words = $content->content;
+
+                        foreach ($words as $word)
+                        {
+                            if(!in_array($word, $saved)) {
+                                $exists = ObjectCategory::where('category_name', $word)->first();
+                                $obj = new ObjectCategory();
+                                $obj->category_name = $word;
+                                $obj->category_id = $exists!== null ? $exists->category_id : '-';
+                                $obj->exists =  $exists!== null;
+                                $obj->associated =  $exists!== null ? PlayObject::where(['category_id' => $exists->category_id, 'play_id' => $playId])->first() !== null : false;
+
+                                $saved[] = $word;
+                                $collection->push($obj);
+                            }
+                        }
+                    }
+                    break;
+            }
+        }
+        $challenge = Challenge::with('Object')->where(['object_type' => config('constants.CHALLENGE_TYPES_STR.PLAY'), 'object_id' => $playId])->first();
+
+        return view('admin.pages.playSingletonObjects')
+            ->with(['pageTitle' => 'Manage objects', 'challenge' => $challenge,
+                'message' => false, 'objectsGen' => $collection]);
     }
 
 }

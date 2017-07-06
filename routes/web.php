@@ -81,6 +81,33 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin' , 'middleware' => ['Ap
         'uses' => 'AdminController@updatePlaySingleton'
     ]);
 
+    Route::get('/play/{playId}/objects', [
+        'as' => 'AdminPlayObjectsSingleton',
+        'uses' => 'AdminController@managePlayObjects'
+    ]);
+
+    Route::post('/play/{playId}/generator', [
+        'as' => 'AdminPlayObjectsGenerator',
+        'uses' => 'AdminController@playGenerateObjects'
+    ]);
+
+    Route::post('/ajax/play/remove_object', [
+        'as' => 'AdminPlayRemoveObject',
+        'uses' => 'AdminController@removeObjectAssociation'
+    ]);
+
+    Route::post('/ajax/play/associate_object', [
+        'as' => 'AdminPlayAssociateObject',
+        'uses' => 'AdminController@associatePlayObject'
+    ]);
+
+    Route::post('/ajax/play/create_object', [
+        'as' => 'CreatePlayObject',
+        'uses' => 'AdminController@createPlayObject'
+    ]);
+
+
+
     Route::post('/ajax/play/update_hashtag', [
         'as' => 'UpdatePlayHashtagSingleton',
         'uses' => 'AdminController@updatePlayHashtagSingleton'

@@ -101,6 +101,24 @@
     </div>
 </div>
 
+<div class="modal" id="loadingModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">Loading</h4>
+            </div>
+            <div class="modal-body">
+                <div class="loader" style="display:block!important">
+                    <svg class="circular" viewBox="25 25 50 50">
+                        <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 

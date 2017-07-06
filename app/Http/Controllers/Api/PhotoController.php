@@ -732,6 +732,7 @@ class PhotoController extends Controller
                 ]);
             }
 
+            //TODO: allow if account_private and i have access
             $result = DB::table('hashtags')
                 ->join('photo_hashtags', 'hashtags.hashtag_id', '=', 'photo_hashtags.hashtag_id')
                 ->where('photo_hashtags.created_at', '>=', Carbon::now()->subDay())
@@ -742,16 +743,39 @@ class PhotoController extends Controller
 
             $curated = [];
             $thumb_ids = [];
+            $tags_ids = [];
+
+            //Append promoted hashtags:
+            $promoted = Hashtag::where('hashtag_group', config('constants.HASHTAG_GROUP.promoted'))->get();
+            foreach ($promoted as $tag)
+            {
+                if(in_array($tag->hashtag_id, $tags_ids)) continue;
+
+                $curated[] = [
+                    'hashtag_id' => $tag->hashtag_id,
+                    'hashtag_text' => $tag->hashtag_text,
+                    'is_play'=>  $tag->Play !== null,
+                    'thumbnail' => $tag->Play->play_thumb,
+                    'relevance' => $tag->hashtag_relevance
+                ];
+                $tags_ids[] = $tag->hashtag_id;
+            }
 
             foreach($result as $item) {
+
+                if(in_array($item->hashtag_id, $tags_ids)) continue;
+
                 $thumb = null;
 
                 if ($photo = PhotoHashtag::where('hashtag_id', $item->hashtag_id)->orderBy('created_at', 'DESC')
                     ->with(['Photo' => function ($q) use ($thumb_ids) {
-                        $q->whereNotIn('photo_id', $thumb_ids);
-                    }])->has('Photo')->first()
+                        $q->whereNotIn('photo_id', $thumb_ids)->whereHas('User', function($z){
+                            $z->where('account_private', '=',  0);
+                        });
+                    }, ])->has('Photo')->first()
                 ) {
-                   if($photo->Photo){
+
+                if($photo->Photo){
                     $thumb = $photo->Photo->url;
                     $thumb_ids[] = $photo->Photo->photo_id;}
                  }
@@ -763,6 +787,8 @@ class PhotoController extends Controller
                     'thumbnail' => $thumb,
                     'relevance' => $item->hashtag_relevance
                 ];
+
+                $tags_ids[] = $item->hashtag_id;
 
             }
 
@@ -814,7 +840,12 @@ class PhotoController extends Controller
 
             if($h)
             {
-                $result = PhotoHashtag::where('hashtag_id', $h->hashtag_id)->with('Photo')->has('Photo')
+                //TODO: allow if account_private and i have access
+                $result = PhotoHashtag::where('hashtag_id', $h->hashtag_id)->whereHas('Photo', function($q){
+                    $q->whereHas('User', function($z){
+                        $z->where('account_private', '=', 0);
+                    });
+                })->has('Photo')
                     ->limit($limit)->offset($limit*$page)->get();
 
                 foreach($result as $entry)
