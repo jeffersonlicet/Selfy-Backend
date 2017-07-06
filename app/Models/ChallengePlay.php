@@ -26,7 +26,7 @@ class ChallengePlay extends Model
     /**
      * @var array
      */
-    protected $fillable = ['play_title', 'play_description', 'play_sample'];
+    protected $fillable = ['play_title', 'play_description', 'play_sample', 'play_thumb'];
 
     protected $hidden = ['hashtag_relation'];
 
