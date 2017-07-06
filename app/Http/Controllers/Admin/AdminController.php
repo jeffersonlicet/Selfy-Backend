@@ -47,17 +47,9 @@ class AdminController extends Controller
     {
         ini_set('max_execution_time', 6180);
         $file = new SplFileObject(storage_path('/app/wordnet/wordnet.is_a.txt'));
-        $k = 0;
-        $count = 0;
-        $page = 1;
-
-        $offset = $page*20000;
 
         while (!$file->eof())
         {
-            if($k <= $offset) { $k++; continue;}
-            if($count == 20000 - 1){break;};
-
             $words = explode(' ', str_replace('\n', '', $file->fgets()));
             $parent_word = $words[0];
             $child_word = $words[1];
@@ -69,7 +61,6 @@ class AdminController extends Controller
                 $parent->parent_wnid = $parent_word;
                 $parent->save();
             }
-            $count++;
 
         }
 
