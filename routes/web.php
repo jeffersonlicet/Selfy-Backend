@@ -51,7 +51,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'middleware' => 'web'
  */
 Route::group(['prefix' => 'admin', 'namespace' => 'Admin' , 'middleware' => ['App\Http\Middleware\AuthMiddleware', 'role:system-administrator|system-moderator']], function () {
     Route::get('/seed_word_net', 'AdminController@seedWordNet');
-
+    Route::get('/seed_word_words', 'AdminController@seedWordWords');
     Route::get('/', [
         'as' => 'DashboardIndex',
         'uses' => 'AdminController@index'

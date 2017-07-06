@@ -22,12 +22,31 @@ use SplFileObject;
 
 class AdminController extends Controller
 {
+    public function seedWordWords()
+    {
+        ini_set('max_execution_time', 6180);
+        $file = new SplFileObject(storage_path('/app/wordnet/words.txt'));
+        while (!$file->eof())
+        {
+            $data = explode('	', $file->fgets());
+            print($data[0]);
+
+
+            break;
+        }
+
+        return  "done";
+    }
+
     public function seedWordNet()
     {
         ini_set('max_execution_time', 6180);
         $file = new SplFileObject(storage_path('/app/wordnet/wordnet.is_a.txt'));
+        $k = 0;
         while (!$file->eof())
         {
+            if($k<40000) {$k++; continue;}
+
             $words = explode(' ', str_replace('\n', '', $file->fgets()));
             $parent_word = $words[0];
             $child_word = $words[1];
@@ -62,6 +81,8 @@ class AdminController extends Controller
                 $child->category_parent = $parent->category_id;
                 $child->save();
             }
+
+            $k++;
         }
 
         return  "done";
