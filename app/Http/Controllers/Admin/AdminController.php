@@ -18,10 +18,55 @@ use App\Models\ObjectCategory;
 use App\Models\Photo;
 use App\Models\PlayObject;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Input;
+use SplFileObject;
 
 class AdminController extends Controller
 {
+    public function seedWordNet()
+    {
+        ini_set('max_execution_time', 6180);
+        $file = new SplFileObject(storage_path('/app/wordnet/wordnet.is_a.txt'));
+        while (!$file->eof())
+        {
+            $words = explode(' ', str_replace('\n', '', $file->fgets()));
+            $parent_word = $words[0];
+            $child_word = $words[1];
+
+            if(!$parent = ObjectCategory::where('category_wnid', $parent_word)->first())
+            {
+                $parent = new ObjectCategory();
+                $parent->category_wnid = $parent_word;
+                $parent->save();
+            }
+
+            if($child = ObjectCategory::where('category_wnid', $child_word)->first())
+            {
+                if($child->category_parent== null)
+                {
+                    $child->category_parent = $parent->category_id;
+                    $child->save();
+                }
+
+                elseif($child->category_parent != $parent->category_id){
+                    $child = new ObjectCategory();
+                    $child->category_wnid = $child_word;
+                    $child->category_parent = $parent->category_id;
+                    $child->save();
+                }
+            }
+
+            else
+            {
+                $child = new ObjectCategory();
+                $child->category_wnid = $child_word;
+                $child->category_parent = $parent->category_id;
+                $child->save();
+            }
+        }
+
+        return  "done";
+    }
+
     public function index()
     {
         return view('admin.pages.dashboard')->with(['pageTitle' => 'Selfy administration']);

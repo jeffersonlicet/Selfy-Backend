@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property integer $category_parent
  * @property string $created_at
  * @property string $updated_at
- * @property string $category_name
  * @property ObjectCategory $parent
  * @property int $category_id
+ * @property  string $category_wnid
  */
 class ObjectCategory extends Model
 {
@@ -25,7 +25,7 @@ class ObjectCategory extends Model
     /**
      * @var array
      */
-    protected $fillable = ['category_parent', 'created_at', 'updated_at', 'category_name'];
+    protected $fillable = ['category_parent', 'created_at', 'updated_at', 'category_wnid'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
