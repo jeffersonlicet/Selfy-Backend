@@ -15,6 +15,7 @@ use App\Models\Challenge;
 use App\Models\ChallengePlay;
 use App\Models\Hashtag;
 use App\Models\ObjectCategory;
+use App\Models\ObjectWord;
 use App\Models\Photo;
 use App\Models\PlayObject;
 use Illuminate\Http\Request;
@@ -29,10 +30,14 @@ class AdminController extends Controller
         while (!$file->eof())
         {
             $data = explode('	', $file->fgets());
-            print($data[0]);
 
-
-            break;
+            if(!$word = ObjectWord::where(['object_wnid'=> $data[0]]))
+            {
+                $word = new ObjectWord();
+                $word->object_wnid = $data[0];
+                $word->object_words = $data[1];
+                $word->save();
+            }
         }
 
         return  "done";
@@ -45,7 +50,7 @@ class AdminController extends Controller
         $k = 0;
         while (!$file->eof())
         {
-            if($k<40000) {$k++; continue;}
+            if($k<50000) {$k++; continue;}
 
             $words = explode(' ', str_replace('\n', '', $file->fgets()));
             $parent_word = $words[0];
