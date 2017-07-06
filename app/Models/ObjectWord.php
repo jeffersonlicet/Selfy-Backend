@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class ObjectWord extends Model
 {
+    protected $primaryKey = 'word_id';
     /**
      * @var array
      */

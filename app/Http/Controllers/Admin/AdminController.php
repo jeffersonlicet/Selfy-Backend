@@ -39,7 +39,7 @@ class AdminController extends Controller
                 $word->save();
             }
         }
-
+        $file = null;
         return  "done";
     }
 
@@ -50,7 +50,7 @@ class AdminController extends Controller
         $k = 0;
         while (!$file->eof())
         {
-            if($k<50000) {$k++; continue;}
+            if($k<51000) {$k++; continue;}
 
             $words = explode(' ', str_replace('\n', '', $file->fgets()));
             $parent_word = $words[0];
@@ -89,7 +89,7 @@ class AdminController extends Controller
 
             $k++;
         }
-
+        $file = null;
         return  "done";
     }
 
