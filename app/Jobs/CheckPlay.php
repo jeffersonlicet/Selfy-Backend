@@ -62,9 +62,11 @@ class CheckPlay implements ShouldQueue
                         /**
                          * If we have a word in db then let the magic begin
                          */
-                        if($object = ObjectCategory::where('category_name', $word)->first())
+                        $objects = ObjectCategory::with('Parent')->where('category_wnid', $word)->get();
+
+                        foreach($objects as $exists)
                         {
-                            $parent = $object;
+                            $parent = $exists;
 
                             while ($parent != null)
                             {
@@ -112,7 +114,7 @@ class CheckPlay implements ShouldQueue
                                     }
                                 }
 
-                                $parent = $parent->parent;
+                                $parent = $parent->Parent;
                             }
                         }
 
