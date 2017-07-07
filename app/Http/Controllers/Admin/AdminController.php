@@ -47,24 +47,18 @@ class AdminController extends Controller
     {
         ini_set('max_execution_time', 6180);
         $file = new SplFileObject(storage_path('/app/wordnet/wordnet.is_a.txt'));
-       $count = 0;
+
         while (!$file->eof())
         {
-            if($count < 50000) { $count++; continue;}
-
             $words = explode(' ', str_replace('\n', '', $file->fgets()));
             $parent_word = $words[0];
             $child_word = $words[1];
 
-           if(!$parent = ObjectCategory::where(['category_wnid'=> $child_word, 'parent_wnid' => $parent_word])->first())
-            {
-                $parent = new ObjectCategory();
-                $parent->category_wnid = $child_word;
-                $parent->parent_wnid = $parent_word;
-                $parent->save();
-            }
 
-            $count++;
+            $parent = new ObjectCategory();
+            $parent->category_wnid = $child_word;
+            $parent->parent_wnid = $parent_word;
+            $parent->save();
 
         }
 
