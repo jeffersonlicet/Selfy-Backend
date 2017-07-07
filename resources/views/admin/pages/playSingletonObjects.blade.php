@@ -30,8 +30,8 @@
                     @foreach($challenge->Object->Objects as $obj)
                         <tr id="object_{{ $obj->ObjectCategory->category_id }}">
                             <td>{{ $obj->ObjectCategory->category_id }}</td>
-                            <td>{{ $obj->ObjectCategory->category_name }}</td>
-                            <td>{{ $obj->ObjectCategory->Parent == null ? '-' : $obj->ObjectCategory->Parent->category_name }}</td>
+                            <td>{{ $obj->ObjectCategory->Word->object_words }}</td>
+                            <td>{{ $obj->ObjectCategory->Parent == null ? '-' : $obj->ObjectCategory->Parent->Word->object_words }}</td>
                             <td><a href="#" data-play="{{ $challenge->Object->play_id }}" data-toggle="modal" data-target="#loadingModal" data-object="{{ $obj->ObjectCategory->category_id }}" onclick="window.play.removeObject(this)"><i class="material-icons">delete</i></a></td>
                             <td><a href="#"><i class="material-icons">settings</i></a></td>
                         </tr>
@@ -85,9 +85,7 @@
                     <tr>
                         <th>#</th>
                         <th>Name</th>
-                        <th>Exists</th>
                         <th>Associated</th>
-                        <th>Create</th>
                         <th>Append</th>
                     </tr>
                     </thead>
@@ -95,11 +93,9 @@
                     @foreach($objectsGen as $obj)
                         <tr class="tr">
                             <td>{{ $obj->category_id }}</td>
-                            <td>{{ $obj->category_name }}</td>
-                            <td class="exists">@if($obj->exists) <span class="label label-success">Yes</span>@else <span class="label label-danger">No</span> @endif</td>
+                            <td>{{ $obj->Word->object_words }}</td>
                             <td class="associated">@if($obj->associated) <span class="label label-success">Yes</span>@else <span class="label label-danger">No</span> @endif</td>
-                            <td class="create">@if(!$obj->exists) <a href="javascript:void(0)" data-toggle="modal" data-target="#loadingModal" onclick="window.play.createObjectGenerated(this)" data-name="{{ $obj->category_name }}"><i class="material-icons">add</i></a> @else - @endif</td>
-                            <td class="associate">@if(!$obj->associated) <a data-text="{{ $obj->category_name }}" href="javascript:void(0)" onclick="window.play.appendObjectGenerated(this)" data-toggle="modal" data-target="#loadingModal" data-id="@if($obj->exists) {{ $obj->category_id }} @else 0 @endif"><i class="material-icons">link</i></a> @else - @endif</td>
+                            <td class="associate">@if(!$obj->associated) <a href="javascript:void(0)" onclick="window.play.appendObjectGenerated(this)" data-toggle="modal" data-target="#loadingModal" data-id="{{ $obj->category_id }}"><i class="material-icons">link</i></a> @else - @endif</td>
                         </tr>
                     @endforeach
                     </tbody>

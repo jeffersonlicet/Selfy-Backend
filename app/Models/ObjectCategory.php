@@ -27,12 +27,17 @@ class ObjectCategory extends Model
      */
     protected $fillable = ['parent_wnid', 'created_at', 'updated_at', 'category_wnid'];
 
+    public function Word()
+    {
+        return $this->hasOne(ObjectWord::class, 'object_wnid', 'category_wnid');
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function Parent()
     {
-        return $this->belongsTo('App\Models\ObjectCategory', 'category_parent', 'category_id');
+        return $this->belongsTo(ObjectCategory::class, 'parent_wnid', 'category_wnid');
     }
 
 }

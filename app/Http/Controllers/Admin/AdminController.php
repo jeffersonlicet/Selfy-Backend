@@ -50,8 +50,8 @@ class AdminController extends Controller
         while (!$file->eof())
         {
             $words = explode(' ', str_replace('\n', '', $file->fgets()));
-            $parent_word = $words[0];
-            $child_word = $words[1];
+            $parent_word = trim($words[0]);
+            $child_word = trim($words[1]);
 
 
             $parent = new ObjectCategory();
@@ -298,8 +298,6 @@ class AdminController extends Controller
         ini_set('max_execution_time', 180);
         $images = explode(',', $request->get('image_sample'));
         $collection = collect([]);
-        $saved = [];
-
         foreach($images as $image)
         {
             $photo = new Photo();
@@ -312,27 +310,22 @@ class AdminController extends Controller
                     if($content->status) {
 
                         $words = $content->content;
-
+                        dd($words);
                         foreach ($words as $word)
                         {
-                            if(!in_array($word, $saved)) {
-                                $exists = ObjectCategory::where('category_name', $word)->first();
-                                $obj = new ObjectCategory();
-                                $obj->category_name = $word;
-                                $obj->category_id = $exists!== null ? $exists->category_id : '-';
-                                $obj->exists =  $exists!== null;
-                                $obj->associated =  $exists!== null ? PlayObject::where(['category_id' => $exists->category_id, 'play_id' => $playId])->first() !== null : false;
-
-                                $saved[] = $word;
-                                $collection->push($obj);
+                            if($exists = ObjectCategory::where('category_wnid', $word)->first())
+                            {
+                                $exists->associated =  $exists!== null ? PlayObject::where(['category_id' => $exists->category_id, 'play_id' => $playId])->first() !== null : false;
+                                $collection->push($exists);
                             }
                         }
                     }
                     break;
             }
         }
-        $challenge = Challenge::with('Object')->where(['object_type' => config('constants.CHALLENGE_TYPES_STR.PLAY'), 'object_id' => $playId])->first();
 
+        $challenge = Challenge::with('Object')->where(['object_type' => config('constants.CHALLENGE_TYPES_STR.PLAY'), 'object_id' => $playId])->first();
+        dd($collection);
         return view('admin.pages.playSingletonObjects')
             ->with(['pageTitle' => 'Manage objects', 'challenge' => $challenge,
                 'message' => false, 'objectsGen' => $collection]);
