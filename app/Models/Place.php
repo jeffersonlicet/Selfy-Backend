@@ -70,8 +70,8 @@ class Place extends Model
     {
         $this->place_external_id   = $venue->getIdentifier();
         $this->name                = $venue->getName();
-        $this->category            = $venue->getPrimaryCategory()->getName();
-        $this->category_icon       = $venue->getPrimaryCategory()->getIconUrl();
+        $this->category            = $venue->getPrimaryCategory() == null ? '' :  $venue->getPrimaryCategory()->getName();
+        $this->category_icon       =  $venue->getPrimaryCategory() == null ? '' : $venue->getPrimaryCategory()->getIconUrl();
         $this->country             = $venue->getLocation()->getCountry();
         $this->state               = $venue->getLocation()->getState();
         $this->city                = $venue->getLocation()->getCity();
