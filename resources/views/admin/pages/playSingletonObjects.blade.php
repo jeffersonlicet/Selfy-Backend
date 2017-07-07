@@ -21,7 +21,6 @@
                     <tr>
                         <th>#</th>
                         <th>Name</th>
-                        <th>Category Parent</th>
                         <th>Delete Association</th>
                         <th>Manage Object</th>
                     </tr>
@@ -31,7 +30,6 @@
                         <tr id="object_{{ $obj->ObjectCategory->category_id }}">
                             <td>{{ $obj->ObjectCategory->category_id }}</td>
                             <td>{{ $obj->ObjectCategory->Word->object_words }}</td>
-                            <td>{{ $obj->ObjectCategory->Parent == null ? '-' : $obj->ObjectCategory->Parent->Word->object_words }}</td>
                             <td><a href="#" data-play="{{ $challenge->Object->play_id }}" data-toggle="modal" data-target="#loadingModal" data-object="{{ $obj->ObjectCategory->category_id }}" onclick="window.play.removeObject(this)"><i class="material-icons">delete</i></a></td>
                             <td><a href="#"><i class="material-icons">settings</i></a></td>
                         </tr>
@@ -80,7 +78,7 @@
 
             <div class="col-md-12" style="overflow-x: auto">
                 <h3>OBJECTS GENERATED</h3>
-                <table class="table table-striped table-hover ">
+                <table class="table table-hover ">
                     <thead>
                     <tr>
                         <th>#</th>
@@ -97,7 +95,7 @@
                         @foreach( $obj as $child)
                         @php($i += 3)
 
-                        <tr class="tr @if($c%2==0) success @else info @endif">
+                        <tr class="tr @if($c%2==0) info@endif">
                             <td style="padding-left:{{$i}}px">{{ $child->category_id }}</td>
                             <td>{{ $child->Word->object_words }}</td>
                             <td class="associated">@if($child->associated) <span class="label label-success">Yes</span>@else <span class="label label-danger">No</span> @endif</td>
