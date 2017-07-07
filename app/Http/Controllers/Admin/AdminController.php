@@ -280,7 +280,9 @@ class AdminController extends Controller
 
                         foreach ($words as $word)
                         {
-                            if($exists = ObjectCategory::with('Parent')->where('category_wnid', $word)->first())
+                            $objects = ObjectCategory::with('Parent')->where('category_wnid', $word)->get();
+
+                            foreach($objects as $exists)
                             {
                                 $tempCollection = [];
 
@@ -295,6 +297,7 @@ class AdminController extends Controller
                                     $tempCollection[] = $parent;
                                     $parent = $parent->Parent;
                                 }
+
                                 $collection[] = array_reverse($tempCollection);
 
                             }
