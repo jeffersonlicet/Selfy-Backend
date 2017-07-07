@@ -33,8 +33,8 @@ class AdminController extends Controller
 
 
                 $word = new ObjectWord();
-                $word->object_wnid = $data[0];
-                $word->object_words = $data[1];
+                $word->object_wnid = trim($data[0]);
+                $word->object_words = trim($data[1]);
                 $word->save();
 
         }
