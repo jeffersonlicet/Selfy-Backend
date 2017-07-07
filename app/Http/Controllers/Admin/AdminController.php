@@ -241,26 +241,9 @@ class AdminController extends Controller
         return response()->json(['status' => false]);
     }
 
-    public function createPlayObject(Request $request)
-    {
-
-        $values = $request->only(['object_name', 'object_parent']);
-
-        if(!$object = ObjectCategory::where('category_name', $values['object_name'])->first())
-        {
-            $object = new ObjectCategory();
-            $object->category_parent = $values['object_parent'] >  0 ? $values['object_parent'] : null;
-            $object->category_name = $values['object_name'];
-            $object->save();
-
-            return response()->json(['status' => true, 'id' => $object->category_id]);
-        }
-        return response()->json(['status' => false, 'message' => 'Already exists']);
-    }
-    
     public function associatePlayObject(Request $request)
     {
-        $values = $request->only(['object_id',  'play_id',  'object_name']);
+        $values = $request->only(['object_id',  'play_id']);
 
         if($object = ObjectCategory::where('category_id', $values['object_id'])->first())
         {
@@ -274,22 +257,6 @@ class AdminController extends Controller
                 return response()->json(['status' => true]);
             }
         }
-
-        elseif(isset($values['object_name']) && !empty($values['object_name']))
-        {
-            $object = new ObjectCategory();
-            $object->category_parent = null;
-            $object->category_name = $values['object_name'];
-            $object->save();
-
-            $assoc = new PlayObject();
-            $assoc->play_id = $values['play_id'];
-            $assoc->category_id = $object->category_id;
-            $assoc->save();
-
-            return response()->json(['status' => true]);
-        }
-
         return response()->json(['status' => false]);
     }
     
@@ -310,7 +277,7 @@ class AdminController extends Controller
                     if($content->status) {
 
                         $words = $content->content;
-                        dd($words);
+
                         foreach ($words as $word)
                         {
                             if($exists = ObjectCategory::where('category_wnid', $word)->first())
@@ -325,7 +292,7 @@ class AdminController extends Controller
         }
 
         $challenge = Challenge::with('Object')->where(['object_type' => config('constants.CHALLENGE_TYPES_STR.PLAY'), 'object_id' => $playId])->first();
-        dd($collection);
+
         return view('admin.pages.playSingletonObjects')
             ->with(['pageTitle' => 'Manage objects', 'challenge' => $challenge,
                 'message' => false, 'objectsGen' => $collection]);

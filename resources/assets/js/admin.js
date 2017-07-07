@@ -9,6 +9,7 @@ $().ready(function(){
             $(e).attr('data-duration'));
     });
 });
+
 window.hashtag = {
     working: false,
     update:function(el){
@@ -136,6 +137,7 @@ window.hashtag = {
         });
     }
 };
+
 window.challenge = {
     working: false,
     toggle: function (el) {
@@ -193,12 +195,14 @@ window.challenge = {
 
   }  
 };
+
 window.mImage = {
     open: function(el){
         $('#imagePreview').attr('src', $(el).attr('data-href'));
         $('#loading-view').hide();
     }
 };
+
 window.play = {
     working:false,
     appendObject: function(el){
@@ -248,53 +252,6 @@ window.play = {
             }
         });
     },
-    createObject: function(el){
-        if(this.working) return;
-
-        this.working = true;
-        var context = this;
-        var nameInput = $('#object_name');
-        var parentInput = $('#object_parent');
-
-        if(nameInput.val().length === 0){
-            nameInput.focus();
-            context.working = false;
-            return;
-        }
-
-        $.ajaxSetup({
-            headers : {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-
-        $.ajax({
-            type: 'POST',
-            url: APP_URL +'/admin/ajax/play/create_object',
-            data : {object_name :nameInput.val(), object_parent: parentInput.val()},
-            dataType: 'json',
-            success: function(data) {
-
-                $('#loadingModal').find('.close').click();
-
-                if(data.status)
-                {
-                    window.sMessage.show('Object created',
-                        'Object  #' + data.id,
-                        'primary',
-                        15000);
-                } else {
-                    window.sMessage.show('ow!',
-                        'Error creating object :(',
-                        'primary',
-                        15000);
-                }
-
-                context.working = false;
-            }
-        });
-
-    },
     removeObject: function(el){
         if(this.working) return;
 
@@ -336,52 +293,6 @@ window.play = {
             }
         });
     },
-    createObjectGenerated: function(el){
-        if(this.working) return;
-
-        this.working = true;
-        var context = this;
-
-        var objectName = $(el).attr('data-name');
-
-        $.ajaxSetup({
-            headers : {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-
-        $.ajax({
-            type: 'POST',
-            url: APP_URL +'/admin/ajax/play/create_object',
-            data : {object_name :objectName, object_parent:  0},
-            dataType: 'json',
-            success: function(data) {
-
-                $('#loadingModal').find('.close').click();
-
-                if(data.status)
-                {
-                    var parent = $(el).closest('.tr');
-
-                    parent.find('.exists').html('<span class="label label-success">Yes</span>');
-                    parent.find('.create').html('-');
-                    parent.find('.associate').html('<a href="javascript:void(0)" data-text="'+objectName+'" onclick="window.play.appendObjectGenerated(this)" data-toggle="modal" data-target="#loadingModal" data-id="'+ data.id+ '"><i class="material-icons">link</i></a>');
-
-                    window.sMessage.show('Object created',
-                        'Object  #' + data.id,
-                        'primary',
-                        15000);
-                } else {
-                    window.sMessage.show('ow!',
-                        'Error creating object :(',
-                        'primary',
-                        15000);
-                }
-
-                context.working = false;
-            }
-        });
-    },
     appendObjectGenerated: function(el){
         if(this.working) return;
 
@@ -390,7 +301,6 @@ window.play = {
 
         var objectId = $(el).attr('data-id');
         var playId = $('#play_id').val();
-        var _objectName = $(el).attr('data-text');
 
         $.ajaxSetup({
             headers : {
@@ -401,7 +311,7 @@ window.play = {
         $.ajax({
             type: 'POST',
             url: APP_URL +'/admin/ajax/play/associate_object',
-            data : {object_id :objectId, play_id: playId, object_name: _objectName},
+            data : {object_id :objectId, play_id: playId},
             dataType: 'json',
             success: function(data) {
 
@@ -411,20 +321,17 @@ window.play = {
                 {
                     var parent = $(el).closest('.tr');
 
-                    parent.find('.exists').html('<span class="label label-success">Yes</span>');
                     parent.find('.associated').html('<span class="label label-success">Yes</span>');
-
-                    parent.find('.create').html('-');
                     parent.find('.associate').html('-');
 
                     window.sMessage.show('Done!',
-                        'Object created and associated',
+                        'Object associated',
                         'primary',
                         15000);
 
                 } else {
                     window.sMessage.show('ow!',
-                        'Error creating object :(',
+                        'Error associating object :(',
                         'primary',
                         15000);
                 }
