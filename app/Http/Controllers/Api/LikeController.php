@@ -7,9 +7,9 @@ use App\Models\Photo;
 use App\Models\UserLike;
 use App\Notifications\LikeNotification;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
-use Mockery\Exception;
 use Validator;
 
 
