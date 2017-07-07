@@ -78,7 +78,7 @@
         </div>
         @else
 
-            <div class="col-md-12">
+            <div class="col-md-12" style="overflow-x: auto">
                 <h3>OBJECTS GENERATED</h3>
                 <table class="table table-striped table-hover ">
                     <thead>
@@ -90,13 +90,20 @@
                     </tr>
                     </thead>
                     <tbody>
+                    @php($c = 0)
                     @foreach($objectsGen as $obj)
-                        <tr class="tr">
-                            <td>{{ $obj->category_id }}</td>
-                            <td>{{ $obj->Word->object_words }}</td>
-                            <td class="associated">@if($obj->associated) <span class="label label-success">Yes</span>@else <span class="label label-danger">No</span> @endif</td>
-                            <td class="associate">@if(!$obj->associated) <a href="javascript:void(0)" onclick="window.play.appendObjectGenerated(this)" data-toggle="modal" data-target="#loadingModal" data-id="{{ $obj->category_id }}"><i class="material-icons">link</i></a> @else - @endif</td>
+                        @php($i = 1)
+                        @php($c++)
+                        @foreach( $obj as $child)
+                        @php($i += 3)
+
+                        <tr class="tr @if($c%2==0) success @else info @endif">
+                            <td style="padding-left:{{$i}}px">{{ $child->category_id }}</td>
+                            <td>{{ $child->Word->object_words }}</td>
+                            <td class="associated">@if($child->associated) <span class="label label-success">Yes</span>@else <span class="label label-danger">No</span> @endif</td>
+                            <td class="associate">@if(!$child->associated) <a href="javascript:void(0)" onclick="window.play.appendObjectGenerated(this)" data-toggle="modal" data-target="#loadingModal" data-id="{{ $child->category_id }}"><i class="material-icons">link</i></a> @else - @endif</td>
                         </tr>
+                        @endforeach
                     @endforeach
                     </tbody>
                 </table>

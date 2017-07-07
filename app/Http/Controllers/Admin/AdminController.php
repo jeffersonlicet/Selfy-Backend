@@ -264,7 +264,7 @@ class AdminController extends Controller
     {
         ini_set('max_execution_time', 180);
         $images = explode(',', $request->get('image_sample'));
-        $collection = collect([]);
+        $collection = [];
         foreach($images as $image)
         {
             $photo = new Photo();
@@ -280,19 +280,30 @@ class AdminController extends Controller
 
                         foreach ($words as $word)
                         {
-                            if($exists = ObjectCategory::where('category_wnid', $word)->first())
+                            if($exists = ObjectCategory::with('Parent')->where('category_wnid', $word)->first())
                             {
-                                $exists->associated =  $exists!== null ? PlayObject::where(['category_id' => $exists->category_id, 'play_id' => $playId])->first() !== null : false;
-                                $collection->push($exists);
+                                $tempCollection = [];
+
+                                $exists->associated =  PlayObject::where(['category_id' => $exists->category_id, 'play_id' => $playId])->first() !== null;
+                                $tempCollection[] = $exists;
+
+                                $parent = $exists->Parent;
+
+                                while($parent != null)
+                                {
+                                    $parent->associated =  PlayObject::where(['category_id' => $exists->Parent->category_id, 'play_id' => $playId])->first() !== null;
+                                    $tempCollection[] = $parent;
+                                    $parent = $parent->Parent;
+                                }
+                                $collection[] = array_reverse($tempCollection);
+
                             }
                         }
                     }
                     break;
             }
         }
-
         $challenge = Challenge::with('Object')->where(['object_type' => config('constants.CHALLENGE_TYPES_STR.PLAY'), 'object_id' => $playId])->first();
-
         return view('admin.pages.playSingletonObjects')
             ->with(['pageTitle' => 'Manage objects', 'challenge' => $challenge,
                 'message' => false, 'objectsGen' => $collection]);
