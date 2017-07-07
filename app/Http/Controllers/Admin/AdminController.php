@@ -31,13 +31,12 @@ class AdminController extends Controller
         {
             $data = explode('	', $file->fgets());
 
-            if(!$word = ObjectWord::where(['object_wnid'=> $data[0]]))
-            {
+
                 $word = new ObjectWord();
                 $word->object_wnid = $data[0];
                 $word->object_words = $data[1];
                 $word->save();
-            }
+
         }
         $file = null;
         return  "done";
