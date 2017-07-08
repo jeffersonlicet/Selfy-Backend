@@ -120,6 +120,5 @@ class CheckPlay implements ShouldQueue
                     break;
             }
         }
-        print("done");
     }
 }
