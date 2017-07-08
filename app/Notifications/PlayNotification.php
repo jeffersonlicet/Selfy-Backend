@@ -27,7 +27,7 @@ class PlayNotification extends Notification
      */
     public function __construct(Photo $photo)
     {
-        $this->$photo = $photo;
+        $this->photo = $photo;
     }
     /**
      * Get the notification's delivery channels.

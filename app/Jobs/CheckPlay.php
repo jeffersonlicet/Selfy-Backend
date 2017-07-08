@@ -88,22 +88,25 @@ class CheckPlay implements ShouldQueue
 
                                             // if the challenge exists
                                             if ($challenge) {
-                                                //Complete it
-                                                $complete = new UserChallenge();
-                                                $complete->challenge_id = $challenge->challenge_id;
-                                                $complete->user_id = $creator->user_id;
-                                                $complete->photo_id = $this->photo->photo_id;
-                                                $complete->challenge_status = config('constants.CHALLENGE_STATUS.COMPLETED');
-                                                $complete->save();
+                                                /* if the challenge is not completed with this photo*/
+                                                if(!$completed = UserChallenge::where(['challenge_id' => $challenge->challenge_id, 'photo_id' => $this->photo->photo_id])->first())
+                                                {
+                                                    $complete = new UserChallenge();
+                                                    $complete->challenge_id = $challenge->challenge_id;
+                                                    $complete->user_id = $creator->user_id;
+                                                    $complete->photo_id = $this->photo->photo_id;
+                                                    $complete->challenge_status = config('constants.CHALLENGE_STATUS.COMPLETED');
+                                                    $complete->save();
 
-                                                $challenge->completed_count++;
-                                                $challenge->save();
+                                                    $challenge->completed_count++;
+                                                    $challenge->save();
 
-                                                $creator->play_completed++;
-                                                $creator->save();
+                                                    $creator->play_completed++;
+                                                    $creator->save();
 
-                                                //Dispatch notification
-                                                $creator->notify(new PlayNotification($this->photo));
+                                                    //Dispatch notification
+                                                    $creator->notify(new PlayNotification($this->photo));
+                                                }
                                             }
                                         }
                                     }
