@@ -341,3 +341,47 @@ window.play = {
         });
     }
 };
+window.place = {
+    working:false,
+    createSpot: function(el){
+        if(this.working) return;
+
+        this.working = true;
+        var context = this;
+
+        var place_id = $(el).data('place');
+
+        $.ajaxSetup({
+            headers : {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $.ajax({
+            type: 'POST',
+            url: APP_URL +'/admin/ajax/place/create/spot',
+            data : {place_id: place_id },
+            dataType: 'json',
+            success: function(data) {
+
+                $('#loadingModal').find('.close').click();
+                $(el).parent().html('<span class="label label-success">Created</span>');
+
+                if(data.status)
+                {
+                    window.sMessage.show('Done!',
+                        'Spot create',
+                        'primary',
+                        15000);
+                } else {
+                    window.sMessage.show('ow!',
+                        'Error creating spot :(',
+                        'primary',
+                        15000);
+                }
+
+                context.working = false;
+            }
+        });
+    }
+};

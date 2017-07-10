@@ -58,6 +58,16 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin' , 'middleware' => ['Ap
         'uses' => 'AdminController@play'
     ]);
 
+    Route::get('/places', [
+        'as' => 'AdminPlaces',
+        'uses' => 'AdminController@places'
+    ]);
+
+    Route::post('/ajax/place/create/spot', [
+        'as' => 'CreateSpot',
+        'uses' => 'AdminController@createSpot'
+    ]);
+
     Route::get('/play/create', [
         'as' => 'CreatePlay',
         'uses' => 'AdminController@createPlay'

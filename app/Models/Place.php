@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property Photo[] $photos
  * @property PlacePhoto[] $placePhotos
  * @property string address
+ * @property int status
  */
 class Place extends Model
 {

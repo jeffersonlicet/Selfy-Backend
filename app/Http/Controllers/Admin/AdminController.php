@@ -17,6 +17,7 @@ use App\Models\Hashtag;
 use App\Models\ObjectCategory;
 use App\Models\ObjectWord;
 use App\Models\Photo;
+use App\Models\Place;
 use App\Models\PlayObject;
 use Illuminate\Http\Request;
 use SplFileObject;
@@ -109,6 +110,35 @@ class AdminController extends Controller
 
         return view('admin.pages.playSingleton')
             ->with(['pageTitle' => 'Play challenge', 'challenge' => $challenge, 'message' => $message]);
+    }
+
+    public function places()
+    {
+        $places = Place::where('status', config('constants.PLACE_STATUS.normal'))->paginate(15);
+        return view('admin.pages.places')->with(['pageTitle' => 'Normal Places',
+            'places' => $places]);
+    }
+
+    public function createSpot(Request $request)
+    {
+        $values = $request->only(['place_id']);
+        if($place = Place::find($values['place_id']))
+        {
+            if(!Challenge::where(['object_type'=> config('constants.CHALLENGE_TYPES_STR.SPOT'), 'object_id' => $values['place_id']])->first())
+            {
+                $challenge = new Challenge();
+                $challenge->object_type = config('constants.CHALLENGE_TYPES_STR.SPOT');
+                $challenge->object_id = $values['place_id'];
+                $challenge->save();
+
+                $place->status = config('constants.PLACE_STATUS.challenge');
+                $place->save();
+
+                return response()->json(['status' => true]);
+            }
+        }
+
+        return response()->json(['status' => false]);
     }
 
     public function play()
