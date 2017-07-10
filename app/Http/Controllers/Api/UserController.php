@@ -1216,7 +1216,7 @@ class UserController extends Controller
                             $following  = \Auth::user()->Following->pluck('following_id');
                             $following[] = \Auth::user()->user_id;
                             $query->whereNotIn('user_id', $following);
-                        }])->limit($limit)->offset($limit*$page)->get();
+                        }])->has('User')->limit($limit)->offset($limit*$page)->get();
 
                     foreach ($users as $u)
                         $curated[] = $u->User;
