@@ -48,8 +48,14 @@ return [
         'active' => 0,
         'disabled' => 1,
     ],
+
      'HASHTAG_GROUP' => [
          'normal' => 0,
          'promoted' => 1,
-     ]
+     ],
+
+    'PLACE_STATUS' => [
+        'normal' => 0,
+        'challenge' => 1
+    ],
 ];

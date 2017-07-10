@@ -52,9 +52,6 @@ class CheckSpot implements ShouldQueue
 
         /* Check if the place exists */
         $this->place();
-        
-        /* Check if the photo meets a challenge */
-        $this->photo();
     }
 
     /**
@@ -67,13 +64,13 @@ class CheckSpot implements ShouldQueue
         try
         {
 
-
-            $place = Place::where(['latitude' => $this->coordinates[0], 'longitude' => $this->coordinates[1]])->first();
+            $place = Place::where(['latitude' => $this->coordinates[0],
+                'longitude' => $this->coordinates[1],
+                'status' => config('constants.PLACE_STATUS.challenge')])->first();
 
             if(!$place)
             {
                 $client = Client::simple(new Configuration( config('app.foursquare_client'), config('app.foursquare_secret')), VenueFactory::simple());
-
                 $options = Search::coordinates(new Coordinates($this->coordinates[0], $this->coordinates[1]))
                     ->limit(1)
                     ->radius(15);
@@ -82,16 +79,17 @@ class CheckSpot implements ShouldQueue
 
                 if(isset($venues[0]))
                 {
-                    $place = new Place();
-                    $place->fillFromVenue($venues[0], $this->coordinates);
-                    $place->save();
+                    if(!$place = Place::where('place_external_id', trim($venues[0]->getIdentifier()))->first()) {
+                        $place = new Place();
+                        $place->fillFromVenue($venues[0], $this->coordinates);
+                        $place->save();
+                    }
                 }
             }
 
            elseif(strtotime($place->updated_at) < strtotime('-30 days'))
             {
                 $client = Client::simple(new Configuration( config('app.foursquare_client'), config('app.foursquare_secret')), VenueFactory::simple());
-
                 $options = Search::coordinates(new Coordinates($this->coordinates[0], $this->coordinates[1]))
                     ->limit(1)
                     ->radius(15);
@@ -100,14 +98,21 @@ class CheckSpot implements ShouldQueue
 
                 if(isset($venues[0]))
                 {
-                    
                     $place->fillFromVenue($venues[0]);
                     $place->save();
+
+                    /* Check if the photo meets a challenge */
+                    $this->place = $place;
+                    $this->photo();
                 }
 
+            } else {
+                /* Check if the photo meets a challenge */
+                $this->place = $place;
+                $this->photo();
             }
 
-            $this->place = $place;
+
         }
         catch (\Exception $e)
         {
@@ -130,31 +135,22 @@ class CheckSpot implements ShouldQueue
 
             $challenge = Challenge::where(['object_id' => $this->place->place_id, 'object_type' => config('constants.CHALLENGE_TYPES_STR.SPOT')])->first();
 
-            if(!$challenge)
-            {
-                $challenge = new Challenge();
-                $challenge->object_type = config('constants.CHALLENGE_TYPES_STR.SPOT');
-                $challenge->object_id   = $this->place->place_id;
-                $challenge->completed_count = 1;
-                $challenge->saveOrFail();
-            }
-
-            else
+            if($challenge)
             {
                 $challenge->completed_count++;
                 $challenge->save();
+
+                $completed = new UserChallenge();
+                $completed->photo_id        = $this->photo->photo_id;
+                $completed->challenge_id    = $challenge->challenge_id;
+                $completed->user_id = $this->photo->User->user_id;
+                $completed->challenge_status = config('constants.CHALLENGE_STATUS.COMPLETED');
+                $completed->saveOrFail();
+
+                $this->photo->User->spot_completed++;
+                $this->photo->User->save();
+                $this->photo->User->notify(new SpotNotification($this->photo->photo_id));
             }
-
-            $completed = new UserChallenge();
-            $completed->photo_id        = $this->photo->photo_id;
-            $completed->challenge_id    = $challenge->challenge_id;
-            $completed->user_id = $this->photo->User->user_id;
-            $completed->challenge_status = config('constants.CHALLENGE_STATUS.COMPLETED');
-            $completed->saveOrFail();
-
-            $this->photo->User->spot_completed++;
-            $this->photo->User->save();
-            $this->photo->User->notify(new SpotNotification($this->photo->photo_id));
         }
 
         catch(\Exception $e)

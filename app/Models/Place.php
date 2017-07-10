@@ -40,7 +40,7 @@ class Place extends Model
     /**
      * @var array
      */
-    protected $fillable = ['place_external_id', 'name', 'category', 'category_icon_prefix', 'category_icon_suffix', 'country', 'state', 'city', 'latitude', 'longitude', 'updated_at', 'created_at'];
+    protected $fillable = ['place_external_id', 'name', 'category', 'category_icon_prefix', 'category_icon_suffix', 'country', 'state', 'city', 'latitude', 'longitude', 'updated_at', 'created_at', 'status'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

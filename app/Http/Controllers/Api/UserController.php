@@ -1148,7 +1148,7 @@ class UserController extends Controller
             $following  = \Auth::user()->Following->pluck('following_id');
             $following[] = \Auth::user()->user_id;
 
-            $suggestion =  User::whereNotIn('user_id', $following)->inRandomOrder()->take($limit)->offset($limit*$page)->get();
+            $suggestion =  User::whereNotIn('user_id', $following)->take($limit)->offset($limit*$page)->orderBy('followers_count',  'ASC')->get();
 
             return response()->json([
                 'status' => TRUE,
@@ -1211,12 +1211,12 @@ class UserController extends Controller
                     foreach ($fbUsers as $user)
                         $user_ids[] = $user->id;
 
-                    $users = App\Models\UserInformation::has('User')->whereIn('facebook_id', $user_ids)
-                        ->with(['User' => function($query) {
+                    $users = App\Models\UserInformation::whereIn('facebook_id', $user_ids)
+                        ->whereHas('User', function($query) {
                             $following  = \Auth::user()->Following->pluck('following_id');
                             $following[] = \Auth::user()->user_id;
                             $query->whereNotIn('user_id', $following);
-                        }])->has('User')->limit($limit)->offset($limit*$page)->get();
+                        })->limit($limit)->offset($limit*$page)->get();
 
                     foreach ($users as $u)
                         $curated[] = $u->User;

@@ -101,27 +101,19 @@ class ChallengesController extends Controller
 
             foreach ($venues as $venue)
             {
-                if(!$place = Place::where('place_external_id', $venue->getIdentifier())->first())
+                if(!$place = Place::where('place_external_id', trim($venue->getIdentifier()))->first())
                 {
                     $place = new Place();
                     $place->fillFromVenue($venue, [ floatval($venue->getLocation()->getCoordinates()->getLatitude()), floatval($venue->getLocation()->getCoordinates()->getLongitude())]);
                     $place->save();
                 }
 
-
                 $challenge = Challenge::where(['object_id' => $place->place_id, 'object_type' => config('constants.CHALLENGE_TYPES_STR.SPOT')])->first();
 
-                if(!$challenge)
+                if($challenge)
                 {
-                    $challenge = new Challenge();
-                    $challenge->object_type = config('constants.CHALLENGE_TYPES_STR.SPOT');
-                    $challenge->object_id   = $place->place_id;
-                    $challenge->completed_count = 0;
-                    $challenge->saveOrFail();
+                    $curated[] = $challenge;
                 }
-
-                $challenge['object'] = $place;
-                $curated[] = $challenge;
             }
 
             return response()->json([
