@@ -1148,7 +1148,7 @@ class UserController extends Controller
             $following  = \Auth::user()->Following->pluck('following_id');
             $following[] = \Auth::user()->user_id;
 
-            $suggestion =  User::whereNotIn('user_id', $following)->take($limit)->offset($limit*$page)->orderBy('followers_count',  'ASC')->get();
+            $suggestion =  User::whereNotIn('user_id', $following)->orderBy('followers_count',  'ASC')->limit($limit)->offset($limit*$page)->get();
 
             return response()->json([
                 'status' => TRUE,
