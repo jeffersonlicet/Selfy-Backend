@@ -1163,6 +1163,8 @@ class UserController extends Controller
                 'report' => $e->getMessage()
             ]);
         }
+        
+        
     }
 
     public function facebook_suggestion()
