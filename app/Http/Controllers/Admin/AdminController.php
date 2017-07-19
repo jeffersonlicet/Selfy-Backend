@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Admin;
 
 
+use App\Helpers\Meli;
 use App\Helpers\Vision;
 use App\Http\Controllers\Controller;
 use App\Models\Challenge;
@@ -19,6 +20,7 @@ use App\Models\ObjectWord;
 use App\Models\Photo;
 use App\Models\Place;
 use App\Models\PlayObject;
+use App\Models\TargetProduct;
 use Illuminate\Http\Request;
 use SplFileObject;
 
@@ -342,4 +344,8 @@ class AdminController extends Controller
                 'message' => false, 'objectsGen' => $collection]);
     }
 
+    public function meliDashboard()
+    {
+
+    }
 }

@@ -246,6 +246,8 @@ return [
         'Html' => Collective\Html\HtmlFacade::class,
         'Expression' => App\Helpers\Expression::class,
         'Vision' => App\Helpers\Vision::class,
+        'Meli' => App\Helpers\Meli::class,
+
     ],
 
     'foursquare_client' => env('FOURSQUARE_CLIENT_ID'),

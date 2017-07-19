@@ -47,6 +47,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin' , 'middleware' => ['Ap
    // Route::get('/seed_word_net', 'AdminController@seedWordNet');
    //Route::get('/seed_word_words', 'AdminController@seedWordWords');
     Route::get('/logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
+    Route::get('/meli', 'AdminController@meliDashboard');
 
     Route::get('/', [
         'as' => 'DashboardIndex',
