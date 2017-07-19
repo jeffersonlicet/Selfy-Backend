@@ -347,8 +347,16 @@ class AdminController extends Controller
 
     public function meliDashboard()
     {
-        $items = ProductStorage::orderBy('created_at', 'DESC')->orderBy('found', 'ASC')->paginate(50);
+        $targets = TargetProduct::paginate(15);
+        return view('admin.pages.product_targets')->with(['targets'=> $targets, 'pageTitle' => 'Palabras clave']);
+    }
+
+    public function meliProducts($targetId)
+    {
+        $items = ProductStorage::where('target_id', $targetId)->orderBy('created_at', 'DESC')->orderBy('found', 'ASC')
+        ->paginate(50);
 
         return view('admin.pages.products')->with(['products'=> $items, 'pageTitle' => 'Productos']);
+
     }
 }

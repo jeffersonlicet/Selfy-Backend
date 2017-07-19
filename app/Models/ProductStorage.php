@@ -14,12 +14,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $thumbnail
  * @property string $permalink
  * @property integer $status
+ * @property int target_id
  */
 class ProductStorage extends Model
 {
     /**
      * @var array
      */
-    protected $fillable = ['created_at', 'updated_at', 'title', 'meli_id', 'price', 'thumbnail', 'permalink', 'status'];
+    protected $fillable = ['created_at', 'updated_at', 'title', 'meli_id', 'price', 'thumbnail', 'permalink', 'status', 'target_id'];
 
 }

@@ -42,6 +42,7 @@ class Kernel extends ConsoleKernel
                         $product->meli_id = $item->id;
                         $product->permalink = $item->permalink;
                         $product->thumbnail = $item->thumbnail;
+                        $product->target_id = $target->id;
                         $product->save();
                     } else
                     {
