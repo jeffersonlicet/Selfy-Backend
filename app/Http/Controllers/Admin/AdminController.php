@@ -20,6 +20,7 @@ use App\Models\ObjectWord;
 use App\Models\Photo;
 use App\Models\Place;
 use App\Models\PlayObject;
+use App\Models\ProductStorage;
 use App\Models\TargetProduct;
 use Illuminate\Http\Request;
 use SplFileObject;
@@ -346,6 +347,8 @@ class AdminController extends Controller
 
     public function meliDashboard()
     {
+        $items = ProductStorage::orderBy('created_at', 'DESC')->orderBy('found', 'ASC')->paginate(50);
 
+        return view('admin.pages.products')->with(['products'=> $items, 'pageTitle' => 'Productos']);
     }
 }

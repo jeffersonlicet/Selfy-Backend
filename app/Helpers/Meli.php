@@ -34,7 +34,7 @@ class Meli
             {
                 $content = \GuzzleHttp\json_decode($response->getBody()->getContents());
 
-                if($content->paging->total > $target->page*$target->limit){
+                if($content->paging->total >= $target->page*$target->limit){
                     $target->page++;
                 } else {
                     $target->page = 0;
