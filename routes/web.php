@@ -48,6 +48,15 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin' , 'middleware' => ['Ap
     Route::get('/logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
     Route::get('/meli', 'AdminController@meliDashboard');
     Route::get('/meli/{targetId}/products', 'AdminController@meliProducts');
+    Route::get('/meli/create/target', [
+        'as' => 'MeliCreateTarget',
+        'uses' => 'AdminController@meliCreateTargetForm'
+    ]);
+
+    Route::post('/meli/create/target', [
+        'as' => 'MeliCreateTargetPost',
+        'uses' => 'AdminController@meliCreateTarget'
+    ]);
 
     Route::get('/', [
         'as' => 'DashboardIndex',

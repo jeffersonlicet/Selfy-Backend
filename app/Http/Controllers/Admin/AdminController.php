@@ -350,6 +350,25 @@ class AdminController extends Controller
         $targets = TargetProduct::paginate(15);
         return view('admin.pages.product_targets')->with(['targets'=> $targets, 'pageTitle' => 'Palabras clave']);
     }
+    public function meliCreateTargetForm()
+    {
+        return view('admin.pages.createTargetSingleton')->with(['pageTitle' => 'Nueva palabra clave']);
+
+    }
+    public function meliCreateTarget(Request $request)
+    {
+        $values = $request->only(['name']);
+
+        if(!$target = TargetProduct::where('name', $values['name'])->first())
+        {
+            $target = new TargetProduct();
+            $target->name = $values['name'];
+            $target->save();
+        }
+
+        $targets = TargetProduct::paginate(15);
+        return view('admin.pages.product_targets')->with(['targets'=> $targets, 'pageTitle' => 'Palabras clave']);
+    }
 
     public function meliProducts($targetId)
     {

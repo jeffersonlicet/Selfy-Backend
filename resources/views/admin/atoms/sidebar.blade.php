@@ -27,6 +27,8 @@
             <li><a href="#"><i class="material-icons">label</i> Hashtags</a></li>
             <li @if(Route::currentRouteName()  === 'AdminPlaces') class="active" @endif><a href="{{ action('Admin\AdminController@places') }}"><i class="material-icons">my_location</i> Places</a></li>
 
+            <li><a href="{{action('Admin\AdminController@meliDashboard')}}"><i class="material-icons">shop</i> Mercadolibre</a></li>
+
             <li class="last-child collapsed" data-toggle="collapse" data-target="#user">
                 <a href="#"><img id="avatar-sidebar" class="img-circle" src="{{ str_replace('.jpg', 'm.jpg', \Auth::user()->avatar) }}" width="25"> Jefferson  <i class="material-icons arrow">arrow_drop_down</i></a>
             </li>
