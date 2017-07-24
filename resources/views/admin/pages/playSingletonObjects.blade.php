@@ -95,7 +95,7 @@
                         @foreach( $obj as $child)
                         @php($i += 3)
 
-                        <tr class="tr @if($c%2==0) info@endif">
+                        <tr class="tr @if($c%2==0) info @endif">
                             <td style="padding-left:{{$i}}px">{{ $child->category_id }}</td>
                             <td>{{ $child->Word->object_words }}</td>
                             <td class="associated">@if($child->associated) <span class="label label-success">Yes</span>@else <span class="label label-danger">No</span> @endif</td>
