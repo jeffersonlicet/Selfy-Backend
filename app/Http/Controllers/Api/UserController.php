@@ -121,24 +121,28 @@ class UserController extends Controller
             $values['account_private'] = $values['account_private'] == "1";
             $values['save_photos'] = $values['save_photos'] == "1";
 
-            $validator = Validator::make(
-                    $values,
-                    [
-                        'firstname'				=>	'required|string',
-                        'lastname'				=>	'required|string',
-                        'duo_enabled'           =>	'required',
-                        'spot_enabled'          =>	'required',
-                        'play_enabled'          =>	'required',
-                        'account_private'       =>	'required',
-                        'save_photos' =>	'required',
-                        'username' =>	'required|allowed_username|unique:users,username'
-                    ]
-                );
+            $props = [
+                'firstname'				=>	'required|string',
+                'lastname'				=>	'required|string',
+                'duo_enabled'           =>	'required',
+                'spot_enabled'          =>	'required',
+                'play_enabled'          =>	'required',
+                'account_private'       =>	'required',
+                'save_photos' =>	'required',
+                'username' =>	'required|allowed_username|unique:users,username'
+            ];
+
+            if($values['username'] == \Auth::user()->username)
+            {
+                unset($values['username']);
+                unset($props['username']);
+            }
+
+            $validator = Validator::make($values, $props);
 
             if($values['account_private'])
             {
                 $followers_id = \Auth::user()->Followers->pluck('follower_id');
-
                 foreach($followers_id as $id)
                 {
                     if(!UserInvitation::where(['user_id' => $id, 'profile_id' => \Auth::user()->user_id])->first())
