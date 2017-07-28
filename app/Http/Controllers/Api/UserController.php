@@ -114,7 +114,8 @@ class UserController extends Controller
         try
         {
             $values = $request->only(['bio', 'firstname' , 'lastname', 'face_url', 'duo_enabled', 'spot_enabled',
-                'account_private', 'save_photos', 'play_enabled']);
+                'account_private', 'save_photos', 'play_enabled', 'username']);
+
             $values['duo_enabled'] = $values['duo_enabled'] == "1";
             $values['spot_enabled'] = $values['spot_enabled'] == "1";
             $values['account_private'] = $values['account_private'] == "1";
@@ -130,6 +131,7 @@ class UserController extends Controller
                         'play_enabled'          =>	'required',
                         'account_private'       =>	'required',
                         'save_photos' =>	'required',
+                        'username' =>	'required|allowed_username|unique:users,username'
                     ]
                 );
 
@@ -1167,6 +1169,10 @@ class UserController extends Controller
         
     }
 
+    /**
+     * Generate Facebook suggestions
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function facebook_suggestion()
     {
         try
