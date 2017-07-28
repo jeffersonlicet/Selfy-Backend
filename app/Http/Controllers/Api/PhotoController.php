@@ -213,7 +213,6 @@ class PhotoController extends Controller
 
             if ($result = Photo::single($id))
             {
-
                 if($result->user_id != \Auth::user()->user_id)
                 {
                     if($result->User->account_private
@@ -277,7 +276,7 @@ class PhotoController extends Controller
             {
                 $input = $request->all();
 
-                
+
                 $photo = Photo::find($id);
 
                 if(!$photo)
@@ -288,9 +287,9 @@ class PhotoController extends Controller
                 if($photo->user_id == \Auth::user()->user_id)
                 {
                     $photo->caption = $input['caption'];
-                    
+
                     $photo->touch();
-                    
+
                     $photo->save();
 
                     return response()->json([
@@ -337,7 +336,7 @@ class PhotoController extends Controller
                     'report' => $validator->messages()->first()
                 ]);
             }
-            
+
             $photo = Photo::find($id);
 
             if(!$photo)
@@ -347,7 +346,7 @@ class PhotoController extends Controller
 
             if($photo->user_id == \Auth::user()->user_id)
             {
-                
+
                $photo->delete();
 
                 \Auth::user()->photos_count--;
@@ -471,10 +470,10 @@ class PhotoController extends Controller
                 ]);
             }
 
-            
+
             $result = Photo::where('user_id', $user_id)->with('Challenges', 'Challenges.Object')->orderBy('likes_count', 'desc')->orderBy('views_count', 'desc')->orderBy('comments_count', 'desc')->get();
 
-            
+
             return response()->json([
                 'status' => TRUE,
                 'photos' => $result->isEmpty() ?  [] : $result->toArray()
@@ -518,7 +517,7 @@ class PhotoController extends Controller
                 ]);
             }
 
-            
+
             $photo = Photo::find($id);
 
             if(!$photo)
@@ -537,7 +536,7 @@ class PhotoController extends Controller
             }
 
             $photo->reports_count++;
-            
+
             $photo->save();
 
             $report = new PhotoReport();

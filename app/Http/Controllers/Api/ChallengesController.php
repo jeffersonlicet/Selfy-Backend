@@ -336,8 +336,10 @@ class ChallengesController extends Controller
             }
 
             $result = UserChallenge::where('challenge_id', $challenge)->has('Photo')->with(['Photo' => function ($q) {
-                $q->orderBy('likes_count', 'desc')->orderBy('views_count', 'desc')->orderBy('comments_count', 'desc');
-            }])->get();
+                $q->orderBy('likes_count', 'desc')->orderBy('views_count', 'desc')->orderBy('comments_count', 'desc')->whereHas('User', function($z){
+                    $z->where('account_private', '=', 0);
+                });
+            }])->limit($limit)->offset($page*$limit)->get();
 
             $curated = [];
 
@@ -387,7 +389,11 @@ class ChallengesController extends Controller
                 ]);
             }
 
-            $result = UserChallenge::where('challenge_id', $challenge)->has('Photo')->with('Photo')->get();
+            $result = UserChallenge::where('challenge_id', $challenge)->has('Photo')->with(['Photo' => function($q){
+                $q->whereHas('User', function($z){
+                    $z->where('account_private', '=', 0);
+                });
+            }])->limit($limit)->offset($page*$limit)->get();
 
             $curated = [];
 
