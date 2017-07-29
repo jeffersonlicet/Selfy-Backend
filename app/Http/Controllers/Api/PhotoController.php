@@ -2,31 +2,28 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Helpers\Expression;
-use App\Http\Controllers\Controller;
-use App\Jobs\CheckAdultContent;
+use DB;
+use Exception;
+use Validator;
+use Carbon\Carbon;
+use App\Models\User;
+use App\Models\Photo;
 use App\Jobs\CheckDuo;
 use App\Jobs\CheckPlay;
 use App\Jobs\CheckSpot;
-use App\Models\ChallengePlay;
 use App\Models\Hashtag;
-use App\Models\Photo;
-use App\Models\PhotoHashtag;
+use App\Helpers\Expression;
 use App\Models\PhotoReport;
-use App\Models\User;
-use App\Models\UserInvitation;
-use App\Models\UserPhotoMention;
-use App\Notifications\UserPhotoMentionNotification;
-use Carbon\Carbon;
-use DB;
+use App\Models\PhotoHashtag;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Input;
+use App\Models\ChallengePlay;
+use App\Models\UserInvitation;
+use App\Jobs\CheckAdultContent;
 use Illuminate\Validation\Rule;
-use Exception;
-use Validator;
-use GuzzleHttp\Client as GuzzleClient;
-use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
-use GuzzleHttp\Psr7\Request as GuzzleRequest;
+use App\Models\UserPhotoMention;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Input;
+use App\Notifications\UserPhotoMentionNotification;
 
 class PhotoController extends Controller
 {
@@ -640,7 +637,8 @@ class PhotoController extends Controller
             $tags_ids = [];
 
             //Append promoted hashtags:
-            $promoted = Hashtag::where('hashtag_group', config('constants.HASHTAG_GROUP.promoted'))->get();
+            $promoted = Hashtag::where('hashtag_group', config('constants.HASHTAG_GROUP.promoted'))
+                ->orderBy('created_at', 'DESC')->get();
 
             foreach ($promoted as $tag)
             {

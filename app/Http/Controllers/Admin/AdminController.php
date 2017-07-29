@@ -1,29 +1,22 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: vdjke
- * Date: 5/31/2017
- * Time: 7:48 PM
- */
 
 namespace App\Http\Controllers\Admin;
 
 
-use App\Helpers\Meli;
-use App\Helpers\Vision;
-use App\Http\Controllers\Controller;
-use App\Models\Challenge;
-use App\Models\ChallengePlay;
-use App\Models\Hashtag;
-use App\Models\ObjectCategory;
-use App\Models\ObjectWord;
+use SplFileObject;
 use App\Models\Photo;
 use App\Models\Place;
+use App\Helpers\Vision;
+use App\Models\Hashtag;
+use App\Models\Challenge;
+use App\Models\ObjectWord;
 use App\Models\PlayObject;
-use App\Models\ProductStorage;
-use App\Models\TargetProduct;
 use Illuminate\Http\Request;
-use SplFileObject;
+use App\Models\ChallengePlay;
+use App\Models\TargetProduct;
+use App\Models\ObjectCategory;
+use App\Models\ProductStorage;
+use App\Http\Controllers\Controller;
 
 class AdminController extends Controller
 {

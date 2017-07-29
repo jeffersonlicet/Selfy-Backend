@@ -2,24 +2,27 @@
 
 namespace App\Http\Controllers\Api;
 
-use App;
-use App\Models\Challenge;
-use App\Models\User;
-use App\Models\UserChallenge;
-use App\Models\UserFace;
-use App\Models\UserFollower;
-use App\Models\UserFollowing;
-use App\Models\UserInvitation;
-use App\Notifications\DuoInvitationNotification;
-use App\Notifications\FollowInvitationNotification;
-use App\Notifications\FollowNotification;
-use Exception;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 
-use Illuminate\Support\Facades\Input;
-use Illuminate\Validation\Rule;
-use Validator;
+
+
+use App,
+    Validator,
+    Exception,
+    App\Models\User,
+    App\Models\UserFace,
+    App\Models\Challenge,
+    Illuminate\Http\Request,
+    App\Models\UserFollower,
+    App\Models\UserFollowing,
+    App\Models\UserChallenge,
+    App\Models\UserInvitation,
+    Illuminate\Validation\Rule,
+    App\Http\Controllers\Controller,
+    Illuminate\Support\Facades\Input,
+    App\Notifications\FollowNotification,
+    App\Notifications\DuoInvitationNotification,
+    App\Notifications\FollowInvitationNotification;
+
 class UserController extends Controller
 {
     public function test()
@@ -898,7 +901,7 @@ class UserController extends Controller
             }
             $challenges = $challenges->isEmpty() ? [] : $challenges->toArray();
 
-            foreach ($challenges as $challenge) 
+            foreach ($challenges as $challenge)
             {
                 if ($challenge['challenge'] != null)
                     $curated[] = $challenge['challenge'];
@@ -1169,8 +1172,8 @@ class UserController extends Controller
                 'report' => $e->getMessage()
             ]);
         }
-        
-        
+
+
     }
 
     /**

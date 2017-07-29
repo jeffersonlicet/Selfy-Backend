@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Models\Challenge;
-use App\Models\Place;
-use App\Models\UserChallenge;
 use Exception;
-use Illuminate\Support\Facades\Input;
-use Illuminate\Http\Request;
 use Validator;
+use App\Models\Place;
+use App\Models\Challenge;
+use Illuminate\Http\Request;
+use App\Models\UserChallenge;
 use Gibbo\Foursquare\Client\Client;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Input;
 use Gibbo\Foursquare\Client\Configuration;
+use Gibbo\Foursquare\Client\Options\Search;
 use Gibbo\Foursquare\Client\Entity\Coordinates;
 use Gibbo\Foursquare\Client\Factory\Venue\VenueFactory;
-use Gibbo\Foursquare\Client\Options\Search;
 
 /**
  * Class ChallengesController
