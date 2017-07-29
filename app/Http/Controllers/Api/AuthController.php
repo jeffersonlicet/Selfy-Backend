@@ -116,7 +116,8 @@ class AuthController extends Controller
 
             if ($validator->passes())
             {
-                if($user = User::withTrashed()->with('Face')->where('username', $input['username'])->first())
+                $sanitized = filter_var($input['username'], FILTER_SANITIZE_EMAIL);
+                if($user = User::withTrashed()->with('Face')->where(($sanitized == $input['username'] && filter_var($sanitized, FILTER_VALIDATE_EMAIL)) ? 'email' : 'username', $input['username'])->first())
                 {
                     if (Hash::check($input['password'], $user->password))
                     {
