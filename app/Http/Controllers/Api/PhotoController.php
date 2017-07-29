@@ -373,7 +373,7 @@ class PhotoController extends Controller
 
     /**
      * Generate photo borders
-     *  Given B, we generate A , C
+     * Given B, we generate A , C
      * @param $photo_id
      * @return \Illuminate\Http\JsonResponse
      * @internal param $id
@@ -560,111 +560,6 @@ class PhotoController extends Controller
         }
     }
 
-    public function clothes($id)
-    {
-        ini_set('max_execution_time', 100);
-        set_time_limit(60);
-        try
-        {
-            $validator =
-                Validator::make(
-                    ['id' => $id],
-                    ['id' => ['required', 'numeric']]
-                );
-
-            if(!$validator->passes())
-            {
-                return response()->json([
-                    'status' => TRUE,
-                    'report' => $validator->messages()->first()
-                ]);
-            }
-
-            $photo = Photo::find($id);
-
-            if(!$photo)
-            {
-                throw new Exception("resource_not_found");
-            }
-
-            $client     = new GuzzleClient(['base_uri' => "http://starbits.southcentralus.cloudapp.azure.com/api/"]);
-            $adapter    = new GuzzleAdapter($client);
-            $request    = new GuzzleRequest('POST', 'clothes', ["content-type" => 'application/json'], json_encode(['photo_url' => $photo->url]));
-            $response   = $adapter->sendRequest($request);
-
-            switch ($response->getStatusCode())
-            {
-                case 200:
-
-                    $content = \GuzzleHttp\json_decode($response->getBody()->getContents());
-
-                    if($content->status)
-                    {
-                        return response()->json([
-                            'status' => true,
-                            'clothes' => $content->results,
-                            'image' => $content->image
-                        ]);
-                    }
-
-                    else
-                    {
-
-                        return response()->json([
-                            'status' => false,
-                            'clothes' => [],
-                            'image' => ""
-                        ]);
-
-                    }
-
-
-                    break;
-
-                default:
-                    throw new Exception('header response error '.$response->getStatusCode().' in get clothes info');
-                    break;
-            }
-        }
-
-        catch (\Exception $e)
-        {
-            return response()->json([
-                'status' => FALSE,
-                'report' => $e->getMessage()
-            ]);
-        }
-    }
-
-    /**
-     * Detect user mentions in the photo caption
-     *
-     * @param Photo $photo
-     */
-    private function handlePhotoMentions(Photo $photo)
-    {
-        $usernames = Expression::parseText($photo->caption, 'mentions');
-
-        foreach ($usernames as $u)
-        {
-            if($user = User::where('username',$u)->first())
-            {
-                if(!$mention = UserPhotoMention::where([
-                    'user_id' => $user->id,
-                    'photo_id' => $photo->photo_id])->first())
-                {
-                    $mention = new UserPhotoMention();
-                    $mention->user_id = $user->user_id;
-                    $mention->photo_id = $photo->photo_id;
-                    $mention->save();
-
-                    if($user->user_id != \Auth::user()->user_id)
-                        $user->notify(new UserPhotoMentionNotification(\Auth::user(), $photo));
-                }
-            }
-        }
-    }
-
     /**
      * Return hint typed hashtag suggestions
      *
@@ -719,9 +614,10 @@ class PhotoController extends Controller
             $limit   = Input::get('limit', config('app.photos_best_per_page'));
             $page    = Input::get('page', 0);
 
-            $validator = Validator::make(
-                ['limit' => $limit, 'page'=> $page],
-                ['limit' => ['required', 'numeric', 'between:1,20'], 'page' => ['required', 'numeric']]);
+            $validatorData =  ['limit' => $limit, 'page'=> $page];
+            $validatorRules = ['limit' => ['required', 'numeric', 'between:1,20'], 'page' => ['required', 'numeric']];
+
+            $validator = Validator::make($validatorData, $validatorRules);
 
             if(!$validator->passes())
             {
@@ -731,7 +627,6 @@ class PhotoController extends Controller
                 ]);
             }
 
-            //TODO: allow if account_private and i have access
             $result = DB::table('hashtags')
                 ->join('photo_hashtags', 'hashtags.hashtag_id', '=', 'photo_hashtags.hashtag_id')
                 ->where('photo_hashtags.created_at', '>=', Carbon::now()->subDay())
@@ -746,6 +641,7 @@ class PhotoController extends Controller
 
             //Append promoted hashtags:
             $promoted = Hashtag::where('hashtag_group', config('constants.HASHTAG_GROUP.promoted'))->get();
+
             foreach ($promoted as $tag)
             {
                 if(in_array($tag->hashtag_id, $tags_ids)) continue;
@@ -757,27 +653,34 @@ class PhotoController extends Controller
                     'thumbnail' => $tag->Play->play_thumb,
                     'relevance' => $tag->hashtag_relevance
                 ];
+
                 $tags_ids[] = $tag->hashtag_id;
             }
 
-            foreach($result as $item) {
+            //Append thumbnail
+            foreach($result as $item)
+            {
 
                 if(in_array($item->hashtag_id, $tags_ids)) continue;
 
                 $thumb = null;
-
-                if ($photo = PhotoHashtag::where('hashtag_id', $item->hashtag_id)->orderBy('created_at', 'DESC')
-                    ->with(['Photo' => function ($q) use ($thumb_ids) {
-                        $q->whereNotIn('photo_id', $thumb_ids)->whereHas('User', function($z){
-                            $z->where('account_private', '=',  0);
+                $photo = PhotoHashtag::where('hashtag_id', $item->hashtag_id)
+                    ->orderBy('created_at', 'DESC')
+                    ->with(['Photo' => function ($query) use ($thumb_ids)
+                    {
+                        $query->whereNotIn('photo_id', $thumb_ids)->whereHas('User', function($subQuery)
+                        {
+                            $subQuery->where('account_private', '=',  0)
+                                ->orWhereIn('user_id', \Auth::user()->followingIds(true));
                         });
-                    }, ])->has('Photo')->first()
-                ) {
 
-                if($photo->Photo){
+                    }])->has('Photo')->first();
+
+                if($photo)
+                {
                     $thumb = $photo->Photo->url;
-                    $thumb_ids[] = $photo->Photo->photo_id;}
-                 }
+                    $thumb_ids[] = $photo->Photo->photo_id;
+                }
 
                 $curated[] = [
                     'hashtag_id' => $item->hashtag_id,
@@ -788,7 +691,6 @@ class PhotoController extends Controller
                 ];
 
                 $tags_ids[] = $item->hashtag_id;
-
             }
 
             return response()->json([
@@ -807,20 +709,26 @@ class PhotoController extends Controller
     }
 
     /**
-     * Return the photos of {hashtag} specific or hashtag LIKE if not in DB
+     * Return the photos of a specific {hashtag}
+     * if the hashtag does not exists return a similar one
      * @return \Illuminate\Http\JsonResponse
      */
-    public function photos_hashtag(){
+    public function photos_hashtag()
+    {
         try
         {
             $limit   = Input::get('limit', config('app.photos_best_per_page'));
             $page    = Input::get('page', 0);
-            $hashtag = Input::get('hashtag');
+            $hashtagWord = Input::get('hashtag');
 
-            $validator = Validator::make(
-                ['limit' => $limit, 'page'=> $page, 'hashtag' => $hashtag],
-                ['hashtag' => 'required','limit' => ['required', 'numeric', 'between:1,20'],
-                    'page' => ['required', 'numeric']]);
+            $validatorData  = ['limit' => $limit, 'page'=> $page, 'hashtag' => $hashtagWord];
+            $validatorRules = [
+                'hashtag' => 'required',
+                'limit' => ['required', 'numeric', 'between:1,20'],
+                'page' => ['required', 'numeric']
+            ];
+
+            $validator = Validator::make($validatorData, $validatorRules);
 
             if(!$validator->passes())
             {
@@ -830,28 +738,25 @@ class PhotoController extends Controller
                 ]);
             }
 
-            if(!$h = Hashtag::where('hashtag_text', $hashtag)->first())
-            {
-                $h = Hashtag::where('hashtag_text', 'LIKE', '%'.$hashtag.'%')->first();
-            }
+            if(!$hashtag = Hashtag::where('hashtag_text', $hashtagWord)->first())
+                $hashtag = Hashtag::where('hashtag_text', 'LIKE', '%'.$hashtagWord.'%')->first();
 
             $curated = [];
 
-            if($h)
+            if($hashtag)
             {
-                //TODO: allow if account_private and i have access
-                $result = PhotoHashtag::where('hashtag_id', $h->hashtag_id)->whereHas('Photo', function($q){
-                    $q->whereHas('User', function($z){
-                        $z->where('account_private', '=', 0);
-                    });
-                })->has('Photo')
-                    ->limit($limit)->offset($limit*$page)->get();
+                $result = PhotoHashtag::where('hashtag_id', $hashtag->hashtag_id)
+                    ->whereHas('Photo', function($query)
+                    {
+                        $query->whereHas('User', function($subQuery)
+                        {
+                            $subQuery->where('account_private', '=', 0)->orWhereIn('user_id', \Auth::user()->followingIds(true));
+                        });
+                    })
+                    ->has('Photo')->limit($limit)->offset($limit*$page)->get();
 
                 foreach($result as $entry)
-                {
                     $curated[] = $entry->Photo;
-                }
-
             }
 
             return response()->json([
@@ -866,6 +771,35 @@ class PhotoController extends Controller
                 'status' => FALSE,
                 'report' => $e->getMessage()
             ]);
+        }
+    }
+
+    /**
+     * Detect user mentions in the photo caption
+     *
+     * @param Photo $photo
+     */
+    private function handlePhotoMentions(Photo $photo)
+    {
+        $usernames = Expression::parseText($photo->caption, 'mentions');
+
+        foreach ($usernames as $u)
+        {
+            if($user = User::where('username',$u)->first())
+            {
+                if(!$mention = UserPhotoMention::where([
+                    'user_id' => $user->id,
+                    'photo_id' => $photo->photo_id])->first())
+                {
+                    $mention = new UserPhotoMention();
+                    $mention->user_id = $user->user_id;
+                    $mention->photo_id = $photo->photo_id;
+                    $mention->save();
+
+                    if($user->user_id != \Auth::user()->user_id)
+                        $user->notify(new UserPhotoMentionNotification(\Auth::user(), $photo));
+                }
+            }
         }
     }
 
