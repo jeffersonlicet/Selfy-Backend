@@ -1151,10 +1151,10 @@ class UserController extends Controller
                 ]);
             }
 
-            $following  = \Auth::user()->Following->pluck('following_id');
-            $following[] = \Auth::user()->user_id;
+            $invitations = UserInvitation::where('user_id', \Auth::user()->user_id)->get()->pluck('profile_id');
+            $collection = \Auth::user()->followingIds(true)->merge($invitations);
 
-            $suggestion =  User::whereNotIn('user_id', $following)->limit($limit)->offset($limit*$page)->get();
+            $suggestion =  User::whereNotIn('user_id', $collection)->limit($limit)->offset($limit*$page)->get();
 
             return response()->json([
                 'status' => TRUE,
