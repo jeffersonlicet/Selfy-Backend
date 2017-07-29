@@ -5,12 +5,12 @@ namespace App\Models;
 
 
 
-use Carbon\Carbon;
-use DB;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Zizaco\Entrust\Traits\EntrustUserTrait;
+use DB,
+    Carbon\Carbon,
+    Illuminate\Notifications\Notifiable,
+    Zizaco\Entrust\Traits\EntrustUserTrait,
+    Illuminate\Database\Eloquent\SoftDeletes,
+    Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
  * @property boolean duo_enabled
@@ -61,8 +61,6 @@ class User extends Authenticatable
     use SoftDeletes  { restore as private restoreB; }
     use EntrustUserTrait { restore as private restoreA; }
     use Notifiable;
-
-
 
     protected $primaryKey = 'user_id';
 
@@ -223,7 +221,7 @@ class User extends Authenticatable
      */
     public function getFollowEnabledAttribute()
     {
-        return !\Auth::guest() && \Auth::user()->user_id != $this->user_id && !boolval(count(UserFollower::where(['follower_id' => \Auth::user()->user_id, 'following_id' => $this->user_id])->first()));
+        return !\Auth::guest() && \Auth::user()->user_id != $this->user_id && !boolval(count(UserInvitation::where(['user_id' => \Auth::user()->user_id, 'profile_id' => $this->user_id])->first())) &&!boolval(count(UserFollower::where(['follower_id' => \Auth::user()->user_id, 'following_id' => $this->user_id])->first()));
         /** @noinspection end */
     }
 
