@@ -3,19 +3,18 @@
 namespace App\Http\Controllers\Api;
 
 use App;
+use Hash;
+use Mail;
+use JWTAuth;
+use Exception;
+use Validator;
+use Carbon\Carbon;
+use App\Models\User;
+use App\Models\UserKey;
+use Illuminate\Http\Request;
+use App\Models\UserInformation;
 use App\Http\Controllers\Controller;
 use App\Mail\FbIntegrationConfirmMail;
-
-use App\Models\User;
-use App\Models\UserInformation;
-use App\Models\UserKey;
-use Carbon\Carbon;
-use Exception;
-use Hash;
-use JWTAuth;
-use Mail;
-use Validator;
-use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
@@ -121,6 +120,9 @@ class AuthController extends Controller
                 {
                     if (Hash::check($input['password'], $user->password))
                     {
+                        $user->user_locale = App::getLocale();
+                        $user->save();
+
                         $user->token->delete();
 
                         if ($request->has('firebase_token'))
@@ -128,6 +130,7 @@ class AuthController extends Controller
                             $user->firebase_token = $input['firebase_token'];
                             $user->save();
                         }
+
 
                         $public = JWTAuth::fromUser($user);
                         $private = str_random(50);
@@ -142,6 +145,7 @@ class AuthController extends Controller
 
                         if ($request->has('device_id'))
                             $token->device_id = $input['device_id'];
+
 
                         $token->save();
 

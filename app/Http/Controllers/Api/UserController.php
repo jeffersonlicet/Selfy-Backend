@@ -2,32 +2,29 @@
 
 namespace App\Http\Controllers\Api;
 
-
-
-
-use App,
-    Validator,
-    Exception,
-    App\Models\User,
-    App\Models\UserFace,
-    App\Models\Challenge,
-    Illuminate\Http\Request,
-    App\Models\UserFollower,
-    App\Models\UserFollowing,
-    App\Models\UserChallenge,
-    App\Models\UserInvitation,
-    Illuminate\Validation\Rule,
-    App\Http\Controllers\Controller,
-    Illuminate\Support\Facades\Input,
-    App\Notifications\FollowNotification,
-    App\Notifications\DuoInvitationNotification,
-    App\Notifications\FollowInvitationNotification;
+use App;
+use Validator;
+use Exception;
+use App\Models\User;
+use App\Models\UserFace;
+use App\Models\Challenge;
+use Illuminate\Http\Request;
+use App\Models\UserFollower;
+use App\Models\UserFollowing;
+use App\Models\UserChallenge;
+use App\Models\UserInvitation;
+use Illuminate\Validation\Rule;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Input;
+use App\Notifications\FollowNotification;
+use App\Notifications\DuoInvitationNotification;
+use App\Notifications\FollowInvitationNotification;
 
 class UserController extends Controller
 {
     public function test()
     {
-
+        dd(App::getLocale());
     }
 
     /**
