@@ -117,7 +117,9 @@ class AdminController extends Controller
 
     public function places()
     {
-        $places = Place::where('status', config('constants.PLACE_STATUS.normal'))->paginate(15);
+        $places = Place::where('status', config('constants.PLACE_STATUS.normal'))
+            ->orderBy('created_at', 'DESC')->paginate(15);
+
         return view('admin.pages.places')->with(['pageTitle' => 'Normal Places',
             'places' => $places]);
     }
