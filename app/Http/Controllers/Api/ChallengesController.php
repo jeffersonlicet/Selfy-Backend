@@ -98,6 +98,7 @@ class ChallengesController extends Controller
 
             $venues = $client->search($options);
             $curated = [];
+            $updated = false;
 
             foreach ($venues as $venue)
             {
@@ -106,6 +107,14 @@ class ChallengesController extends Controller
                     $place = new Place();
                     $place->fillFromVenue($venue, [ floatval($venue->getLocation()->getCoordinates()->getLatitude()), floatval($venue->getLocation()->getCoordinates()->getLongitude())]);
                     $place->save();
+                }
+
+                //Update the user location to ensure better results and a location-based experience
+                if(!$updated)
+                {
+                    $updated = true;
+                    \Auth::user()->location_id = $place->place_id;
+                    \Auth::user()->save();
                 }
 
                 $challenge = Challenge::where(['object_id' => $place->place_id, 'object_type' => config('constants.CHALLENGE_TYPES_STR.SPOT')])->first();
