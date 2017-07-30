@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "e620647116c0a97eae325cc334c1c576",
+    "content-hash": "ef66e971a62ff0daa79ec1d69b9d456e",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -2550,6 +2550,71 @@
                 "sdk"
             ],
             "time": "2017-07-23T00:05:48+00:00"
+        },
+        {
+            "name": "spatie/laravel-translation-loader",
+            "version": "1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/laravel-translation-loader.git",
+                "reference": "d6db9a625a140904f9f608b7ba3457e68c836bb5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/laravel-translation-loader/zipball/d6db9a625a140904f9f608b7ba3457e68c836bb5",
+                "reference": "d6db9a625a140904f9f608b7ba3457e68c836bb5",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/container": "~5.3.0|~5.4.0",
+                "illuminate/contracts": "~5.3.0|~5.4.0",
+                "illuminate/database": "~5.3.0|~5.4.0",
+                "illuminate/support": "~5.3.0|~5.4.0",
+                "php": "^7.0"
+            },
+            "require-dev": {
+                "orchestra/database": "~3.3.0|~3.4.0",
+                "orchestra/testbench": "~3.3.0|~3.4.0",
+                "phpunit/phpunit": "5.*"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Spatie\\TranslationLoader\\TranslationServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\TranslationLoader\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "homepage": "https://spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Store your language lines in the database, yaml or other sources",
+            "homepage": "https://github.com/spatie/laravel-translation-loader",
+            "keywords": [
+                "database",
+                "db",
+                "i8n",
+                "language",
+                "laravel",
+                "laravel-translation-loader",
+                "spatie",
+                "translate"
+            ],
+            "time": "2017-07-07T14:20:45+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
