@@ -664,7 +664,7 @@ class PhotoController extends Controller
                 $thumb = null;
                 $photo = PhotoHashtag::where('hashtag_id', $item->hashtag_id)
                     ->orderBy('created_at', 'DESC')
-                    ->with(['Photo' => function ($query) use ($thumb_ids)
+                    ->whereHas('Photo', function ($query) use ($thumb_ids)
                     {
                         $query->whereNotIn('photo_id', $thumb_ids)->whereHas('User', function($subQuery)
                         {
@@ -672,7 +672,7 @@ class PhotoController extends Controller
                                 ->orWhereIn('user_id', \Auth::user()->followingIds(true));
                         });
 
-                    }])->has('Photo')->first();
+                    })->first();
 
                 if($photo)
                 {
