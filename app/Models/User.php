@@ -67,7 +67,7 @@ class User extends Authenticatable
     protected $appends = array('follow_enabled', 'edit_enabled');
 
     protected static $createRules = [
-        'username'              =>	'required|unique:users,username',
+        'username'              =>	'required|allowed_username|unique:users,username',
         'password'				=>	'required|min:4',
     ];
 
