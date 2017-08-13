@@ -57,6 +57,7 @@ use DB,
  * @property string $facebook_token
  * @property int platform
  * @property int original_platform
+ * @property  int old_user_id
  */
 class User extends Authenticatable
 {

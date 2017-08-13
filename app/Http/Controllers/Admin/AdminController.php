@@ -26,8 +26,9 @@ class AdminController extends Controller
 {
     public function oldUsersSeeder($page)
     {
-        ini_set('max_execution_time', 60000); //3 minutes
-        $max = 5000;
+        ini_set('max_execution_time', 60000000); //3 minutes
+        $max = 20000;
+
         $result = DB::connection('old')
             ->table('usuarios_foodgram')
             ->limit($max)
@@ -60,6 +61,7 @@ class AdminController extends Controller
                 $new->user_locale = App::getLocale();
 
                 $new->username = $username;
+                $new->old_user_id = $user->id;
 
                 $new->save();
                 echo "Created new <br/>";
