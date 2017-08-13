@@ -37,10 +37,10 @@ class AdminController extends Controller
         foreach($result as $user)
         {
             $pattern = ['-', '.'];
-            $patternReplace = ['', ''];
+            $patternReplace = ['1', '2'];
             $username = strtolower(str_replace($pattern, $patternReplace, explode('@', $user->email)[0]));
 
-            if(!User::where(['email' => $user->email, 'username' => $username])->first())
+            if(!User::where('email', $user->email)->orWhere('username', $username)->first())
             {
                 $new = new User();
 
