@@ -10,7 +10,7 @@ use Hash;
 use SplFileObject;
 use App\Models\Photo;
 use App\Models\Place;
-use App\Helpers\Vision;
+use Vision;
 use App\Models\Hashtag;
 use App\Models\Challenge;
 use App\Models\ObjectWord;
@@ -40,7 +40,7 @@ class AdminController extends Controller
             $patternReplace = ['', ''];
             $username = strtolower(str_replace($pattern, $patternReplace, explode('@', $user->email)[0]));
 
-            if(!User::where(['email', $user->email, 'username' => $username])->first())
+            if(!User::where(['email' => $user->email, 'username' => $username])->first())
             {
                 $new = new User();
 
