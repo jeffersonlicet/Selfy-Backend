@@ -26,7 +26,7 @@ class AdminController extends Controller
 {
     public function oldUsersSeeder($page)
     {
-        $max = 1000;
+        $max = 5000;
 
         $result = DB::connection('old')
             ->table('usuarios_foodgram')
