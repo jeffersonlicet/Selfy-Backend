@@ -28,6 +28,8 @@ class AdminController extends Controller
     {
         ini_set('max_execution_time', 6000); //3 minutes
         $max = 5000;
+        phpinfo();
+        die();
 
         $result = DB::connection('old')
             ->table('usuarios_foodgram')
