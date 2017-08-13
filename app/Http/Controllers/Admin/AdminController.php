@@ -54,6 +54,9 @@ class AdminController extends Controller
                 if(!empty(trim($user->acerca)))
                     $new->bio = str_limit(trim($user->acerca), 250);
 
+                if(!empty(trim($user->uri)))
+                    $new->wp_token = trim($user->uri);
+
                 $new->password = Hash::make($user->pass);
                 $new->original_platform = config('constants.APP_PLATFORMS.wp');
                 $new->user_locale = App::getLocale();

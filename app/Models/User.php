@@ -58,6 +58,7 @@ use DB,
  * @property int platform
  * @property int original_platform
  * @property  int old_user_id
+ * @property string wp_token
  */
 class User extends Authenticatable
 {
