@@ -58,4 +58,9 @@ return [
         'normal' => 0,
         'challenge' => 1
     ],
+
+    'APP_PLATFORMS' => [
+       'android' => 0,
+       'wp' => 1
+    ],
 ];

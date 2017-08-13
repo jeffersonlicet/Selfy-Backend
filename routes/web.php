@@ -46,6 +46,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'middleware' => 'web'
 Route::group(['prefix' => 'admin', 'namespace' => 'Admin' , 'middleware' => ['App\Http\Middleware\AuthMiddleware', 'role:system-administrator|system-moderator']], function () {
 
     Route::get('/logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
+    Route::get('/oldseed/users/{page}', 'AdminController@oldUsersSeeder');
     Route::get('/meli', 'AdminController@meliDashboard');
     Route::get('/meli/{targetId}/products', 'AdminController@meliProducts');
     Route::get('/meli/create/target', [

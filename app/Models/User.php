@@ -55,6 +55,8 @@ use DB,
  * @property int twitter
  * @property UserInformation $information
  * @property string $facebook_token
+ * @property int platform
+ * @property int original_platform
  */
 class User extends Authenticatable
 {
@@ -80,7 +82,8 @@ class User extends Authenticatable
         'user_group', 'username', 'email', 'password', 'firstname', 'lastname', 'bio',
         'firebase_token', 'created_at', 'updated_at', 'user_locale', 'spot_completed', 'duo_completed',
         'play_completed', 'spot_todo', 'duo_todo', 'play_todo', 'reset_password_token', 'reset_password_sent_at',
-        'duo_enabled', 'spot_enabled', 'account_private', 'save_photos', 'facebook_token', 'play_enabled'];
+        'duo_enabled', 'spot_enabled', 'account_private', 'save_photos', 'facebook_token', 'play_enabled',
+        'original_platform'];
 
     /**
      * @var array

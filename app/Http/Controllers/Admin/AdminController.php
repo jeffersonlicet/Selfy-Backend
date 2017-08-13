@@ -3,6 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 
+use App;
+use App\Models\User;
+use DB;
+use Hash;
 use SplFileObject;
 use App\Models\Photo;
 use App\Models\Place;
@@ -20,6 +24,48 @@ use App\Http\Controllers\Controller;
 
 class AdminController extends Controller
 {
+    public function oldUsersSeeder($page)
+    {
+        $max = 1000;
+
+        $result = DB::connection('old')
+            ->table('usuarios_foodgram')
+            ->limit($max)
+            ->offset($max*$page)
+            ->get();
+
+        foreach($result as $user)
+        {
+            $pattern = ['-', '.'];
+            $patternReplace = ['', ''];
+            $username = strtolower(str_replace($pattern, $patternReplace, explode('@', $user->email)[0]));
+
+            if(!User::where(['email', $user->email, 'username' => $username])->first())
+            {
+                $new = new User();
+
+                if(str_contains($user->avatar, 'imgur'))
+                    $new->avatar = $user->avatar;
+
+                $new->email = $user->email;
+
+                if(!empty(trim($user->nombre)))
+                    $new->firstname = trim($user->nombre);
+
+                if(!empty(trim($user->acerca)))
+                    $new->bio = trim($user->acerca);
+
+                $new->password = Hash::make($user->pass);
+                $new->original_platform = config('constants.APP_PLATFORMS.wp');
+                $new->user_locale = App::getLocale();
+
+                $new->username = $username;
+
+                $new->save();
+                echo "Created new <br/>";
+            }
+        }
+    }
     public function seedWordWords()
     {
         ini_set('max_execution_time', 6180);
@@ -69,7 +115,7 @@ class AdminController extends Controller
 
     public function createPlay()
     {
-        return view('admin.pages.createPlaySingleton')->with(['pageTitle' => 'Create Play challenge']);
+        return view('admin.pages.createPlaySingleton')->with(['pageTitle' => 'Create Play challenge', 'languages' => config('lang-detector.languages')]);
     }
 
     public function createPlaySingleton(Request $request)

@@ -1,6 +1,8 @@
 @extends('admin.layouts.default')
 @section("content")
-    @php($status = [config('constants.DEV_CHALLENGE_STATUS.active') =>'Active', config('constants.DEV_CHALLENGE_STATUS.disabled') => 'Disabled'])
+    @php
+        $status = [config('constants.DEV_CHALLENGE_STATUS.active') => 'Active', config('constants.DEV_CHALLENGE_STATUS.disabled') => 'Disabled'];
+    @endphp
 
     <div class="section-title">
         <h2>Create Play challenge</h2>
@@ -12,16 +14,20 @@
         <div class="col-md-12">
             {!! Form::open(['route' => ['CreatePlaySingleton']]) !!}
             <h3>Title</h3>
-            <div class="form-group label-floating">
-                <label class="control-label" for="play_title">The play title</label>
-                <input class="form-control"  name="play_title" id="play_title" type="text" required autofocus>
-            </div>
+            @foreach($languages as $lang)
+                <div class="form-group label-floating">
+                    <label class="control-label" for="play_title">The play title for: {{$lang}}</label>
+                    <input class="form-control" name="play_title" id="play_title_{{$lang}}" type="text" required autofocus>
+                </div>
+            @endforeach
 
             <h3>Description</h3>
-            <div class="form-group label-floating">
-                <label class="control-label" for="play_description">The play description</label>
-                <input class="form-control" name="play_description" id="play_description" type="text" required>
-            </div>
+            @foreach($languages as $lang)
+                <div class="form-group label-floating">
+                    <label class="control-label" for="play_description">The play description for: {{$lang}}</label>
+                    <input class="form-control" name="play_description_{{$lang}}" id="play_description_{{$lang}}" type="text" required>
+                </div>
+            @endforeach
 
             <h3>Samples</h3>
             <div class="form-group label-floating">

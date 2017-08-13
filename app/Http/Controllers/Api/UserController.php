@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App;
+use DB;
 use Validator;
 use Exception;
 use App\Models\User;
@@ -24,7 +25,7 @@ class UserController extends Controller
 {
     public function test()
     {
-        dd(App::getLocale());
+
     }
 
     /**
