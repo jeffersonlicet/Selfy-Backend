@@ -7,13 +7,11 @@ use App;
 use App\Models\User;
 use DB;
 use Hash;
-use SplFileObject;
 use App\Models\Photo;
 use App\Models\Place;
 use Vision;
 use App\Models\Hashtag;
 use App\Models\Challenge;
-use App\Models\ObjectWord;
 use App\Models\PlayObject;
 use Illuminate\Http\Request;
 use App\Models\ChallengePlay;
@@ -27,7 +25,7 @@ class AdminController extends Controller
     public function oldUsersSeeder($page)
     {
         ini_set('max_execution_time', 60000000); //3 minutes
-        $max = 20000;
+        $max = 3000;
 
         $result = DB::connection('old')
             ->table('usuarios_foodgram')
@@ -67,47 +65,6 @@ class AdminController extends Controller
                 echo "Created new <br/>";
             }
         }
-    }
-    public function seedWordWords()
-    {
-        ini_set('max_execution_time', 6180);
-        $file = new SplFileObject(storage_path('/app/wordnet/words.txt'));
-        while (!$file->eof())
-        {
-            $data = explode('	', $file->fgets());
-
-
-                $word = new ObjectWord();
-                $word->object_wnid = trim($data[0]);
-                $word->object_words = trim($data[1]);
-                $word->save();
-
-        }
-        $file = null;
-        return  "done";
-    }
-
-    public function seedWordNet()
-    {
-        ini_set('max_execution_time', 6180);
-        $file = new SplFileObject(storage_path('/app/wordnet/wordnet.is_a.txt'));
-
-        while (!$file->eof())
-        {
-            $words = explode(' ', str_replace('\n', '', $file->fgets()));
-            $parent_word = trim($words[0]);
-            $child_word = trim($words[1]);
-
-
-            $parent = new ObjectCategory();
-            $parent->category_wnid = $child_word;
-            $parent->parent_wnid = $parent_word;
-            $parent->save();
-
-        }
-
-        $file = null;
-        return  "done";
     }
 
     public function index()

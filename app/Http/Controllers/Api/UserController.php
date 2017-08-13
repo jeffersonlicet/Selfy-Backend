@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App;
-use DB;
 use Validator;
 use Exception;
 use App\Models\User;
@@ -23,11 +22,6 @@ use App\Notifications\FollowInvitationNotification;
 
 class UserController extends Controller
 {
-    public function test()
-    {
-
-    }
-
     /**
      * Return a user information
      *
@@ -39,11 +33,7 @@ class UserController extends Controller
     {
         try
         {
-            $validator =
-                Validator::make(
-                    ['data' => $data],
-                    ['data' => ['required']]
-                );
+            $validator = Validator::make(compact('data'), ['data' => ['required']]);
 
             if(!$validator->passes())
             {
@@ -191,7 +181,9 @@ class UserController extends Controller
     {
         try
         {
-            $values = $request->only(['bio', 'firstname' , 'lastname', 'face_url', 'duo_enabled', 'spot_enabled', 'account_private', 'save_photos', 'email']);
+            $values = $request->only(['bio', 'firstname' , 'lastname', 'face_url', 'duo_enabled', 'spot_enabled',
+                'account_private', 'save_photos', 'email']);
+
             $values['duo_enabled'] = $values['duo_enabled'] == "1";
             $values['spot_enabled'] = $values['spot_enabled'] == "1";
             $values['account_private'] = $values['account_private'] == "1";
