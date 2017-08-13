@@ -53,7 +53,7 @@ class AdminController extends Controller
                     $new->firstname = trim($user->nombre);
 
                 if(!empty(trim($user->acerca)))
-                    $new->bio = trim($user->acerca);
+                    $new->bio = str_limit(trim($user->acerca), 250);
 
                 $new->password = Hash::make($user->pass);
                 $new->original_platform = config('constants.APP_PLATFORMS.wp');
