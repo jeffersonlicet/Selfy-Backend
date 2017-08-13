@@ -26,11 +26,8 @@ class AdminController extends Controller
 {
     public function oldUsersSeeder($page)
     {
-        ini_set('max_execution_time', 6000); //3 minutes
+        ini_set('max_execution_time', 60000); //3 minutes
         $max = 5000;
-        phpinfo();
-        die();
-
         $result = DB::connection('old')
             ->table('usuarios_foodgram')
             ->limit($max)
