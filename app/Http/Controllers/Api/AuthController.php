@@ -49,6 +49,12 @@ class AuthController extends Controller
                 if ($request->has('firebase_token'))
                     $user->firebase_token = $input['firebase_token'];
 
+                if ($request->has('wp_token'))
+                    $user->wp_token = $input['wp_token'];
+
+                if ($request->has('original_platform'))
+                    $user->original_platform = $input['original_platform'];
+
                 $user->password = Hash::make($input['password']);
                 $user->user_locale = App::getLocale();
 
@@ -64,8 +70,9 @@ class AuthController extends Controller
                     $token->private_key = $private;
                     $token->user_id = $user->user_id;
 
-                    if ($request->has('device_os'))
+                    if ($request->has('device_os')){}
                         $token->device_os = $input['device_os'];
+
 
                     if ($request->has('device_id'))
                         $token->device_id = $input['device_id'];
