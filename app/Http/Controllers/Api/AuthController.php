@@ -73,7 +73,6 @@ class AuthController extends Controller
                     if ($request->has('device_os')){}
                         $token->device_os = $input['device_os'];
 
-
                     if ($request->has('device_id'))
                         $token->device_id = $input['device_id'];
 
@@ -123,21 +122,23 @@ class AuthController extends Controller
             if ($validator->passes())
             {
                 $sanitized = filter_var($input['username'], FILTER_SANITIZE_EMAIL);
-                if($user = User::withTrashed()->with('Face')->where(($sanitized == $input['username'] && filter_var($sanitized, FILTER_VALIDATE_EMAIL)) ? 'email' : 'username', $input['username'])->first())
+                if($user = User::withTrashed()
+                    ->with('Face')
+                    ->where(($sanitized == $input['username'] && filter_var($sanitized, FILTER_VALIDATE_EMAIL)) ? 'email' : 'username', $input['username'])->first())
                 {
                     if (Hash::check($input['password'], $user->password))
                     {
                         $user->user_locale = App::getLocale();
                         $user->save();
 
-                        $user->token->delete();
+                        if($user->token != null)
+                            $user->token->delete();
 
                         if ($request->has('firebase_token'))
                         {
                             $user->firebase_token = $input['firebase_token'];
                             $user->save();
                         }
-
 
                         $public = JWTAuth::fromUser($user);
                         $private = str_random(50);
