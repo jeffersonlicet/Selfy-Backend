@@ -131,8 +131,8 @@ class AuthController extends Controller
                         $user->user_locale = App::getLocale();
                         $user->save();
 
-                        if($user->token != null)
-                            $user->token->delete();
+                        if($user->Token != null)
+                            $user->Token->delete();
 
                         if ($request->has('firebase_token'))
                         {

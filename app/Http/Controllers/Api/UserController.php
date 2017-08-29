@@ -479,10 +479,66 @@ class UserController extends Controller
         }
     }
 
+
+    /**
+     * Edit user push token
+     *
+     * @param Request $request
+     * @deprecated
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function pushTokenUpdate(Request $request)
+    {
+        try
+        {
+            $input = $request->all();
+            $validator = Validator::make($input, ['token' => ['required', 'string']]);
+
+            if(!$validator->passes())
+            {
+                return response()->json([
+                    'status' => TRUE,
+                    'report' => $validator->messages()->first()
+                ]);
+            }
+
+            $platform = $request->has('platform') ? $input['platform'] : config('constants.APP_PLATFORMS.android');
+
+            switch ($platform)
+            {
+                case config('constants.APP_PLATFORMS.android'):
+                    \Auth::user()->firebase_token = $input['token'];
+                    break;
+
+                case config('constants.APP_PLATFORMS.wp'):
+                    \Auth::user()->wp_token = $input['token'];
+                    break;
+            }
+
+            \Auth::user()->save();
+
+            return response()->json([
+                'status' => TRUE,
+                'report' => 'resource_updated'
+            ]);
+
+        }
+
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+
+    }
+
     /**
      * Edit user face firebase token
      *
      * @param Request $request
+     * @deprecated
      * @return \Illuminate\Http\JsonResponse
      */
     public function firebase(Request $request)

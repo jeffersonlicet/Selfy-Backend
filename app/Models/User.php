@@ -43,7 +43,7 @@ use DB,
  * @property string reset_password_sent_at
  * @property UserGroup userGroup
  * @property UserFace $Face
- * @property UserToken token
+ * @property UserToken Token
  * @property Photo[] photos
  * @property UserFaceRecognition[] FaceDescriptors
  * @property User[] $Following
