@@ -10,3 +10,9 @@ Homestead.yaml
 _ide_helper.php
 .phpstorm.meta.php
 server.php
+# Visual Studio 2015 cache/options directory
+.vs/
+.phpstorm.meta.php
+Selfy backend.phpproj
+Selfy backend.sln
+_ide_helper.php
