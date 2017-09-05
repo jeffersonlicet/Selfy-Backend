@@ -12,6 +12,7 @@ use DB,
 /**
  * @property boolean duo_enabled
  * @property boolean spot_enabled
+ * @property boolean email_editable
  * @property integer user_id
  * @property integer user_group
  * @property string username
