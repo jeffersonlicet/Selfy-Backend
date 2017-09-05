@@ -66,7 +66,7 @@ class User extends Authenticatable
 
     protected $primaryKey = 'user_id';
 
-    protected $appends = ['follow_enabled', 'edit_enabled', 'email_editable'];
+    protected $appends = ['follow_enabled', 'edit_enabled', 'email_editable', 'chat_enabled'];
 
     protected static $createRules = [
         'username'              =>	'required|allowed_username|unique:users,username',
@@ -198,7 +198,6 @@ class User extends Authenticatable
 
     /**
      *  Append property
-     *  Return if the user can perform a like action
      * @return bool
      */
     public function getSecondaryEmailAttribute()
@@ -211,19 +210,19 @@ class User extends Authenticatable
         return null;
     }
 
-    /**
-     *  Append property
-     *  Return if the user can perform a like action
-     * @return bool
-     */
     public function getFollowEnabledAttribute()
     {
-        return !\Auth::guest() && \Auth::user()->user_id != $this->user_id && !boolval(count(UserInvitation::where(['user_id' => \Auth::user()->user_id, 'profile_id' => $this->user_id])->first())) &&!boolval(count(UserFollower::where(['follower_id' => \Auth::user()->user_id, 'following_id' => $this->user_id])->first()));
+        return !\Auth::guest() && \Auth::user()->user_id != $this->user_id && !boolval(count(UserInvitation::where(['user_id' => \Auth::user()->user_id, 'profile_id' => $this->user_id])->first())) && !boolval(count(UserFollower::where(['follower_id' => \Auth::user()->user_id, 'following_id' => $this->user_id])->first()));
     }
 
     public function getEmailEditableAttribute()
     {
         return !\Auth::guest() && ($this->password_type == 0);
+    }
+
+    public function getChatEnabledAttribute()
+    {
+        return !\Auth::guest() && (count(UserFollower::where(['follower_id' => $this->user_id, 'following_id' => \Auth::user()->user_id])->first()) == 0);
     }
 
     public function followingIds($includeMe = FALSE)

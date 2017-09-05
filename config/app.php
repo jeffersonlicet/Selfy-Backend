@@ -188,6 +188,7 @@ return [
         Zizaco\Entrust\EntrustServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
         Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider::class,
+        Musonza\Chat\ChatServiceProvider::class,
     ],
 
     /*
@@ -245,7 +246,7 @@ return [
         'Expression' => App\Helpers\Expression::class,
         'Vision' => App\Helpers\Vision::class,
         'Meli' => App\Helpers\Meli::class,
-
+        'Chat' => Musonza\Chat\Facades\ChatFacade::class
     ],
 
     'foursquare_client' => env('FOURSQUARE_CLIENT_ID'),
