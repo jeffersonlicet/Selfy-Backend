@@ -38,24 +38,24 @@ class UserController extends Controller
             if(!$validator->passes())
             {
                 return response()->json([
-                    'status' => TRUE,
+                    'status' => TRUE, 
                     'report' => $validator->messages()->first()
                 ]);
             }
 
-            $result = is_numeric($data) ? User::with('Face')->find($data) :
-                User::with('Face')->where('username', $data)->first();
+            $result = is_numeric($data) ? User::with('Face')->find($data) : User::with('Face')->where('username', $data)->first();
 
-            if ($result)
+            if ($result) 
             {
                 return response()->json([
-                    'status' => TRUE,
+                    'status' => TRUE, 
                     'user' => $result->toArray()
                 ]);
             }
 
             throw new Exception('resource_not_found');
         }
+
         catch (\Exception $e)
         {
             return response()->json([
@@ -478,7 +478,6 @@ class UserController extends Controller
             ]);
         }
     }
-
 
     /**
      * Edit user push token
@@ -1008,7 +1007,6 @@ class UserController extends Controller
             ]);
         }
     }
-
 
     /**
      * Search friends when type @user

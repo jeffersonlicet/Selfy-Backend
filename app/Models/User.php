@@ -37,25 +37,26 @@ use DB,
  * @property integer photos_count
  * @property integer account_private
  * @property integer account_verified
+ * @property integer gender
+ * @property integer facebook
+ * @property integer twitter
+ * @property integer platform
+ * @property integer original_platform
+ * @property integer old_user_id
  * @property string reset_password_token
  * @property string reset_password_sent_at
  * @property UserGroup userGroup
- * @property UserFace $Face
+ * @property UserFace Face
  * @property UserToken Token
  * @property Photo[] photos
  * @property UserFaceRecognition[] FaceDescriptors
- * @property User[] $Following
- * @property User[] $Followers
+ * @property User[] Following
+ * @property User[] Followers
  * @property UserChallenge[] userChallenges
- * @property PhotoReport[] $PhotoReports
- * @property int gender
- * @property int facebook
- * @property int twitter
- * @property UserInformation $information
- * @property string $facebook_token
- * @property int platform
- * @property int original_platform
- * @property  int old_user_id
+ * @property PhotoReport[] PhotoReports
+ * @property UserInformation information
+ * @property string facebook_token
+
  * @property string wp_token
  */
 class User extends Authenticatable
@@ -75,9 +76,12 @@ class User extends Authenticatable
 
     public static function getCreateRules() { return self::$createRules; }
 
-    /**
-     * @var array
-     */
+    public function restore()
+    {
+        $this->restoreB();
+        $this->restoreA();
+    }
+
     protected $fillable = [
         'user_group', 'username', 'email', 'password', 'firstname', 'lastname', 'bio',
         'firebase_token', 'created_at', 'updated_at', 'user_locale', 'spot_completed', 'duo_completed',
@@ -85,19 +89,12 @@ class User extends Authenticatable
         'duo_enabled', 'spot_enabled', 'account_private', 'save_photos', 'facebook_token', 'play_enabled',
         'original_platform'];
 
-    /**
-     * @var array
-     */
     protected $hidden = [
         'deleted_at', 'password', 'reset_password_token', 'firebase_token', 'reset_password_sent_at',
         'created_at', 'updated_at', 'facebook_token', 'wp_token', 'password_type', 'old_user_id', 'original_platform',
-        'password_type'
+        'password_type', 'remember_token'
     ];
 
-    /**
-     * @param int $limit
-     * @return \Illuminate\Support\Collection
-     */
     public static function getTopByChallenges($limit = 5)
     {
         return DB::table("user_challenges")
@@ -193,7 +190,7 @@ class User extends Authenticatable
      */
     public function getEditEnabledAttribute()
     {
-        return !\Auth::guest() && \Auth::user()->user_id == $this->user_id ;
+        return !\Auth::guest() && $this->itsMe();
     }
 
     /**
@@ -217,12 +214,12 @@ class User extends Authenticatable
 
     public function getEmailEditableAttribute()
     {
-        return !\Auth::guest() && ($this->password_type == 0);
+        return !\Auth::guest() && ($this->password_type == 0) && $this->itsMe();
     }
 
     public function getChatEnabledAttribute()
     {
-        return !\Auth::guest() && (count(UserFollower::where(['follower_id' => $this->user_id, 'following_id' => \Auth::user()->user_id])->first()) == 0);
+        return (!\Auth::guest()) && (count(UserFollower::where(['follower_id' => $this->user_id, 'following_id' => \Auth::user()->user_id])->first()) > 0);
     }
 
     public function followingIds($includeMe = FALSE)
@@ -233,5 +230,15 @@ class User extends Authenticatable
             $collection[] = $this->user_id;
 
         return $collection;
+    }
+
+    public function itsMe()
+    {
+        return !\Auth::guest() && $this->user_id == \Auth::user()->user_id;
+    }
+
+    public function getEmailAttribute()
+    {
+        return (!\Auth::guest()) && $this->itsMe() ? $this->email : null;
     }
 }
