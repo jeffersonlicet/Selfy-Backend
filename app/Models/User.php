@@ -2,9 +2,6 @@
 
 namespace App\Models;
 
-
-
-
 use DB,
     Carbon\Carbon,
     Illuminate\Notifications\Notifiable,
@@ -68,7 +65,7 @@ class User extends Authenticatable
 
     protected $primaryKey = 'user_id';
 
-    protected $appends = array('follow_enabled', 'edit_enabled');
+    protected $appends = ['follow_enabled', 'edit_enabled', 'email_editable'];
 
     protected static $createRules = [
         'username'              =>	'required|allowed_username|unique:users,username',
@@ -113,11 +110,6 @@ class User extends Authenticatable
             ->get();
     }
 
-    public function restore()
-    {
-        $this->restoreA();
-        $this->restoreB();
-    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -226,7 +218,11 @@ class User extends Authenticatable
     public function getFollowEnabledAttribute()
     {
         return !\Auth::guest() && \Auth::user()->user_id != $this->user_id && !boolval(count(UserInvitation::where(['user_id' => \Auth::user()->user_id, 'profile_id' => $this->user_id])->first())) &&!boolval(count(UserFollower::where(['follower_id' => \Auth::user()->user_id, 'following_id' => $this->user_id])->first()));
-        /** @noinspection end */
+    }
+
+    public function getEmailEditableAttribute()
+    {
+        return !\Auth::guest() && ($this->password_type == 0);
     }
 
     public function followingIds($includeMe = FALSE)
