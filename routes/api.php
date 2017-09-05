@@ -43,6 +43,7 @@ Route::group(
         Route::resource('like', 'Api\LikeController',
             ['only' => ['store','destroy']]);
 
+
         Route::post('invitation/accept', 'Api\InvitationController@accept');
         Route::post('invitation/decline', 'Api\InvitationController@decline');
         Route::post('invitation/remove', 'Api\InvitationController@remove');

@@ -91,8 +91,9 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-       'deleted_at', 'password', 'reset_password_token', 'firebase_token', 'reset_password_sent_at',
-        'created_at', 'updated_at', 'facebook_token'
+        'deleted_at', 'password', 'reset_password_token', 'firebase_token', 'reset_password_sent_at',
+        'created_at', 'updated_at', 'facebook_token', 'wp_token', 'password_type', 'old_user_id', 'original_platform',
+        'password_type'
     ];
 
     /**
@@ -141,10 +142,7 @@ class User extends Authenticatable
      */
     public function userChallenges()
     {
-
         return $this->hasMany('App\Models\UserChallenge', 'user_id', 'user_id');
-
-        //return UserChallenge::where(['user_id' => \Auth::user()->user_id, 'challenge_status' => config('constants.CHALLENGE_STATUS.ACCEPTED')])->with('Challenge')->get();
     }
 
     /**
