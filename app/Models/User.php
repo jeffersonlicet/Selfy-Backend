@@ -1,4 +1,4 @@
-ix t<?php
+<?php
 
 namespace App\Models;
 
