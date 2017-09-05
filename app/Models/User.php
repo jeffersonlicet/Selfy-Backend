@@ -1,4 +1,4 @@
-<?php
+ix t<?php
 
 namespace App\Models;
 
@@ -237,8 +237,8 @@ class User extends Authenticatable
         return !\Auth::guest() && $this->user_id == \Auth::user()->user_id;
     }
 
-    public function getEmailAttribute()
+    /*public function getEmailAttribute()
     {
         return (!\Auth::guest()) && $this->itsMe() ? $this->email : null;
-    }
+    }*/
 }
