@@ -105,12 +105,14 @@ class UserController extends Controller
         try
         {
             $values = $request->only(['bio', 'firstname' , 'lastname', 'face_url', 'duo_enabled', 'spot_enabled',
-                'account_private', 'save_photos', 'play_enabled', 'username']);
+                'account_private', 'save_photos', 'play_enabled', 'username', 'email']);
 
             $values['duo_enabled'] = $values['duo_enabled'] == "1";
             $values['spot_enabled'] = $values['spot_enabled'] == "1";
             $values['account_private'] = $values['account_private'] == "1";
             $values['save_photos'] = $values['save_photos'] == "1";
+
+            =
 
             $props = [
                 'firstname'				=>	'required|string',
@@ -120,8 +122,15 @@ class UserController extends Controller
                 'play_enabled'          =>	'required',
                 'account_private'       =>	'required',
                 'save_photos' =>	'required',
-                'username' =>	'required|allowed_username|unique:users,username'
+                'username' =>	'required|allowed_username|unique:users,username',
+                'email' => 'required|email|unique:users,email'
             ];
+
+            if($values['email'] == \Auth::user()->email)
+            {
+                unset($values['email']);
+                unset($props['email']);
+            }
 
             if($values['username'] == \Auth::user()->username)
             {
