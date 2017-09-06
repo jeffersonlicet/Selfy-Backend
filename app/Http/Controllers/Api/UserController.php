@@ -112,7 +112,6 @@ class UserController extends Controller
             $values['account_private'] = $values['account_private'] == "1";
             $values['save_photos'] = $values['save_photos'] == "1";
 
-            =
 
             $props = [
                 'firstname'				=>	'required|string',
