@@ -1309,6 +1309,120 @@ class UserController extends Controller
     }
 
     /**
+     * Block a user
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function block(Request $request)
+    {
+        try
+        {
+            $input = $request->all();
+ 
+            $validator = Validator::make($input, [
+                'user_id' => 'required|numeric'
+            ]);
+ 
+            if(!$validator->passes())
+            {
+                return response()->json([
+                    'status' => TRUE,
+                    'report' => $validator->messages()->first()
+                ]);
+            }
+ 
+ 
+            if(\Auth::user()->user_id != $input['user_id'] && $user = User::find($input["user_id"]))
+            {
+ 
+                if(!\Auth::user()->isBlocking($input["user_id"]))
+                {
+                    \Auth::user()->block($input["user_id"]);
+                    \Auth::user()->save();
+
+                    return response()->json([
+                        'status' => true,
+                        'report' => 'action_done'
+                    ]);
+                }
+
+                return response()->json([
+                    'status' => true,
+                    'report' => 'invalid_action'
+                ]);
+            }
+ 
+            throw new Exception("resource_not_found");
+        }
+ 
+        catch (\Exception $e)
+        {
+            return response()->json([
+            	'status' => FALSE,
+            	'report' => $e->getMessage()
+            ]);
+        }
+    }
+ 
+    /**
+     * Follow a user
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+	public function unblock(Request $request)
+	{
+		try
+		{
+			$input = $request->all();
+
+			$validator = Validator::make($input, [
+				'user_id' => 'required|numeric'
+			]);
+
+			if(!$validator->passes())
+			{
+				return response()->json([
+					'status' => TRUE,
+					'report' => $validator->messages()->first()
+				]);
+			}
+
+
+			if(\Auth::user()->user_id != $input['user_id'] && $user = User::find($input["user_id"]))
+			{
+
+				if(\Auth::user()->isBlocking($input["user_id"]))
+				{
+					\Auth::user()->unblock($input["user_id"]);
+					\Auth::user()->save();
+
+					return response()->json([
+						'status' => true,
+						'report' => 'action_done'
+					]);
+				}
+
+				return response()->json([
+					'status' => true,
+					'report' => 'invalid_action'
+				]);
+			}
+
+			throw new Exception("resource_not_found");
+		}
+
+		catch (\Exception $e)
+		{
+			return response()->json([
+				'status' => FALSE,
+				'report' => $e->getMessage()
+			]);
+		}
+	}
+
+    /**
      * Generate a batch of duo invitations
      * @param User $user
      * @param int $limit

@@ -61,6 +61,8 @@ Route::group(
         Route::get('users/search_mentions', 'Api\UserController@search_mention_suggestion');
         Route::get('users/featured', 'Api\UserController@featured');
         Route::post('user/update_username', 'Api\UserController@update_username');
+        Route::post('user/block', 'Api\UserController@block');
+        Route::post('user/unblock', 'Api\UserController@unblock');
         Route::post('user/update_challenges', 'Api\UserController@update_challenges');
         Route::post('user/update_facebook_token', 'Api\UserController@update_facebook_token');
         Route::post('user/face', 'Api\UserController@face');

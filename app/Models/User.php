@@ -9,6 +9,8 @@ use DB,
     Illuminate\Database\Eloquent\SoftDeletes,
     Illuminate\Foundation\Auth\User as Authenticatable;
 
+use Hareku\LaravelBlockable\Traits\Blockable;
+
 /**
  * @property boolean duo_enabled
  * @property boolean spot_enabled
@@ -56,14 +58,14 @@ use DB,
  * @property PhotoReport[] PhotoReports
  * @property UserInformation information
  * @property string facebook_token
-
  * @property string wp_token
  */
 class User extends Authenticatable
 {
+    use Blockable;
+    use Notifiable;    
     use SoftDeletes  { restore as private restoreB; }
     use EntrustUserTrait { restore as private restoreA; }
-    use Notifiable;
 
     protected $primaryKey = 'user_id';
 
@@ -219,7 +221,7 @@ class User extends Authenticatable
 
     public function getChatEnabledAttribute()
     {
-        return (!\Auth::guest()) && (count(UserFollower::where(['follower_id' => $this->user_id, 'following_id' => \Auth::user()->user_id])->first()) > 0);
+        return (!\Auth::guest()) && (count(UserFollower::where(['follower_id' => $this->user_id, 'following_id' => \Auth::user()->user_id])->first()) > 0) && !$this->isBlocking(\Auth::user()->user_id) && !$this->isBlockedBy(\Auth::user()->user_id);
     }
 
     public function followingIds($includeMe = FALSE)

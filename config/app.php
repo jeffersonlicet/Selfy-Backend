@@ -189,6 +189,7 @@ return [
         Collective\Html\HtmlServiceProvider::class,
         Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider::class,
         Musonza\Chat\ChatServiceProvider::class,
+        Hareku\LaravelBlockable\BlockableServiceProvider::class,
     ],
 
     /*
