@@ -72,7 +72,8 @@ class User extends Authenticatable
 
     protected $primaryKey = 'user_id';
 
-    protected $appends = ['follow_enabled', 'edit_enabled', 'email_editable', 'chat_enabled', 'unread'];
+    protected $appends = ['follow_enabled', 'edit_enabled', 'email_editable', 'chat_enabled', 'block_enabled',
+        'unread'];
 
     protected static $createRules = [
         'username'              =>	'required|allowed_username|unique:users,username',
@@ -229,7 +230,12 @@ class User extends Authenticatable
 
     public function getUnreadAttribute()
     {
-        return \Auth::guest() ? 0 : count($this->unreadNotifications());
+        return !\Auth::guest() ? 0 : count($this->unreadNotifications());
+    }
+
+    public function getBlockEnabledAttribute()
+    {
+        return !(\Auth::guest() && $this->isBlockedBy(\Auth::user()->user_id));
     }
 
     public function followingIds($includeMe = FALSE)
