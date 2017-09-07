@@ -60,6 +60,10 @@ Route::group(
         Route::get('users/search', 'Api\UserController@search');
         Route::get('users/search_mentions', 'Api\UserController@search_mention_suggestion');
         Route::get('users/featured', 'Api\UserController@featured');
+        Route::get('conversation/user/{userId}', 'Api\UserController@getConversationByUser');
+        Route::post('user/message', 'Api\UserController@sendMessage');
+        Route::post('user/message/delete', 'Api\UserController@deleteMessage');
+
         Route::post('user/update_username', 'Api\UserController@update_username');
         Route::post('user/block', 'Api\UserController@block');
         Route::post('user/unblock', 'Api\UserController@unblock');
@@ -85,7 +89,7 @@ Route::group(
             ['only' => ['destroy', 'show']]);
 
         Route::get('challenges/nearby', 'Api\ChallengesController@nearby');
-        
+
         Route::post('challenge/accept', 'Api\ChallengesController@accept');
         Route::post('challenge/decline', 'Api\ChallengesController@decline');
         Route::post('challenge/remove', 'Api\ChallengesController@remove');

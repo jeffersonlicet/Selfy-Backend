@@ -10,6 +10,7 @@ use DB,
     Illuminate\Foundation\Auth\User as Authenticatable;
 
 use Hareku\LaravelBlockable\Traits\Blockable;
+use Illuminate\Support\Collection;
 
 /**
  * @property boolean duo_enabled
@@ -50,15 +51,17 @@ use Hareku\LaravelBlockable\Traits\Blockable;
  * @property UserGroup userGroup
  * @property UserFace Face
  * @property UserToken Token
- * @property Photo[] photos
- * @property UserFaceRecognition[] FaceDescriptors
- * @property User[] Following
- * @property User[] Followers
- * @property UserChallenge[] userChallenges
- * @property PhotoReport[] PhotoReports
+ * @property Collection photos
+ * @property Collection FaceDescriptors
+ * @property Collection Following
+ * @property Collection Followers
+ * @property Collection userChallenges
+ * @property Collection PhotoReports
  * @property UserInformation information
  * @property string facebook_token
  * @property string wp_token
+ * @property integer password_type
+ * @property integer unreadNotifications
  */
 class User extends Authenticatable
 {
@@ -69,7 +72,7 @@ class User extends Authenticatable
 
     protected $primaryKey = 'user_id';
 
-    protected $appends = ['follow_enabled', 'edit_enabled', 'email_editable', 'chat_enabled'];
+    protected $appends = ['follow_enabled', 'edit_enabled', 'email_editable', 'chat_enabled', 'unread'];
 
     protected static $createRules = [
         'username'              =>	'required|allowed_username|unique:users,username',
@@ -211,7 +214,7 @@ class User extends Authenticatable
 
     public function getFollowEnabledAttribute()
     {
-        return !\Auth::guest() && \Auth::user()->user_id != $this->user_id && !boolval(count(UserInvitation::where(['user_id' => \Auth::user()->user_id, 'profile_id' => $this->user_id])->first())) && !boolval(count(UserFollower::where(['follower_id' => \Auth::user()->user_id, 'following_id' => $this->user_id])->first()));
+        return !\Auth::guest() && \Auth::user()->user_id != $this->user_id &&  UserInvitation::where(['user_id' => \Auth::user()->user_id, 'profile_id' => $this->user_id])->first() == null && UserFollower::where(['follower_id' => \Auth::user()->user_id, 'following_id' => $this->user_id])->first() == null;
     }
 
     public function getEmailEditableAttribute()
@@ -221,13 +224,17 @@ class User extends Authenticatable
 
     public function getChatEnabledAttribute()
     {
-        return (!\Auth::guest()) && (count(UserFollower::where(['follower_id' => $this->user_id, 'following_id' => \Auth::user()->user_id])->first()) > 0) && !$this->isBlocking(\Auth::user()->user_id) && !$this->isBlockedBy(\Auth::user()->user_id);
+        return (!\Auth::guest()) && (UserFollower::where(['follower_id' => $this->user_id, 'following_id' => \Auth::user()->user_id])->first() != null) && !$this->isBlocking(\Auth::user()->user_id) && !$this->isBlockedBy(\Auth::user()->user_id);
+    }
+
+    public function getUnreadAttribute()
+    {
+        return \Auth::guest() ? 0 : count($this->unreadNotifications());
     }
 
     public function followingIds($includeMe = FALSE)
     {
         $collection   = $this->Following->pluck('following_id');
-
         if($includeMe)
             $collection[] = $this->user_id;
 

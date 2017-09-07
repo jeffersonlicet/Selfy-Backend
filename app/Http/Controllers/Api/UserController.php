@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App;
+use Chat;
+use Musonza\Chat\Messages\Message;
 use Validator;
 use Exception;
 use App\Models\User;
@@ -74,11 +76,8 @@ class UserController extends Controller
     {
         try
         {
-            if ($result = User::with('Face')->find(\Auth::user()->user_id))
+            if ($user = User::with('Face')->find(\Auth::user()->user_id))
             {
-                $user = $result->toArray();
-                $user['unread'] = count($result->unreadNotifications);
-
                 return response()->json([
                     'status' => TRUE,
                     'user' => $user
@@ -1366,7 +1365,7 @@ class UserController extends Controller
     }
  
     /**
-     * Follow a user
+     * Unblock a user
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -1421,6 +1420,156 @@ class UserController extends Controller
 			]);
 		}
 	}
+
+	public function getConversationByUser($userId)
+	{
+		try {
+            $limit = Input::get('limit', 10);
+            $page = Input::get('page', 0);
+
+            $validator =
+                Validator::make(
+                    ['limit' => $limit, 'page' => $page],
+                    ['limit' => ['required', 'numeric', 'between:1,20'], 'page' => ['required', 'numeric']
+                ]);
+
+            if (!$validator->passes()) {
+                return response()->json([
+                    'status' => false,
+                    'report' => $validator->messages()->first()
+                ]);
+            }
+
+            if($user = User::find($userId))
+            {
+                if($conversation = Chat::getConversationBetween(\Auth::user()->user_id, $user->user_id))
+                {
+                    $messages =  Chat::conversations($conversation)->for(\Auth::user())->getMessages($limit, $page);
+                    Chat::conversations($conversation)->for(\Auth::user())->readAll();
+
+                    return response()->json([
+                        'status' => true,
+                        'messages' => $messages
+                    ]);
+                }
+                return response()->json([
+                    'status' => true,
+                    'messages' => []
+                ]);
+            }
+
+            return response()->json([
+                'status' => false,
+                'report' => 'resource_not_found'
+            ]);
+		}
+
+		catch(Exception $ex)
+		{
+			return response()->json([
+				'status' => false,
+				'report' => $ex->getMessage()
+			]);
+		}
+	}
+
+	public function sendMessage(Request $request)
+    {
+        try
+        {
+            $input = $request->all();
+
+            $validator = Validator::make($input, [
+                'user_id' => 'required|numeric',
+                'body' => 'required'
+            ]);
+
+            if(!$validator->passes())
+            {
+                return response()->json([
+                    'status' => false,
+                    'report' => $validator->messages()->first()
+                ]);
+            }
+
+            if(\Auth::user()->user_id != $input['user_id'] && ($user = User::find($input["user_id"])))
+            {
+                if(!\Auth::user()->isBlocking($input["user_id"]) && !\Auth::user()->isBlockedBy($input["user_id"]))
+                {
+                    if(!$conversation = Chat::getConversationBetween(\Auth::user()->user_id, $user->user_id))
+                    {
+                        $conversation = Chat::createConversation([\Auth::user()->user_id, $user->user_id]);
+                    }
+
+                    $message = Chat::message($input['body'])
+                        ->from(\Auth::user()->user_id)
+                        ->to($conversation)
+                        ->send();
+
+                    unset($message->conversation);
+
+                    return response()->json([
+                        'status' => true,
+                        'messages' => [$message]
+                    ]);
+                }
+
+                return response()->json([
+                    'status' => true,
+                    'report' => 'invalid_action'
+                ]);
+            }
+
+            throw new Exception("resource_not_found");
+        }
+
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => false,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function deleteMessage(Request $request)
+    {
+        try {
+
+            $input = $request->all();
+            $validation = Validator::make($input, ['message_id' => 'required|numeric']);
+
+            if (!$validation->passes()) {
+                return response()->json([
+                    'status' => false,
+                    'report' => $validation->messages()->first()
+                ]);
+            }
+
+            if ($message = Message::find($input['message_id']))
+            {
+                Chat::messages($message)->for(\Auth::user())->delete();
+
+                return response()->json([
+                    'status' => false,
+                    'report' => 'resource_deleted'
+                ]);
+            }
+
+            return response()->json([
+                'status' => false,
+                'report' => 'resource_not_found'
+            ]);
+
+        }
+        catch (Exception $ex)
+        {
+            return response()->json([
+                'status' => false,
+                'report' => $ex->getMessage()
+            ]);
+        }
+    }
 
     /**
      * Generate a batch of duo invitations
