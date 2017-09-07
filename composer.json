@@ -9,6 +9,11 @@
         {
             "type": "vcs",
             "url": "https://github.com/jeffersonlicet/chat"
+        },
+
+        {
+            "type": "vcs",
+            "url": "https://github.com/jeffersonlicet/laravel-user-blockable"
         }
     ],
     "require": {
