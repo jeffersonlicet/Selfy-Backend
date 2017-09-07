@@ -20,7 +20,7 @@
         "php": ">=5.6.4",
         "ben-gibson/foursquare-venue-client": "^0.0.6",
         "brozot/laravel-fcm": "^1.2",
-        "hareku/laravel-user-blockable": "^1.0",
+        "hareku/laravel-user-blockable": "dev-fixfilename",
         "laravel/framework": "5.4.*",
         "laravel/tinker": "~1.0",
         "laravelcollective/html": "^5.4.0",

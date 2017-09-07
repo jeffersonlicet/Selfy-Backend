@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "1667b7d580dfdfe0e693b0b251b4221d",
+    "content-hash": "202119f13432824552b359732143e2f0",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -1019,12 +1019,12 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/hareku/laravel-user-blockable.git",
+                "url": "https://github.com/jeffersonlicet/laravel-user-blockable.git",
                 "reference": "26fd3bcdedfb40a93d23610636bdd7e65efdf340"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hareku/laravel-user-blockable/zipball/26fd3bcdedfb40a93d23610636bdd7e65efdf340",
+                "url": "https://api.github.com/repos/jeffersonlicet/laravel-user-blockable/zipball/26fd3bcdedfb40a93d23610636bdd7e65efdf340",
                 "reference": "26fd3bcdedfb40a93d23610636bdd7e65efdf340",
                 "shasum": ""
             },
@@ -1043,7 +1043,11 @@
                     "Hareku\\LaravelBlockable\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "Hareku\\LaravelBlockable\\Tests\\": "tests/"
+                }
+            },
             "license": [
                 "MIT"
             ],
@@ -1058,6 +1062,9 @@
                 "block",
                 "laravel"
             ],
+            "support": {
+                "source": "https://github.com/jeffersonlicet/laravel-user-blockable/tree/1.0.0"
+            },
             "time": "2017-05-30T02:44:40+00:00"
         },
         {
