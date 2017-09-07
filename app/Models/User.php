@@ -13,6 +13,7 @@ use Hareku\LaravelBlockable\Traits\Blockable;
 use Illuminate\Support\Collection;
 
 /**
+ * @property  boolean block_enabled
  * @property boolean duo_enabled
  * @property boolean spot_enabled
  * @property boolean email_editable
