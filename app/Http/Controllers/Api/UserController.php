@@ -1473,6 +1473,50 @@ class UserController extends Controller
 		}
 	}
 
+    public function getConversationById($conversationId)
+    {
+        try {
+            $limit = Input::get('limit', 10);
+            $page = Input::get('page', 0);
+
+            $validator =
+                Validator::make(
+                    ['limit' => $limit, 'page' => $page],
+                    ['limit' => ['required', 'numeric', 'between:1,20'], 'page' => ['required', 'numeric']
+                    ]);
+
+            if (!$validator->passes()) {
+                return response()->json([
+                    'status' => false,
+                    'report' => $validator->messages()->first()
+                ]);
+            }
+
+            if($conversation = Chat::conversation($conversationId))
+            {
+                $messages =  Chat::conversations($conversation)->for(\Auth::user())->getMessages($limit, $page);
+                Chat::conversations($conversation)->for(\Auth::user())->readAll();
+
+                return response()->json([
+                    'status' => true,
+                    'messages' => $messages
+                ]);
+            }
+
+            return response()->json([
+                'status' => false,
+                'report' => 'resource_not_found'
+            ]);
+        }
+        catch(Exception $ex)
+        {
+            return response()->json([
+                'status' => false,
+                'report' => $ex->getMessage()
+            ]);
+        }
+    }
+
 	public function sendMessage(Request $request)
     {
         try

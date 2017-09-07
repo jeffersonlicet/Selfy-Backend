@@ -4,6 +4,13 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "type": "project",
+    "repositories":
+    [
+        {
+            "type": "vcs",
+            "url": "https://github.com/jeffersonlicet/chat"
+        }
+    ],
     "require": {
         "php": ">=5.6.4",
         "ben-gibson/foursquare-venue-client": "^0.0.6",

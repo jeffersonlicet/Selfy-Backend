@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "e9559e16dfa43d40e0ef36d0c69781f9",
+    "content-hash": "1667b7d580dfdfe0e693b0b251b4221d",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -1656,12 +1656,12 @@
             "version": "v2.0.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/musonza/chat.git",
+                "url": "https://github.com/jeffersonlicet/chat.git",
                 "reference": "b86d662862353da8d39828e9069af39682afcc31"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/musonza/chat/zipball/b86d662862353da8d39828e9069af39682afcc31",
+                "url": "https://api.github.com/repos/jeffersonlicet/chat/zipball/b86d662862353da8d39828e9069af39682afcc31",
                 "reference": "b86d662862353da8d39828e9069af39682afcc31",
                 "shasum": ""
             },
