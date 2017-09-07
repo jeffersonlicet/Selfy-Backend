@@ -236,7 +236,7 @@ class User extends Authenticatable
 
     public function getBlockEnabledAttribute()
     {
-        return !(\Auth::guest() && $this->isBlockedBy(\Auth::user()->user_id));
+        return !\Auth::guest() && !$this->isBlockedBy(\Auth::user()->user_id);
     }
 
     public function followingIds($includeMe = FALSE)
