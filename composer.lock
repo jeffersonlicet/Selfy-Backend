@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "202119f13432824552b359732143e2f0",
+    "content-hash": "831d94c125069fb4d767f8fd6a1d510f",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -1016,16 +1016,16 @@
         },
         {
             "name": "hareku/laravel-user-blockable",
-            "version": "1.0.0",
+            "version": "dev-fixfilename",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jeffersonlicet/laravel-user-blockable.git",
-                "reference": "26fd3bcdedfb40a93d23610636bdd7e65efdf340"
+                "reference": "a97c66861031a2e3dd9acbcc49c29ca52b8d5057"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jeffersonlicet/laravel-user-blockable/zipball/26fd3bcdedfb40a93d23610636bdd7e65efdf340",
-                "reference": "26fd3bcdedfb40a93d23610636bdd7e65efdf340",
+                "url": "https://api.github.com/repos/jeffersonlicet/laravel-user-blockable/zipball/a97c66861031a2e3dd9acbcc49c29ca52b8d5057",
+                "reference": "a97c66861031a2e3dd9acbcc49c29ca52b8d5057",
                 "shasum": ""
             },
             "require": {
@@ -1063,9 +1063,9 @@
                 "laravel"
             ],
             "support": {
-                "source": "https://github.com/jeffersonlicet/laravel-user-blockable/tree/1.0.0"
+                "source": "https://github.com/jeffersonlicet/laravel-user-blockable/tree/master"
             },
-            "time": "2017-05-30T02:44:40+00:00"
+            "time": "2017-09-07T22:33:37+00:00"
         },
         {
             "name": "jakub-onderka/php-console-color",
@@ -1660,16 +1660,16 @@
         },
         {
             "name": "musonza/chat",
-            "version": "v2.0.1",
+            "version": "dev-fixsqlsrv",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jeffersonlicet/chat.git",
-                "reference": "b86d662862353da8d39828e9069af39682afcc31"
+                "reference": "23691ce296be2523b00103292fe14e66e9a80e9a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jeffersonlicet/chat/zipball/b86d662862353da8d39828e9069af39682afcc31",
-                "reference": "b86d662862353da8d39828e9069af39682afcc31",
+                "url": "https://api.github.com/repos/jeffersonlicet/chat/zipball/23691ce296be2523b00103292fe14e66e9a80e9a",
+                "reference": "23691ce296be2523b00103292fe14e66e9a80e9a",
                 "shasum": ""
             },
             "require": {
@@ -1686,7 +1686,6 @@
                     "Musonza\\Chat\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -1703,7 +1702,10 @@
                 "laravel",
                 "messaging"
             ],
-            "time": "2017-07-23T23:07:11+00:00"
+            "support": {
+                "source": "https://github.com/jeffersonlicet/chat/tree/master"
+            },
+            "time": "2017-09-07T00:11:52+00:00"
         },
         {
             "name": "namshi/jose",
@@ -5874,6 +5876,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "hareku/laravel-user-blockable": 20,
+        "musonza/chat": 20,
         "zizaco/entrust": 20
     },
     "prefer-stable": false,
