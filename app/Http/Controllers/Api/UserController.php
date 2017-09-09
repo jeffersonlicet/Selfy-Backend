@@ -1566,6 +1566,42 @@ class UserController extends Controller
         }
     }
 
+    public function getChats()
+    {
+        try {
+            $limit = Input::get('limit', 10);
+            $page = Input::get('page', 0);
+
+            $validator =
+                Validator::make(
+                    ['limit' => $limit, 'page' => $page],
+                    ['limit' => ['required', 'numeric', 'between:1,20'], 'page' => ['required', 'numeric']
+                    ]);
+
+            if (!$validator->passes()) {
+                return response()->json([
+                    'status' => false,
+                    'report' => $validator->messages()->first()
+                ]);
+            }
+
+            $messages = Chat::conversations()->for(\Auth::user())->limit($limit)->page($page+1)->get();
+
+            return response()->json([
+                'status' => true,
+                'messages' => $messages
+            ]);
+        }
+
+        catch(Exception $ex)
+        {
+            return response()->json([
+                'status' => false,
+                'report' => $ex
+            ]);
+        }
+    }
+
 	public function sendMessage(Request $request)
     {
         try

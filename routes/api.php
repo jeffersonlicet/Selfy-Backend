@@ -61,6 +61,8 @@ Route::group(
         Route::get('users/search_mentions', 'Api\UserController@search_mention_suggestion');
         Route::get('users/featured', 'Api\UserController@featured');
         Route::get('conversation/user/{userId}', 'Api\UserController@getConversationByUser');
+        Route::get('conversations', 'Api\UserController@getChats');
+
         Route::delete('conversation/user/{userId}', 'Api\UserController@deleteConversationByUser');
 
         Route::get('conversation/id/{conversationId}', 'Api\UserController@getConversationById');
