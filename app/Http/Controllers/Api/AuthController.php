@@ -28,7 +28,6 @@ class AuthController extends Controller
     {
         try
         {
-
             $input = $request->all();
             $validator = Validator::make($input, User::getCreateRules());
 
@@ -127,7 +126,16 @@ class AuthController extends Controller
                     ->with('Face')
                     ->where(($sanitized == $input['username'] && filter_var($sanitized, FILTER_VALIDATE_EMAIL)) ? 'email' : 'username', $input['username'])->first())
                 {
-                    if (Hash::check($input['password'], $user->password))
+                    //TODO change by constant 0 = normal password
+                    if($user->password_type ==  1)
+                    {
+                        $checkPassword = Hash::check(Hash::make($input['password']), $user->password);
+                    } else
+                    {
+                        $checkPassword = Hash::check($input['password'], $user->password);
+                    }
+
+                    if ($checkPassword)
                     {
                         $user->user_locale = App::getLocale();
                         $user->save();
@@ -155,7 +163,6 @@ class AuthController extends Controller
                         if ($request->has('device_id'))
                             $token->device_id = $input['device_id'];
 
-
                         $token->save();
 
                         unset($user->token);
@@ -166,6 +173,7 @@ class AuthController extends Controller
                             'private_key' => $private,
                             'user' => $user->toArray()
                         ]);
+
                     } else {
                         return response()->json([
                             'status' => FALSE,

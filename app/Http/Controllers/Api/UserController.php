@@ -1545,7 +1545,7 @@ class UserController extends Controller
 
                     return response()->json([
                         'status' => true,
-                        'messages' => 'action_done'
+                        'report' => 'action_done'
                     ]);
                 }
 
