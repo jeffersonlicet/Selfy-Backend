@@ -1518,6 +1518,54 @@ class UserController extends Controller
         }
     }
 
+    public function deleteConversationByUser($userId)
+    {
+        try {
+            $limit = Input::get('limit', 10);
+            $page = Input::get('page', 0);
+
+            $validator =
+                Validator::make(
+                    ['limit' => $limit, 'page' => $page],
+                    ['limit' => ['required', 'numeric', 'between:1,20'], 'page' => ['required', 'numeric']
+                    ]);
+
+            if (!$validator->passes()) {
+                return response()->json([
+                    'status' => false,
+                    'report' => $validator->messages()->first()
+                ]);
+            }
+
+            if($user = User::find($userId))
+            {
+                if($conversation = Chat::getConversationBetween(\Auth::user()->user_id, $user->user_id))
+                {
+                    Chat::conversations($conversation)->for(\Auth::user())->clear();
+
+                    return response()->json([
+                        'status' => true,
+                        'messages' => 'action_done'
+                    ]);
+                }
+
+            }
+
+            return response()->json([
+                'status' => false,
+                'report' => 'resource_not_found'
+            ]);
+        }
+
+        catch(Exception $ex)
+        {
+            return response()->json([
+                'status' => false,
+                'report' => $ex
+            ]);
+        }
+    }
+
 	public function sendMessage(Request $request)
     {
         try
