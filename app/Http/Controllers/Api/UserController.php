@@ -1444,7 +1444,8 @@ class UserController extends Controller
             {
                 if($conversation = Chat::getConversationBetween(\Auth::user()->user_id, $user->user_id))
                 {
-                    $messages =  Chat::conversations($conversation)->for(\Auth::user())->getMessages($limit, $page);
+                    $messages =  $conversation->getMessages(\Auth::user(), $limit, $page+1, 'desc');
+
                     Chat::conversations($conversation)->for(\Auth::user())->readAll();
 
                     return response()->json([
@@ -1468,7 +1469,7 @@ class UserController extends Controller
 		{
 			return response()->json([
 				'status' => false,
-				'report' => $ex->getMessage()
+				'report' => $ex
 			]);
 		}
 	}
