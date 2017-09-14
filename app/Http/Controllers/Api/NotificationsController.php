@@ -57,6 +57,7 @@ class NotificationsController extends Controller
                         if($message && $message->sender->user_id != \Auth::user()->user_id)
                         {
                             $notification['user'] = $message->sender;
+                            $notification['body'] = __('notifications.MessageSent');
                         } else continue 2;
 
                         break;
@@ -75,6 +76,7 @@ class NotificationsController extends Controller
                         if($user != null)
                         {
                             $notification['user']   = $user->toArray();
+                            $notification['body'] = __('notifications.AcceptedInvitationNotification');
                         }
 
                         else continue 2;
@@ -87,6 +89,7 @@ class NotificationsController extends Controller
                         if($invitation != null)
                         {
                             $notification['follow_invitation']   = $invitation->toArray();
+                            $notification['body'] = __('notifications.FollowInvitationNotification');
                         }
 
                         else continue 2;
@@ -97,6 +100,7 @@ class NotificationsController extends Controller
                         if($photo = Photo::with('Challenges', 'Challenges.object')->find($n->data['photo_id']))
                         {
                             $notification['photo'] = $photo->toArray();
+                            $notification['body'] = __('notifications.PhotoRevisionNotification');
                         }
 
                         else continue 2;
@@ -138,6 +142,7 @@ class NotificationsController extends Controller
                         {
                             $notification['photo']  = $photo->toArray();
                             $notification['user']   = $user->toArray();
+                            $notification['body'] = __('notifications.LikeNotification');
                         }
 
                         else continue 2;
@@ -148,6 +153,8 @@ class NotificationsController extends Controller
                         if($user = User::find($n->data['user_id']))
                         {
                             $notification['user'] = $user->toArray();
+                            $notification['body'] = __('notifications.FollowNotification');
+
                         }
                         else continue 2;
 
@@ -168,6 +175,8 @@ class NotificationsController extends Controller
 
                             $notification['comment'] = $comment;
                             $notification['user'] = $user->toArray();
+                            $notification['body'] = __('notifications.CommentNotification');
+
                         }
                         else continue 2;
                     break;
