@@ -56,6 +56,7 @@ Route::group(
 
         Route::get('users/fb_suggestions', 'Api\UserController@facebook_suggestion');
         Route::get('users/suggestions', 'Api\UserController@suggestions');
+
         Route::get('users/duo', 'Api\UserController@duo');
         Route::get('users/search', 'Api\UserController@search');
         Route::get('users/search_mentions', 'Api\UserController@search_mention_suggestion');

@@ -10,6 +10,7 @@ use App\Models\UserChallenge;
 use App\Models\UserComment;
 use App\Models\UserInvitation;
 use Illuminate\Support\Facades\Input;
+use Musonza\Chat\Messages\Message;
 use Validator;
 
 class NotificationsController extends Controller
@@ -45,11 +46,20 @@ class NotificationsController extends Controller
                 $notification = [];
                 $notification['notification_id'] = $n->id;
                 $notification['read'] = $n->read_at != null;
-                $notification['type'] = explode("\\", $n->type)[2];
+                $notification['type'] = explode("\\", $n->type)[2] == 'Notifications' ?  explode("\\", $n->type)[3] : explode("\\", $n->type)[2] ;
                 $notification['created_at'] = $n->created_at->toDateTimeString();
 
                 switch ($n->type)
                 {
+
+                    case 'Musonza\Chat\Notifications\MessageSent':
+                        $message = Message::with('sender')->find($n->data['message_id']);
+                        if($message && $message->sender->user_id != \Auth::user()->user_id)
+                        {
+                            $notification['user'] = $message->sender;
+                        } else continue 2;
+
+                        break;
                     case 'App\Notifications\PlayNotification':
                         if($photo = Photo::with('Challenges', 'Challenges.object')->find($n->data['photo_id']))
                         {

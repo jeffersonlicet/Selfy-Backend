@@ -830,6 +830,8 @@ class UserController extends Controller
         }
     }
 
+
+
     /**
      * Get user following
      * @return \Illuminate\Http\JsonResponse
@@ -1212,7 +1214,7 @@ class UserController extends Controller
             $invitations = UserInvitation::where('user_id', \Auth::user()->user_id)->get()->pluck('profile_id');
             $collection = \Auth::user()->followingIds(true)->merge($invitations);
 
-            $suggestion =  User::whereNotIn('user_id', $collection)->limit($limit)->offset($limit*$page)->get();
+            $suggestion =  User::whereNotIn('user_id', $collection)->limit($limit)->offset($limit*$page)->orderBy('user_id', 'desc')->get();
 
             return response()->json([
                 'status' => TRUE,
@@ -1601,6 +1603,8 @@ class UserController extends Controller
             ]);
         }
     }
+
+
 
 	public function sendMessage(Request $request)
     {

@@ -1664,12 +1664,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jeffersonlicet/chat.git",
-                "reference": "23691ce296be2523b00103292fe14e66e9a80e9a"
+                "reference": "3dd65f56ed91886ffbcc98000dc088c665f409ff"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jeffersonlicet/chat/zipball/23691ce296be2523b00103292fe14e66e9a80e9a",
-                "reference": "23691ce296be2523b00103292fe14e66e9a80e9a",
+                "url": "https://api.github.com/repos/jeffersonlicet/chat/zipball/3dd65f56ed91886ffbcc98000dc088c665f409ff",
+                "reference": "3dd65f56ed91886ffbcc98000dc088c665f409ff",
                 "shasum": ""
             },
             "require": {
@@ -1703,9 +1703,9 @@
                 "messaging"
             ],
             "support": {
-                "source": "https://github.com/jeffersonlicet/chat/tree/master"
+                "source": "https://github.com/jeffersonlicet/chat/tree/fixsqlsrv"
             },
-            "time": "2017-09-07T00:11:52+00:00"
+            "time": "2017-09-09T23:10:23+00:00"
         },
         {
             "name": "namshi/jose",
