@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App;
+use App\Models\Hashtag;
 use Chat;
 use Musonza\Chat\Messages\Message;
 use Validator;
@@ -1009,6 +1010,49 @@ class UserController extends Controller
             return response()->json([
                 'status' => TRUE,
                 'connections' => $result->isEmpty() ? [] : $result->toArray()
+            ]);
+
+        }
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * Search users
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function searchMix()
+    {
+        try
+        {
+            $query    = Input::get('query', 0);
+            $limit   = Input::get('limit', config('app.photos_best_per_page'));
+            $page    = Input::get('page', 0);
+
+            $validator = Validator::make(
+                ['query' => $query, 'limit' => $limit, 'page'=> $page],
+                ['query' => ['required', 'string'], 'limit' => ['required', 'numeric', 'between:1,20'], 'page' => ['required', 'numeric']]);
+
+            if(!$validator->passes())
+            {
+                return response()->json([
+                    'status' => TRUE,
+                    'report' => $validator->messages()->first()
+                ]);
+            }
+
+            $users = User::where('username', 'LIKE', '%'.$query.'%')->limit($limit)->offset($limit*$page)->get();
+            $hashtags = Hashtag::where('hashtag_text', 'LIKE', '%'.$query.'%')->limit($limit)->offset($limit*$page)->get();
+
+            return response()->json([
+                'status' => TRUE,
+                'connections' => $users,
+                'hashtags'=> $hashtags
             ]);
 
         }

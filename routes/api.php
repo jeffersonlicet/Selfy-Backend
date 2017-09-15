@@ -59,6 +59,8 @@ Route::group(
 
         Route::get('users/duo', 'Api\UserController@duo');
         Route::get('users/search', 'Api\UserController@search');
+        Route::get('search/mix', 'Api\UserController@searchMix');
+
         Route::get('users/search_mentions', 'Api\UserController@search_mention_suggestion');
         Route::get('users/featured', 'Api\UserController@featured');
         Route::get('conversation/user/{userId}', 'Api\UserController@getConversationByUser');
