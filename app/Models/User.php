@@ -74,7 +74,7 @@ class User extends Authenticatable
     protected $primaryKey = 'user_id';
 
     protected $appends = ['follow_enabled', 'edit_enabled', 'email_editable', 'chat_enabled', 'block_enabled',
-        'unread'];
+        'unread', 'follow_requesting'];
 
     protected static $createRules = [
         'username'              =>	'required|allowed_username|unique:users,username',
@@ -217,6 +217,11 @@ class User extends Authenticatable
     public function getFollowEnabledAttribute()
     {
         return !\Auth::guest() && \Auth::user()->user_id != $this->user_id &&  UserInvitation::where(['user_id' => \Auth::user()->user_id, 'profile_id' => $this->user_id])->first() == null && UserFollower::where(['follower_id' => \Auth::user()->user_id, 'following_id' => $this->user_id])->first() == null;
+    }
+
+    public function getFollowRequestingAttribute()
+    {
+        return !\Auth::guest() && \Auth::user()->user_id != $this->user_id &&  UserInvitation::where(['user_id' => $this->user_id, 'profile_id' => \Auth::user()->user_id, 'invitation_status' => config('constants.INVITATION_STATUS.INVITED')])->first() != null;
     }
 
     public function getEmailEditableAttribute()
