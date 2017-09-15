@@ -7,5 +7,8 @@ return [
     'PhotoRevisionNotification' => 'Tu foto está siendo revisada debido a contenido explícito',
     'LikeNotification' => 'Amó tu photo',
     'FollowNotification' => 'Te sigue',
-    'CommentNotification' => 'Comentó tu foto'
+    'CommentNotification' => 'Comentó tu foto',
+    'FollowInvitationAccepted' => 'Invitación aceptada',
+    'FollowInvitationDeclined' => 'Invitación rechazada'
+
 ];

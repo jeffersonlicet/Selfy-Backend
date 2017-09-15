@@ -89,7 +89,18 @@ class NotificationsController extends Controller
                         if($invitation != null)
                         {
                             $notification['follow_invitation']   = $invitation->toArray();
-                            $notification['body'] = __('notifications.FollowInvitationNotification');
+
+                            if($invitation->invitation_status == config('constants.INVITATION_STATUS.ACCEPTED')){
+                                $notification['body'] = __('notifications.FollowInvitationAccepted');
+                            }
+
+                            elseif($invitation->invitation_status == config('constants.INVITATION_STATUS.DECLINED')){
+                                $notification['body'] = __('notifications.FollowInvitationDeclined');
+                            }
+
+                            else {
+                                $notification['body'] = __('notifications.FollowInvitationNotification');
+                            }
                         }
 
                         else continue 2;

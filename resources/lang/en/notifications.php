@@ -7,5 +7,7 @@ return [
     'PhotoRevisionNotification' => 'Your photo is in review due to explicit content',
     'LikeNotification' => 'Liked your selfie',
     'FollowNotification' => 'Is following you now',
-    'CommentNotification' => 'Commented your photo'
+    'CommentNotification' => 'Commented your photo',
+    'FollowInvitationAccepted' => 'Invitation accepted',
+    'FollowInvitationDeclined' => 'Invitation declined'
 ];
