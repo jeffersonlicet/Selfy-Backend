@@ -8,6 +8,6 @@ return [
     'LikeNotification' => 'Liked your selfie',
     'FollowNotification' => 'Is following you now',
     'CommentNotification' => 'Commented your photo',
-    'FollowInvitationAccepted' => 'Invitation accepted',
-    'FollowInvitationDeclined' => 'Invitation declined'
+    'FollowInvitationAccepted' => 'You\'ve accepted this invitation',
+    'FollowInvitationDeclined' => 'You\'ve declined this invitation'
 ];

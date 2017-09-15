@@ -8,7 +8,7 @@ return [
     'LikeNotification' => 'Amó tu photo',
     'FollowNotification' => 'Te sigue',
     'CommentNotification' => 'Comentó tu foto',
-    'FollowInvitationAccepted' => 'Invitación aceptada',
-    'FollowInvitationDeclined' => 'Invitación rechazada'
+    'FollowInvitationAccepted' => 'Aceptaste esta invitación',
+    'FollowInvitationDeclined' => 'Rechazaste esta invitación'
 
 ];
