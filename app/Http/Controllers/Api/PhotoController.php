@@ -749,9 +749,9 @@ class PhotoController extends Controller
                         $query->whereHas('User', function($subQuery)
                         {
                             $subQuery->where('account_private', '=', 0)->orWhereIn('user_id', \Auth::user()->followingIds(true));
-                        });
+                        })->with('User');
                     })
-                    ->has('Photo')->limit($limit)->offset($limit*$page)->get();
+                    ->has('Photo')->with('Photo.user')->limit($limit)->offset($limit*$page)->get();
 
                 foreach($result as $entry)
                     $curated[] = $entry->Photo;
