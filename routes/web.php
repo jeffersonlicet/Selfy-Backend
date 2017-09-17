@@ -145,10 +145,15 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin' , 'middleware' => ['Ap
 
 Route::get('user/password/reset/{token}', [
     'as' => 'password.reset',
-    'uses' => 'ForgotPasswordController@showResetForm',
+    'uses' => 'App\ForgotPasswordController@showResetForm'
 ]);
 
-/*Route::post('user/password/reset', [
-    'as' => 'SelfyForgotPasswordReset',
-    'uses' => 'ForgotPasswordController@reset'
-]);*/
+Route::get('user/password_changed', function()
+{
+    return __('app.password_changed');
+});
+
+Route::post('user/password/reset', [
+    'as' => 'password.change',
+    'uses' => 'App\ForgotPasswordController@reset'
+]);

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Mail\FbIntegrationConfirmMail;
+use App\Notifications\PasswordResetNotification;
 use DB,
     Carbon\Carbon,
     Illuminate\Notifications\Notifiable,
@@ -89,6 +91,17 @@ class User extends Authenticatable implements CanResetPassword
     {
         $this->restoreB();
         $this->restoreA();
+    }
+
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new PasswordResetNotification($token));
     }
 
     protected $fillable = [
