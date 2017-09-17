@@ -10,6 +10,7 @@ use DB,
     Illuminate\Foundation\Auth\User as Authenticatable;
 
 use Hareku\LaravelBlockable\Traits\Blockable;
+use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Support\Collection;
 
 /**
@@ -64,10 +65,11 @@ use Illuminate\Support\Collection;
  * @property integer password_type
  * @property integer unreadNotifications
  */
-class User extends Authenticatable
+class User extends Authenticatable implements CanResetPassword
 {
     use Blockable;
     use Notifiable;    
+    use \Illuminate\Auth\Passwords\CanResetPassword;
     use SoftDeletes  { restore as private restoreB; }
     use EntrustUserTrait { restore as private restoreA; }
 
@@ -260,6 +262,11 @@ class User extends Authenticatable
 
     public function getEmailAttribute()
     {
-        return (!\Auth::guest()) && $this->itsMe() ? $this->attributes['email'] : null;
+        if(\Auth::guest())
+        {
+            return $this->attributes['email'];
+        }
+
+        return $this->itsMe() ? $this->attributes['email'] : null;
     }
 }

@@ -141,3 +141,14 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin' , 'middleware' => ['Ap
         'uses' => 'AdminController@createHashtag'
     ]);
 });
+
+
+Route::get('user/password/reset/{token}', [
+    'as' => 'password.reset',
+    'uses' => 'ForgotPasswordController@showResetForm',
+]);
+
+/*Route::post('user/password/reset', [
+    'as' => 'SelfyForgotPasswordReset',
+    'uses' => 'ForgotPasswordController@reset'
+]);*/

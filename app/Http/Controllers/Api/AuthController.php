@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App;
 use Hash;
+use Illuminate\Support\Facades\Password;
 use Mail;
 use JWTAuth;
 use Exception;
@@ -445,7 +446,6 @@ class AuthController extends Controller
         }
     }
 
-
     /**
      * Determine if an account has facebook associated without
      * altering tokens
@@ -758,6 +758,40 @@ class AuthController extends Controller
         {
             return response()->json([
                 'status' => FALSE,
+                'report' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function resetPassword(Request $request)
+    {
+        try {
+            $input = $request->only(['email']);
+
+            $validator = Validator::make($input, [
+                'email' => 'required',
+            ]);
+
+            if (!$validator->passes())
+                return response()->json(['status'=> false, 'report' => $validator->messages()->first()]);
+
+            if($user = User::where('email', $input['email'])->first())
+            {
+                $response = Password::broker()->sendResetLink($input);
+
+                if($response == Password::RESET_LINK_SENT)
+                {
+                    return response()->json(['status'=> true, 'report' => "Email sent"]);
+                }
+            }
+
+            return response()->json(['status'=> false, 'report' => "Email not found"]);
+        }
+
+        catch(Exception $e)
+        {
+            return response()->json([
+                'status' => false,
                 'report' => $e->getMessage()
             ]);
         }
