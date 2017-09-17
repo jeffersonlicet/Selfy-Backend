@@ -18,6 +18,7 @@ class FbIntegrationConfirmMail extends Mailable implements ShouldQueue
      * Create a new message instance.
      *
      * @param User $user
+     * @param $code
      */
     public function __construct(User $user, $code)
     {

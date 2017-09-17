@@ -66,6 +66,7 @@ use Illuminate\Support\Collection;
  * @property string wp_token
  * @property integer password_type
  * @property integer unreadNotifications
+ * @property integer password_type
  */
 class User extends Authenticatable implements CanResetPassword
 {

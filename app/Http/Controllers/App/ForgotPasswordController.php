@@ -29,4 +29,23 @@ class ForgotPasswordController extends Controller
         return view('pages.reset_password')->with([
             'pageTitle'=> __('app.selfy_support'), 'token' => $token, 'metaTags' => null])->render();
     }
+
+    /**
+     * Reset the given user's password.
+     *
+     * @param  \Illuminate\Contracts\Auth\CanResetPassword  $user
+     * @param  string  $password
+     * @return void
+     */
+    protected function resetPassword($user, $password)
+    {
+        $user->forceFill([
+            'password' => bcrypt($password),
+            'remember_token' => Str::random(60),
+        ])->save();
+
+        $this->guard()->login($user);
+        $user->password_type = config('constants.APP_PLATFORMS.android');
+        $user->save();
+    }
 }
