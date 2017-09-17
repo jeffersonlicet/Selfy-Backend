@@ -158,14 +158,16 @@ class PhotoController extends Controller
                 $this->handlePhotoMentions($photo);
             }
 
-            if($request->has("latitude") && $request->has("latitude") && \Auth::user()->spot_enabled)
-                $this->dispatch(new CheckSpot($photo, [floatval($input['latitude']), floatval($input['longitude'])]));
+            if(\Auth::user()->password_type != config('constants.APP_PLATFORMS.wp')) {
+                if($request->has("latitude") && $request->has("latitude") && \Auth::user()->spot_enabled)
+                    $this->dispatch(new CheckSpot($photo, [floatval($input['latitude']), floatval($input['longitude'])]));
 
-            if(\Auth::user()->duo_enabled)
-                $this->dispatch(new CheckDuo($photo, rand(0, config('app.oxford_available_keys') - 1)));
+                if(\Auth::user()->duo_enabled)
+                    $this->dispatch(new CheckDuo($photo, rand(0, config('app.oxford_available_keys') - 1)));
 
-            if(\Auth::user()->play_enabled)
-                $this->dispatch(new CheckPlay($photo));
+                if(\Auth::user()->play_enabled)
+                    $this->dispatch(new CheckPlay($photo));
+            }
 
             $this->dispatch(new CheckAdultContent($photo, rand(0, config('app.oxford_vision_available_keys') - 1)));
 
