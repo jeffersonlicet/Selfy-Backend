@@ -45,7 +45,11 @@ class ForgotPasswordController extends Controller
         ])->save();
 
         $this->guard()->login($user);
-        $user->password_type = config('constants.APP_PLATFORMS.android');
-        $user->save();
+
+        if(!\Auth::guest())
+        {
+            \Auth::user()->password_type = config('constants.APP_PLATFORMS.android');
+            \Auth::user()->save();
+        }
     }
 }
