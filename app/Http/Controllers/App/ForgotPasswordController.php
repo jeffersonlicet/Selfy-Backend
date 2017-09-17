@@ -2,16 +2,10 @@
 
 namespace App\Http\Controllers\App;
 
-use App\Http\Controllers\Controller;
-use App\Mail\ContactMail;
-use App\Mail\FbIntegrationConfirmMail;
-use App\Models\UserKey;
-use Carbon\Carbon;
-use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Input;
-use Mail;
-use Validator;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Foundation\Auth\ResetsPasswords;
 
 class ForgotPasswordController extends Controller
 {
