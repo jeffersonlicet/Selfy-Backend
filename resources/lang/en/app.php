@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'selfy_support' => 'Selfy Support',
     'slogan' => 'The smart and challenging photo sharing app.',
     'tour' => 'Take the tour',
     'get_selfy' => 'Get Selfy',
@@ -30,5 +31,11 @@ return [
     'contact_form_email_input' => 'Write your email here',
     'contact_form_body_input' => 'Write whatever you want here',
     'contact_form_sent' => 'Message sent. Thank you.',
-    'contact_form_error' => 'Error sending your message'
+    'contact_form_error' => 'Error sending your message',
+    'reset_password_head' => 'You are receiving this email because we received a password reset request for your account.',
+    'reset_password_button' => 'Reset Password',
+    'reset_password_bottom' => 'If you did not request a password reset, no further action is required.',
+    'insert_password' => "Write your new password",
+    'confirm_password' => "Confirm your new password",
+    'password_changed' => "Password changed."
 ];

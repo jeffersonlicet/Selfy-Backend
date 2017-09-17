@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'selfy_support' => 'Equipo de soporte',
     'slogan' => 'La aplicación inteligente y desafiante para compartir fotos',
     'tour' => 'Explorar',
     'get_selfy' => 'Obtener Selfy',
@@ -30,5 +31,12 @@ return [
     'contact_form_email_input' => 'Escribe tu correo aquí',
     'contact_form_body_input' => 'Escribe lo que quieras en este espacio',
     'contact_form_sent' => 'Mensaje enviado, muchas gracias.',
-    'contact_form_error' => 'No se pudo enviar tu mensaje'
+    'contact_form_error' => 'No se pudo enviar tu mensaje',
+    'reset_password_head' => 'Recibió este correo electrónico porque recibimos una solicitud de restablecimiento de contraseña para su cuenta. Haga click en el botón para continuar.',
+    'reset_password_button' => 'Recuperar mi clave',
+    'reset_password_bottom' => 'Si no solicitó un restablecimiento de contraseña, no se requiere ninguna acción adicional.',
+    'insert_password' => "Escribe tu nueva clave",
+    'confirm_password' => "Confirma tu nueva clave",
+    'password_changed' => "Clave guardada exitosamente"
+
 ];
