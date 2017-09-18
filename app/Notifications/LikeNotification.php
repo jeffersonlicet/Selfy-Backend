@@ -11,7 +11,7 @@ use LaravelFCM\Message\OptionsBuilder;
 use LaravelFCM\Message\PayloadDataBuilder;
 use LaravelFCM\Message\PayloadNotificationBuilder;
 use FCM;
-
+use App\Helpers\WindowsPhone;
 /**
  * @property Photo photo
  */
@@ -77,6 +77,12 @@ class LikeNotification extends Notification
             $data = $dataBuilder->build();
 
             FCM::sendTo($notifiable->firebase_token, $option, $notification, $data);
+        }
+
+        else if($notifiable->wp_token != null)
+        {
+            $windowsPhone = new WindowsPhone($notifiable->wp_token);
+            $windowsPhone->push_toast($this->photo_id, "Photo", "Selfy", $this->user->username.' liked your photo');
         }
 
         return [

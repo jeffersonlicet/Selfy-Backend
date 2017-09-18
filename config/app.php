@@ -247,7 +247,8 @@ return [
         'Expression' => App\Helpers\Expression::class,
         'Vision' => App\Helpers\Vision::class,
         'Meli' => App\Helpers\Meli::class,
-        'Chat' => Musonza\Chat\Facades\ChatFacade::class
+        'Chat' => Musonza\Chat\Facades\ChatFacade::class,
+        'WindowsPush' => App\Helpers\WindowsPhone::class
     ],
 
     'foursquare_client' => env('FOURSQUARE_CLIENT_ID'),
