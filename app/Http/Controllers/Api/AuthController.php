@@ -147,6 +147,7 @@ class AuthController extends Controller
                         if ($request->has('firebase_token'))
                         {
                             $user->firebase_token = $input['firebase_token'];
+                            $user->wp_token = null;
                             $user->save();
                         }
 

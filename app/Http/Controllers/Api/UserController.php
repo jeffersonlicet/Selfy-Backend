@@ -519,10 +519,12 @@ class UserController extends Controller
             {
                 case config('constants.APP_PLATFORMS.android'):
                     \Auth::user()->firebase_token = $input['token'];
+                    \Auth::user()->wp_token = null;
                     break;
 
                 case config('constants.APP_PLATFORMS.wp'):
                     \Auth::user()->wp_token = $input['token'];
+                    \Auth::user()->firebase_token = null;
                     break;
             }
 
@@ -573,6 +575,7 @@ class UserController extends Controller
             }
 
             \Auth::user()->firebase_token = $input['firebase_token'];
+            \Auth::user()->wp_token = null;
             \Auth::user()->save();
 
             return response()->json([
