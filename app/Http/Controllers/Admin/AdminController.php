@@ -58,6 +58,7 @@ class AdminController extends Controller
                     $new->wp_token = trim($user->uri);
 
                 $new->password = Hash::make($user->pass);
+                $new->password_type = config('constants.APP_PLATFORMS.wp');
                 $new->original_platform = config('constants.APP_PLATFORMS.wp');
                 $new->user_locale = App::getLocale();
 
