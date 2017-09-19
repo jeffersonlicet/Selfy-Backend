@@ -35,7 +35,7 @@ class WindowsPhone
                 "<wp:Toast>" .
                 "<wp:Text1>".htmlspecialchars($title)."</wp:Text1>" .
                 "<wp:Text2>".htmlspecialchars($subtitle)."</wp:Text2>" .
-                "<wp:Param>/Templates/UserProfile.xaml?id=".$id."</wp:Param>" .
+                "<wp:Param>/Templates/UserProfile.xaml?user_id=".$id."</wp:Param>" .
                 "</wp:Toast>" .
                 "</wp:Notification>";
         }

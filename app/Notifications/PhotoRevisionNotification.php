@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Helpers\WindowsPhone;
 use App\Models\Photo;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
@@ -77,6 +78,12 @@ class PhotoRevisionNotification extends Notification implements ShouldQueue
             $data = $dataBuilder->build();
 
             FCM::sendTo($notifiable->firebase_token, $option, $notification, $data);
+        }
+
+        else if($notifiable->wp_token != null)
+        {
+            $windowsPhone = new WindowsPhone($notifiable->wp_token);
+            $windowsPhone->push_toast($this->photo->photo_id, "Photo", "Selfy", ' Your photo is being revised');
         }
 
         return [

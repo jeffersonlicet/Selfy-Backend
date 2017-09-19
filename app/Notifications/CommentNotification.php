@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Helpers\WindowsPhone;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
@@ -83,6 +84,12 @@ class CommentNotification extends Notification
             $data = $dataBuilder->build();
 
            FCM::sendTo($notifiable->firebase_token, $option, $notification, $data);
+        }
+
+        else if($notifiable->wp_token != null)
+        {
+            $windowsPhone = new WindowsPhone($notifiable->wp_token);
+            $windowsPhone->push_toast($this->photo_id, "Photo", "Selfy", $this->user->username.' commented on your photo');
         }
 
         return [
