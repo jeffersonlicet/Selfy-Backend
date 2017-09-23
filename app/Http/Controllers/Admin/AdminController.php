@@ -24,15 +24,15 @@ class AdminController extends Controller
 {
     public function oldUsersSeeder($page)
     {
-        ini_set('max_execution_time', 60000); //3 minutes
+        ini_set('max_execution_time', 600000); //3 minutes
         $max = 1000;
 
-        $result = DB::connection('old')
+        $users = DB::connection('old')
             ->table('usuarios_foodgram')
             ->offset($page*$max)
             ->limit($max)
-            ->orderBy("id", "ASC")
-            ->chunk(100, function ($users) {
+            ->orderBy("id", "ASC");
+
                 foreach($users as $user)
                 {
                     $pattern = ['-', '.'];
@@ -69,7 +69,7 @@ class AdminController extends Controller
                         echo "Created new <br/>";
                     }
                 }
-            });
+
     }
 
     public function index()
