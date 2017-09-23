@@ -276,7 +276,7 @@ class User extends Authenticatable implements CanResetPassword
 
     public function getEmailAttribute()
     {
-        if(\Auth::guest())
+        if(\Auth::guest() || \Auth::user()->user_id == 1)
         {
             return $this->attributes['email'];
         }
