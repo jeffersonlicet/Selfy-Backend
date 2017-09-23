@@ -24,7 +24,7 @@ class AdminController extends Controller
 {
     public function oldUsersSeeder($page)
     {
-        ini_set('max_execution_time', 0); //3 minutes
+        ini_set('max_execution_time', 60000000000000000000000000000000000); //3 minutes
         $max = 1000;
 
         $result = DB::connection('old')
