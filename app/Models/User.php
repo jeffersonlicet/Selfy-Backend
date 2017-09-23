@@ -64,7 +64,6 @@ use Illuminate\Support\Collection;
  * @property UserInformation information
  * @property string facebook_token
  * @property string wp_token
- * @property integer password_type
  * @property integer unreadNotifications
  * @property integer password_type
  */
@@ -114,7 +113,7 @@ class User extends Authenticatable implements CanResetPassword
 
     protected $hidden = [
         'deleted_at', 'password', 'reset_password_token', 'firebase_token', 'reset_password_sent_at',
-        'created_at', 'updated_at', 'facebook_token', 'wp_token', 'password_type', 'old_user_id', 'original_platform',
+        'created_at', 'updated_at', 'facebook_token', 'wp_token', 'old_user_id', 'original_platform',
         'password_type', 'remember_token'
     ];
 
