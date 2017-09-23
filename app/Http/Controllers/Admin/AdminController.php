@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-
+use Exception;
 use App;
 use App\Models\User;
 use DB;
@@ -26,6 +26,7 @@ class AdminController extends Controller
     {
         ini_set('max_execution_time', 0); //3 minutes
         $max = 1000;
+
 
         $users = DB::connection('old')
             ->table('usuarios_foodgram')
@@ -63,9 +64,12 @@ class AdminController extends Controller
 
                     $new->username = $username;
                     $new->old_user_id = $user->id;
-
+                try {
                     $new->save();
                     echo "Created new <br/>";
+                } catch(Exception $ex) {
+                    echo $ex->getMessage();
+                }
 
             }
 
