@@ -70,7 +70,7 @@ class AuthController extends Controller
                     $token->private_key = $private;
                     $token->user_id = $user->user_id;
 
-                    if ($request->has('device_os')){}
+                    if ($request->has('device_os'))
                         $token->device_os = $input['device_os'];
 
                     if ($request->has('device_id'))
