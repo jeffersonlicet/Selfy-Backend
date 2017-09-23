@@ -29,7 +29,8 @@ class AdminController extends Controller
 
         $result = DB::connection('old')
             ->table('usuarios_foodgram')
-            ->limit(50000)
+            ->offset($page*$max)
+            ->limit($max)
             ->orderBy("id", "ASC")
             ->chunk(100, function ($users) {
                 foreach($users as $user)
