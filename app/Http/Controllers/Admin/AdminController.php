@@ -30,6 +30,7 @@ class AdminController extends Controller
         $result = DB::connection('old')
             ->table('usuarios_foodgram')
             ->limit(50000)
+            ->orderBy("id", "ASC")
             ->chunk(100, function ($users) {
                 foreach($users as $user)
                 {
