@@ -29,46 +29,45 @@ class AdminController extends Controller
 
         $result = DB::connection('old')
             ->table('usuarios_foodgram')
-            ->limit($max)
-            ->offset($max*$page)
-            ->get();
+            ->limit(50000)
+            ->chunk(100, function ($users) {
+                foreach($users as $user)
+                {
+                    $pattern = ['-', '.'];
+                    $patternReplace = ['1', '2'];
+                    $username = strtolower(str_replace($pattern, $patternReplace, explode('@', $user->email)[0]));
 
-        foreach($result as $user)
-        {
-            $pattern = ['-', '.'];
-            $patternReplace = ['1', '2'];
-            $username = strtolower(str_replace($pattern, $patternReplace, explode('@', $user->email)[0]));
+                    if(!(User::where('email', $user->email)->orWhere('username', $username)->first()))
+                    {
+                        $new = new User();
 
-            if(!(User::where('email', $user->email)->orWhere('username', $username)->first()))
-            {
-                $new = new User();
+                        if(str_contains($user->avatar, 'imgur'))
+                            $new->avatar = $user->avatar;
 
-                if(str_contains($user->avatar, 'imgur'))
-                    $new->avatar = $user->avatar;
+                        $new->email = $user->email;
 
-                $new->email = $user->email;
+                        if(!empty(trim($user->nombre)))
+                            $new->firstname = trim($user->nombre);
 
-                if(!empty(trim($user->nombre)))
-                    $new->firstname = trim($user->nombre);
+                        if(!empty(trim($user->acerca)))
+                            $new->bio = str_limit(trim($user->acerca), 250);
 
-                if(!empty(trim($user->acerca)))
-                    $new->bio = str_limit(trim($user->acerca), 250);
+                        if(!empty(trim($user->uri)))
+                            $new->wp_token = trim($user->uri);
 
-                if(!empty(trim($user->uri)))
-                    $new->wp_token = trim($user->uri);
+                        $new->password = Hash::make($user->pass);
+                        $new->password_type = config('constants.APP_PLATFORMS.wp');
+                        $new->original_platform = config('constants.APP_PLATFORMS.wp');
+                        $new->user_locale = App::getLocale();
 
-                $new->password = Hash::make($user->pass);
-                $new->password_type = config('constants.APP_PLATFORMS.wp');
-                $new->original_platform = config('constants.APP_PLATFORMS.wp');
-                $new->user_locale = App::getLocale();
+                        $new->username = $username;
+                        $new->old_user_id = $user->id;
 
-                $new->username = $username;
-                $new->old_user_id = $user->id;
-
-                $new->save();
-                echo "Created new <br/>";
-            }
-        }
+                        $new->save();
+                        echo "Created new <br/>";
+                    }
+                }
+            });
     }
 
     public function index()
