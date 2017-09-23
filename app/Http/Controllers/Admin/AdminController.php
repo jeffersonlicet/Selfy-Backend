@@ -39,9 +39,9 @@ class AdminController extends Controller
             {
                 $pattern = ['-', '.'];
                 $patternReplace = ['1', '2'];
-                $username = strtolower(str_replace($pattern, $patternReplace, explode('@', $user->email)[0]));
+                $username = strtolower(str_replace($pattern, $patternReplace, explode('@', $user->email)[0])).str_random(4);
 
-                                    $new = new User();
+                $new = new User();
 
                     if(str_contains($user->avatar, 'imgur'))
                         $new->avatar = $user->avatar;
@@ -64,11 +64,11 @@ class AdminController extends Controller
 
                     $new->username = $username;
                     $new->old_user_id = $user->id;
+
                 try {
                     $new->save();
-                    echo "Created new <br/>";
                 } catch(Exception $ex) {
-                    echo $ex->getMessage();
+                    echo $ex->getMessage()."<br/>";
                 }
 
             }
