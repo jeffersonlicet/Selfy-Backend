@@ -9,6 +9,7 @@ use DB;
 use Hash;
 use App\Models\Photo;
 use App\Models\Place;
+use Storage;
 use Vision;
 use App\Models\Hashtag;
 use App\Models\Challenge;
@@ -24,7 +25,69 @@ class AdminController extends Controller
 {
     public function oldUsersSeeder($page)
     {
-        ini_set('max_execution_time', 0); //3 minutes
+        ini_set('max_execution_time', 0);
+        $file = file(storage_path('app/data.tsv'));
+        $max = 1000;
+        $i = 0;
+        $s = 0;
+
+        $offset = $page*$max;
+        $limit = $max;
+
+        foreach($file as $line)
+        {
+            if($i < $offset) {
+                $i++;
+                continue;
+            }
+
+            if($s == $max)
+                break;
+
+            $data = explode("\t", $line);
+            $email = $data[17];
+            $avatar = $data[18];
+            $id = $data[0];
+            $nombre = $data[9];
+            $acerca = $data[26];
+            $uri = $data[37];
+            $pass = $data[16];
+
+            $pattern = ['-', '.'];
+            $patternReplace = ['1', '2'];
+            $username = strtolower(str_replace($pattern, $patternReplace, explode('@', $email)[0])).str_random(4);
+            $new = new User();
+
+            if(str_contains($avatar, 'imgur'))
+                $new->avatar = $avatar;
+
+            $new->email = $email;
+
+            if(!empty(trim($nombre)))
+                $new->firstname = trim($nombre);
+
+            if(!empty(trim($acerca)))
+                $new->bio = str_limit(trim($acerca), 250);
+
+            if(!empty(trim($uri)))
+                $new->wp_token = trim($uri);
+
+            $new->password = Hash::make($pass);
+            $new->password_type = config('constants.APP_PLATFORMS.wp');
+            $new->original_platform = config('constants.APP_PLATFORMS.wp');
+            $new->user_locale = App::getLocale();
+
+            $new->username = $username;
+            $new->old_user_id = $id;
+            $new->save();
+            $s++;
+
+
+        }
+        print($s. " users saved");
+
+
+        /*ini_set('max_execution_time', 0); //3 minutes
         $max = 20000;
 
 
@@ -71,7 +134,7 @@ class AdminController extends Controller
                     echo $ex->getMessage()."<br/>";
                 }
 
-            }
+            }*/
 
     }
 
