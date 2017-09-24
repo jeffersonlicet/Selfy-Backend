@@ -27,9 +27,11 @@ class AdminController extends Controller
     {
         ini_set('max_execution_time', 0);
         $file = file(storage_path('app/data.tsv'));
-        $max = 1000;
+        $output = fopen(storage_path('app/out.tsv'), 'w');
+        $max = 400000;
         $i = 0;
         $s = 0;
+        $baseID = 311860;
 
         $offset = $page*$max;
         $limit = $max;
@@ -44,6 +46,7 @@ class AdminController extends Controller
             if($s == $max)
                 break;
 
+            $baseID++;
             $data = explode("\t", $line);
             $email = $data[17];
             $avatar = $data[18];
@@ -66,8 +69,9 @@ class AdminController extends Controller
             if(!empty(trim($nombre)))
                 $new->firstname = trim($nombre);
 
-            if(!empty(trim($acerca)))
+            if(!empty(trim($acerca))){
                 $new->bio = str_limit(trim($acerca), 250);
+            } else $new->bio = "";
 
             if(!empty(trim($uri)))
                 $new->wp_token = trim($uri);
@@ -79,11 +83,61 @@ class AdminController extends Controller
 
             $new->username = $username;
             $new->old_user_id = $id;
-            $new->save();
+
+            $insertion = [];
+            $insertion[0] = $baseID;
+            $insertion[1]= $new->username;
+            $insertion[2]= $new->email;
+            $insertion[3]= $new->password;
+            $insertion[4]= $new->firstname;
+            $insertion[5]= "";
+            $insertion[6]= $new->bio;
+            $insertion[7]= null;
+            $insertion[8] = "2017-09-24 19:08:37.000";
+            $insertion[9] = "2017-09-24 19:08:37.000";
+            $insertion[10] = 1;
+            $insertion[11] = 'es';
+            $insertion[12] = 0;
+            $insertion[13] = 0;
+            $insertion[14] = 0;
+            $insertion[15] = 0;
+            $insertion[16] = 0;
+            $insertion[17] = 0;
+
+            $insertion[18] = null;
+            $insertion[19] = null;
+            $insertion[20] = null;
+            $insertion[21] = 0;
+            $insertion[22] = 0;
+            $insertion[23] = $new->avatar;
+            $insertion[24] = 0;
+            $insertion[25] = 1;
+            $insertion[26] = 1;
+            $insertion[27] = 0;
+            $insertion[28] = 0;
+            $insertion[29] = 1;
+            $insertion[30] = null;
+            $insertion[31] = null;
+            $insertion[32] = null;
+            $insertion[33] = null;
+            $insertion[34] = null;
+            $insertion[35] = null;
+            $insertion[36] = true;
+            $insertion[37] = null;
+            $insertion[38] =  $new->original_platform;
+            $insertion[39] =  $new->old_user_id;
+            $insertion[40] =  $new->wp_token;
+            $insertion[41] =  config('constants.APP_PLATFORMS.wp');
+
+            $string = implode("\t", $insertion).PHP_EOL;
+            fwrite($output, $string);
+
             $s++;
 
 
         }
+
+        fclose($output);
         print($s. " users saved");
 
 
