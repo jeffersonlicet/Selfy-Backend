@@ -30,8 +30,6 @@ class AdminController extends Controller
 
         $users = DB::connection('old')
             ->table('usuarios_foodgram')
-            ->offset($page*$max)
-            ->limit($max)
             ->orderBy("id", "ASC")
             ->get();
 
