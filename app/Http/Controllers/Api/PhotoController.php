@@ -56,7 +56,7 @@ class PhotoController extends Controller
 
             if($user_id != 0
                 && $user_id != \Auth::user()->user_id
-                && User::find($user_id)->account_private
+                && User::find($user_id) && User::find($user_id)->account_private
                 && !UserInvitation::where(['user_id' => \Auth::user()->user_id, 'profile_id' => $user_id, 'invitation_status' => config('constants.INVITATION_STATUS.ACCEPTED')])->first())
             {
                 return response()->json([
@@ -77,7 +77,7 @@ class PhotoController extends Controller
         {
             return response()->json([
                 'status' => FALSE,
-                'report' => $e->getMessage()
+                'report' => $e->getTraceAsString()
             ]);
         }
     }
@@ -343,7 +343,7 @@ class PhotoController extends Controller
                 throw new Exception("resource_not_found");
             }
 
-            if($photo->user_id == \Auth::user()->user_id)
+            if($photo->user_id == \Auth::user()->user_id || \Auth::user()->hasRole('system-administrator'))
             {
 
                $photo->delete();
