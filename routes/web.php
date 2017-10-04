@@ -47,6 +47,12 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin' , 'middleware' => ['Ap
 
     Route::get('/logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
     Route::get('/oldseed/users/{page}', 'AdminController@oldUsersSeeder');
+    Route::get('/oldseed/followers/{page}', 'AdminController@seedFollowers');
+    Route::get('/oldseed/photos', 'AdminController@seedPhotos');
+    Route::get('/oldseed/likes', 'AdminController@seedLikes');
+    Route::get('/oldseed/comments', 'AdminController@seedComments');
+
+
     Route::get('/meli', 'AdminController@meliDashboard');
     Route::get('/meli/{targetId}/products', 'AdminController@meliProducts');
     Route::get('/meli/create/target', [

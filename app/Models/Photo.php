@@ -36,6 +36,15 @@ class Photo extends Model
 
     protected $appends = array('like_enabled', 'delete_enabled', 'report_enabled');
 
+    public function getDateFormat()
+    {
+        return 'Y-m-d H:i:s.u';
+    }
+
+    public function fromDateTime($value)
+    {
+        return substr(parent::fromDateTime($value), 0, -3);
+    }
 
     /**
      * The primary key of the model.

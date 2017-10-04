@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Carbon\Carbon;
 use Exception;
 use App;
 use App\Models\User;
@@ -23,11 +24,111 @@ use App\Http\Controllers\Controller;
 
 class AdminController extends Controller
 {
+    public function seedPhotos()
+    {
+        ini_set('max_execution_time', 0);
+        $base = file(storage_path('app/newusers.tsv'));
+        $users = [];
+        $s = 0;
+
+        $output = fopen(storage_path('app/photosOutput.tsv'), 'w');
+        print(count($base) . " total users");
+        foreach($base as $line)
+        {
+            $data = explode("\t", $line);
+            if($data[39] > 0)
+                $users[$data[39]] = $data[0];
+        }
+
+        $photosBase = file(storage_path('app/photos.tsv'));
+        foreach($photosBase as $line)
+        {
+            $old = explode("\t", $line);
+
+            $photo = [];
+
+            if(isset($users[$old[1]]))
+            {
+                $photo[0] = $users[$old[1]];
+                $insert = str_replace("\r", "", str_replace("\\", "", str_replace("\n", "", str_replace("'", "", trim($old[3])))));
+                $photo[1] = empty( $insert) ? "" :  json_encode($insert);
+                $photo[2] = $old[4];
+                $photo[3] = $old[6] != null ? Carbon::createFromTimestamp($old[6])->toDateTimeString() : $old[6];
+                $photo[4] = $old[0];
+                fwrite($output, implode("\t", $photo).PHP_EOL);
+                $s++;
+            } else {
+                print( $old[4] . "</ br>");
+            }
+
+
+
+        }
+
+        fclose($output);
+        print($s. " photos saved");
+    }
+    public function seedFollowers($page)
+    {
+        ini_set('max_execution_time', 0);
+        $base = file(storage_path('app/newusers.tsv'));
+
+        $file = file(storage_path('app/followers.tsv'));
+        $output = fopen(storage_path('app/followersOut.tsv'), 'w');
+        $max = 90000000;
+        $i = 0;
+        $s = 0;
+        $baseID = 241;
+
+        $offset = $page*$max;
+        $users =[];
+        foreach($base as $line)
+        {
+            $data = explode("\t", $line);
+            if($data[39] > 0)
+                $users[$data[39]] = $data[0];
+        }
+
+
+        foreach($file as $line)
+        {
+            if($i < $offset) {
+                $i++;
+             continue;
+            }
+
+            if($s == $max)
+                break;
+
+            $baseID++;
+            $data = explode("\t", $line);
+            $insert = [];
+            if(isset($users[$data[1]]) && isset($users[$data[2]]))
+            {
+                $insert[0] = $users[$data[1]];
+                $insert[1] = $users[$data[2]];
+                $string = implode("\t", $insert).PHP_EOL;
+                fwrite($output, $string);
+                $s++;
+            }
+        }
+
+        fclose($output);
+        print($s. " followers saved");
+    }
+    public  function mssql_escape($unsafe_str)
+    {
+        if (get_magic_quotes_gpc())
+        {
+            $unsafe_str = stripslashes($unsafe_str);
+        }
+        return $escaped_str = str_replace("'", "''", $unsafe_str);
+    }
     public function oldUsersSeeder($page)
     {
         ini_set('max_execution_time', 0);
         $file = file(storage_path('app/data.tsv'));
-        $output = fopen(storage_path('app/out.tsv'), 'w');
+        $output = fopen(storage_path('app/usersCrude2.tsv'), 'w');
         $max = 400000;
         $i = 0;
         $s = 0;
@@ -51,8 +152,8 @@ class AdminController extends Controller
             $email = $data[17];
             $avatar = $data[18];
             $id = $data[0];
-            $nombre = $data[9];
-            $acerca = $data[26];
+            $nombre  = str_replace("'", "", htmlentities($data[9]));
+            $acerca = str_replace("'", "", htmlentities($data[26]));
             $uri = $data[37];
             $pass = $data[16];
 
@@ -90,44 +191,13 @@ class AdminController extends Controller
             $insertion[2]= $new->email;
             $insertion[3]= $new->password;
             $insertion[4]= $new->firstname;
-            $insertion[5]= "";
-            $insertion[6]= $new->bio;
-            $insertion[7]= null;
-            $insertion[8] = "2017-09-24 19:08:37.000";
-            $insertion[9] = "2017-09-24 19:08:37.000";
-            $insertion[10] = 1;
-            $insertion[11] = 'es';
-            $insertion[12] = 0;
-            $insertion[13] = 0;
-            $insertion[14] = 0;
-            $insertion[15] = 0;
-            $insertion[16] = 0;
-            $insertion[17] = 0;
-
-            $insertion[18] = null;
-            $insertion[19] = null;
-            $insertion[20] = null;
-            $insertion[21] = 0;
-            $insertion[22] = 0;
-            $insertion[23] = $new->avatar;
-            $insertion[24] = 0;
-            $insertion[25] = 1;
-            $insertion[26] = 1;
-            $insertion[27] = 0;
-            $insertion[28] = 0;
-            $insertion[29] = 1;
-            $insertion[30] = null;
-            $insertion[31] = null;
-            $insertion[32] = null;
-            $insertion[33] = null;
-            $insertion[34] = null;
-            $insertion[35] = null;
-            $insertion[36] = true;
-            $insertion[37] = null;
-            $insertion[38] =  $new->original_platform;
-            $insertion[39] =  $new->old_user_id;
-            $insertion[40] =  $new->wp_token;
-            $insertion[41] =  config('constants.APP_PLATFORMS.wp');
+            $insertion[5]= $new->bio;
+            $insertion[6] = 'es';
+            $insertion[7] = $new->avatar;
+            $insertion[8] =  $new->original_platform;
+            $insertion[9] =  $new->old_user_id;
+            $insertion[10] =  $new->wp_token;
+            $insertion[11] =  config('constants.APP_PLATFORMS.wp');
 
             $string = implode("\t", $insertion).PHP_EOL;
             fwrite($output, $string);
@@ -190,6 +260,109 @@ class AdminController extends Controller
 
             }*/
 
+    }
+    public function seedLikes()
+    {
+        ini_set('max_execution_time', 0);
+        $s = 0;
+        $users_source = file(storage_path('app/newusers.tsv'));
+        $users = [];
+        foreach($users_source as $line)
+        {
+            $data = explode("\t", $line);
+            if($data[39] > 0)
+                $users[$data[39]] = $data[0];
+        }
+
+        $photos_source = file(storage_path('app/newphotos.tsv'));
+        $photos = [];
+        foreach($photos_source as $line)
+        {
+            $data = explode("\t",  $line);
+            $data[13] = str_replace("\n", '', $data[13]);
+
+            if($data[13] > 0)
+                $photos[$data[13]] = $data[0];
+        }
+
+        $likes_source = file(storage_path('app/selfy_data_big_dbo_fj_likes_foodgram.tsv'));
+
+        $output = fopen(storage_path('app/likes_out.tsv'), 'w');
+        foreach($likes_source as $line)
+        {
+            $data = explode("\t", $line);
+            $oldUser = $data[1];
+            $oldPhoto = $data[2];
+
+            if(isset($users[$oldUser]) && isset($photos[$oldPhoto]))
+            {
+                $insert[0] = $users[$oldUser];
+                $insert[1] = $photos[$oldPhoto];
+
+                $write = implode("\t", $insert).PHP_EOL;
+                fwrite($output, $write);
+                $s++;
+            }
+        }
+
+        fclose($output);
+        print($s. " likes saved");
+    }
+    public function seedComments()
+    {
+        ini_set('max_execution_time', 0);
+        $s = 0;
+        $users_source = file(storage_path('app/newusers.tsv'));
+        $users = [];
+        foreach($users_source as $line)
+        {
+            $data = explode("\t", $line);
+            if($data[39] > 0)
+                $users[$data[39]] = $data[0];
+        }
+
+        $photos_source = file(storage_path('app/newphotos.tsv'));
+        $photos = [];
+        foreach($photos_source as $line)
+        {
+            $data = explode("\t",  $line);
+            $data[13] = str_replace("\n", '', $data[13]);
+
+            if($data[13] > 0)
+                $photos[$data[13]] = $data[0];
+        }
+
+        $comments_source = file(storage_path('app/selfy_data_big_dbo_fj_coments_foodgram.tsv'));
+
+        $output = fopen(storage_path('app/comments_out.tsv'), 'w');
+        foreach($comments_source as $line)
+        {
+            $data = explode("\t", $line);
+
+            $oldUser = $data[1];
+            $oldPhoto = $data[2];
+
+            if(isset($users[$oldUser]) && isset($photos[$oldPhoto]))
+            {
+                $insert[0] = $users[$oldUser];
+                $insert[1] = $photos[$oldPhoto];
+                $comment = $data[3];
+                $date = $data[4];
+
+                $comment = str_replace("\r", "", str_replace("\\", "", str_replace("\n", "", str_replace("'", "", trim( $comment)))));
+                $comment = empty($comment) ? "" :  json_encode($comment);
+                $date = $date != null ? Carbon::createFromTimestamp($date)->toDateTimeString() : $date;
+                $insert[2] = str_replace('"', '', $comment);
+                $insert[3] = $date;
+
+                $write = implode("\t", $insert).PHP_EOL;
+                fwrite($output, $write);
+                $s++;
+            }
+        }
+
+        fclose($output);
+        print($s. " comments saved");
     }
 
     public function index()
