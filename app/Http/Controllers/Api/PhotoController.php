@@ -158,7 +158,7 @@ class PhotoController extends Controller
                 $this->handlePhotoMentions($photo);
             }
 
-            if(\Auth::user()->password_type != config('constants.APP_PLATFORMS.wp')) {
+            if(\Auth::user()->password_type != config('constants.APP_PLATFORMS.wp') && \Auth::user()->original_platform != config('constants.APP_PLATFORMS.wp')) {
                 if($request->has("latitude") && $request->has("latitude") && \Auth::user()->spot_enabled)
                     $this->dispatch(new CheckSpot($photo, [floatval($input['latitude']), floatval($input['longitude'])]));
 
