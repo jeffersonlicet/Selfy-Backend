@@ -127,7 +127,7 @@ class UserController extends Controller
                 'email' => 'required|email|unique:users,email'
             ];
 
-            if($values['email'] == \Auth::user()->email)
+            if(!isset($values['email'] ) || $values['email'] == \Auth::user()->email)
             {
                 unset($values['email']);
                 unset($props['email']);
