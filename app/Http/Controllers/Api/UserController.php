@@ -201,18 +201,28 @@ class UserController extends Controller
             $values['account_private'] = $values['account_private'] == "1";
             $values['save_photos'] = $values['save_photos'] == "1";
 
+            $props =  [
+                'firstname'				=>	'required|string',
+                'lastname'				=>	'required|string',
+                'duo_enabled'           =>	'required',
+                'spot_enabled'          =>	'required',
+                'account_private'       =>	'required',
+                'save_photos' =>	'required',
+                'email' => 'required|email|unique:users,email'
+            ];
+
+            if(!isset($values['email']) || $values['username'] == \Auth::user()->username)
+            {
+                unset($values['username']);
+                unset($props['username']);
+            }
+
             $validator = Validator::make(
                 $values,
-                [
-                    'firstname'				=>	'required|string',
-                    'lastname'				=>	'required|string',
-                    'duo_enabled'           =>	'required',
-                    'spot_enabled'          =>	'required',
-                    'account_private'       =>	'required',
-                    'save_photos' =>	'required',
-                    'email' => 'required|email|unique:users,email'
-                ]
+               $props
             );
+
+
 
             if($values['account_private'])
             {
