@@ -222,8 +222,6 @@ class UserController extends Controller
                $props
             );
 
-
-
             if($values['account_private'])
             {
                 $followers_id = \Auth::user()->Followers->pluck('follower_id');

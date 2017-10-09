@@ -345,11 +345,13 @@ class PhotoController extends Controller
 
             if($photo->user_id == \Auth::user()->user_id || \Auth::user()->hasRole('system-administrator'))
             {
+                if($photo->user_id == \Auth::user()->user_id)
+                {
+                    \Auth::user()->photos_count--;
+                    \Auth::user()->save();
+                }
 
                $photo->delete();
-
-                \Auth::user()->photos_count--;
-                \Auth::user()->save();
 
                 return response()->json([
                     'status' => true,
