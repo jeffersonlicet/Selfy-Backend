@@ -26,7 +26,9 @@ class AdminController extends Controller
 {
     public function seedPhotos()
     {
-        ini_set('max_execution_time', 0);
+
+        //print(Hash::make(sha1(strtolower('jefferson.licet@studentpartner.com') . Hash::make($input['password'])));
+        /*ini_set('max_execution_time', 0);
         $base = file(storage_path('app/newusers.tsv'));
         $users = [];
         $s = 0;
@@ -66,7 +68,7 @@ class AdminController extends Controller
         }
 
         fclose($output);
-        print($s. " photos saved");
+        print($s. " photos saved");*/
     }
     public function seedFollowers($page)
     {

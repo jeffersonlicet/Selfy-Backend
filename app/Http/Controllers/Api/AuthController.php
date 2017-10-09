@@ -130,7 +130,7 @@ class AuthController extends Controller
                     //TODO change by constant 0 = normal password
                     if($user->password_type ==  1)
                     {
-                        $checkPassword = Hash::check(sha1(strtolower($user->email) . Hash::make($input['password'])), $user->password);
+                        $checkPassword = Hash::check(sha1(strtolower($user->email) . $input['password']), $user->password);
                     } else
                     {
                         $checkPassword = Hash::check($input['password'], $user->password);
