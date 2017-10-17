@@ -211,10 +211,10 @@ class UserController extends Controller
                 'email' => 'required|email|unique:users,email'
             ];
 
-            if(!isset($values['email']) || $values['username'] == \Auth::user()->username)
+            if(!isset($values['email']) || $values['email'] == \Auth::user()->email)
             {
-                unset($values['username']);
-                unset($props['username']);
+                unset($values['email']);
+                unset($props['email']);
             }
 
             $validator = Validator::make(
