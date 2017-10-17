@@ -133,7 +133,7 @@ class UserController extends Controller
                 unset($props['email']);
             }
 
-            if($values['username'] == \Auth::user()->username)
+            if(isset($values['username'])  && $values['username'] == \Auth::user()->username)
             {
                 unset($values['username']);
                 unset($props['username']);
