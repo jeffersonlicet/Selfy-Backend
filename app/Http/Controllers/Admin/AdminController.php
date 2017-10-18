@@ -27,9 +27,9 @@ class AdminController extends Controller
 {
     public function missu($page)
     {
-        $limit = 300;
+        $limit = 5000;
         $offset = $page*$limit;
-        $users = User::limit($limit)->offset($offset+50)->orderBy('user_id', 'DESC')->get();
+        $users = User::limit($limit)->offset($offset+350)->orderBy('user_id', 'DESC')->get();
 
         foreach($users as $user)
         {
