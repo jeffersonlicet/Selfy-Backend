@@ -52,6 +52,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin' , 'middleware' => ['Ap
     Route::get('/oldseed/likes', 'AdminController@seedLikes');
     Route::get('/oldseed/comments', 'AdminController@seedComments');
     Route::get('/sendmails', 'AdminController@sendEmails');
+    Route::get('/send/miss/{page}', 'AdminController@missu');
 
 
     Route::get('/meli', 'AdminController@meliDashboard');

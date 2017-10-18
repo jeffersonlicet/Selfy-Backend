@@ -25,6 +25,19 @@ use App\Models\ProductStorage;
 use App\Http\Controllers\Controller;
 class AdminController extends Controller
 {
+    public function missu($page)
+    {
+        $limit = 300;
+        $offset = $page*$limit;
+        $users = User::limit($limit)->offset($offset+50)->orderBy('user_id', 'DESC')->get();
+
+        foreach($users as $user)
+        {
+            Mail::to($user)->queue(new MissMail($user->firstname));
+        }
+
+        print("Done");
+    }
     public function sendEmails()
     {
         Mail::to(\Auth::user())->queue(new MissMail(\Auth::user()->firstname));
