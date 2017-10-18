@@ -20,6 +20,14 @@ O bate-papo foi melhorado e corrigimos vários erros. Com a nova versão do Andr
 Nós estamos esperando por você novamente.<br /><br /> Nós reinventamos os desafios Selfy, que estarão disponíveis em breve para o Windows Phone, você pode experimentá-los se você tiver um Android.
 <hr />
 <br /><br />
+@component('mail::button', ['url' => 'https://play.google.com/store/apps/details?id=com.sparkly.selfy', 'color' => 'blue'])
+    Android
+@endcomponent
+<br /><br />
+@component('mail::button', ['url' => 'https://www.microsoft.com/store/p/selfy/9wzdncrdc51s', 'color' => 'blue'])
+    Windows Phone
+@endcomponent
+<br /><br />
 Website:
 http://getselfy.net
 <br /><br />
