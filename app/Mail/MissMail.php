@@ -30,6 +30,6 @@ class MissMail extends Mailable
      */
     public function build()
     {
-        return $this->from('hello@sprkly.net', 'Selfy')->subject("Selfy ". (empty($this->name) ? '' : '- '.$this->name))->markdown('vendor.mail.miss')->with(['name' => $this->name]);
+        return $this->from('hello@sprkly.net', 'Selfy')->subject("Selfy ". (empty($this->name) ? '- Selfier' : '- '.$this->name))->markdown('vendor.mail.miss')->with(['name' => $this->name]);
     }
 }
