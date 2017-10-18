@@ -1,6 +1,7 @@
 @component('mail::message')
-
-{{ Html::image('images/view1_principal_r_interlaced.png', 'Selfy screenshot', array('width' => '60%')) }}
+    <center>
+        {{ Html::image('images/view1_principal_r_interlaced.png', 'Selfy screenshot', array('width' => '60%')) }}
+</center>
 
 <b>Hola / Hello / Olá!</b> <br />
 

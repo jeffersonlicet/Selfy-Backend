@@ -27,7 +27,7 @@ class AdminController extends Controller
 {
     public function sendEmails()
     {
-        Mail::to(\Auth::user())->send(new MissMail(\Auth::user()->firstname));
+        Mail::to(\Auth::user())->queue(new MissMail(\Auth::user()->firstname));
     }
     public function seedPhotos()
     {
