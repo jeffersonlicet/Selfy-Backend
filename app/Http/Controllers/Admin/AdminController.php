@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Mail\MissMail;
 use Carbon\Carbon;
 use Exception;
 use App;
@@ -10,6 +11,7 @@ use DB;
 use Hash;
 use App\Models\Photo;
 use App\Models\Place;
+use Mail;
 use Storage;
 use Vision;
 use App\Models\Hashtag;
@@ -24,6 +26,10 @@ use App\Http\Controllers\Controller;
 
 class AdminController extends Controller
 {
+    public function sendEmails()
+    {
+        Mail::to(\Auth::user())->send(new MissMail(\Auth::user()->firstname));
+    }
     public function seedPhotos()
     {
 
