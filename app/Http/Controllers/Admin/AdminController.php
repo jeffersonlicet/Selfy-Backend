@@ -23,7 +23,6 @@ use App\Models\TargetProduct;
 use App\Models\ObjectCategory;
 use App\Models\ProductStorage;
 use App\Http\Controllers\Controller;
-
 class AdminController extends Controller
 {
     public function sendEmails()

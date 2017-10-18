@@ -1,6 +1,6 @@
 @component('mail::message')
 
-{{ HTML::image('img/view1_principal_r_interlaced.png', 'a picture') }}
+{{ Html::image('img/view1_principal_r_interlaced.png', 'a picture') }}
 
 Hola / Hello / Olá! <br />
 
