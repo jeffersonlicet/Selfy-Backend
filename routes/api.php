@@ -12,18 +12,21 @@
  */
 
 /* Auth not required */
-Route::post('user/create', 'Api\AuthController@create');
-Route::post('user/login', 'Api\AuthController@login');
-Route::post('user/refresh', 'Api\AuthController@refresh');
-Route::post('user/exists', 'Api\AuthController@sync_facebook');
-Route::post('user/facebook_create', 'Api\AuthController@create_facebook');
-Route::post('user/facebook_link', 'Api\AuthController@link_facebook');
-Route::post('user/facebook_confirm', 'Api\AuthController@confirm_facebook');
-Route::post('user/request_password', 'Api\AuthController@resetPassword');
+Route::group(
+    ['middleware' => ['cors']], function () {
+    Route::post('user/create', 'Api\AuthController@create');
+    Route::post('user/login', 'Api\AuthController@login');
+    Route::post('user/refresh', 'Api\AuthController@refresh');
+    Route::post('user/exists', 'Api\AuthController@sync_facebook');
+    Route::post('user/facebook_create', 'Api\AuthController@create_facebook');
+    Route::post('user/facebook_link', 'Api\AuthController@link_facebook');
+    Route::post('user/facebook_confirm', 'Api\AuthController@confirm_facebook');
+    Route::post('user/request_password', 'Api\AuthController@resetPassword');
+});
 
 /* Auth required */
 Route::group(
-    ['middleware' => 'ApiAuth'], function () {
+    ['middleware' => ['ApiAuth', 'cors']], function () {
         Route::get('photo/borders/{photo_id}', 'Api\PhotoController@borders');
         Route::get('photo/bests/{user_id}', 'Api\PhotoController@bests');
         Route::post('photo/report', 'Api\PhotoController@report');
