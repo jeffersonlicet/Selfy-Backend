@@ -26,7 +26,9 @@ Route::group(
 
 /* Auth required */
 Route::group(
-    ['middleware' => ['cors']], function () {
+    ['middleware' => ['ApiAuth']], function () {
+        Route::group(
+            ['middleware' => ['cors']], function () {
         Route::get('photo/borders/{photo_id}', 'Api\PhotoController@borders');
         Route::get('photo/bests/{user_id}', 'Api\PhotoController@bests');
         Route::post('photo/report', 'Api\PhotoController@report');
@@ -114,4 +116,4 @@ Route::group(
 
         Route::resource('challenge', 'Api\ChallengesController',['only' => ['show']]);
             Route::get('notifications', 'Api\NotificationsController@index');
-        });
+        });});
