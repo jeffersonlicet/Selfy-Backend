@@ -26,7 +26,7 @@ Route::group(
 
 /* Auth required */
 Route::group(
-    ['middleware' => ['ApiAuth', 'cors']], function () {
+    ['middleware' => ['cors', 'ApiAuth']], function () {
         Route::get('photo/borders/{photo_id}', 'Api\PhotoController@borders');
         Route::get('photo/bests/{user_id}', 'Api\PhotoController@bests');
         Route::post('photo/report', 'Api\PhotoController@report');
