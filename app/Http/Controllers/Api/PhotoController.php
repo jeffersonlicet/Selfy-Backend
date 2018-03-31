@@ -92,7 +92,7 @@ class PhotoController extends Controller
         try
         {
             $page       = Input::get('page', 0);
-            $limit      = Input::get('limit', config('app.photos_per_page'));
+            $limit      = Input::get('limit', 5);
 
             $validator =
                 Validator::make(
@@ -108,7 +108,8 @@ class PhotoController extends Controller
                 ]);
             }
 
-            $result = Photo::recent(\Auth::user(), $limit, $page * $limit);
+            $result  = Photo::recent(\Auth::user(), $limit, $page * $limit);
+            $result2 = Photo::orderByRaw('RAND()')->take(10);
 
             return response()->json([
                 'status' => TRUE,

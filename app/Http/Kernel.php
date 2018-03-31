@@ -78,6 +78,5 @@ class Kernel extends HttpKernel
         'role' => EntrustRole::class,
         'permission' => EntrustPermission::class,
         'ability' => EntrustAbility::class,
-        'cors' => \App\Http\Middleware\Cors::class,
     ];
 }

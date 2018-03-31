@@ -58,7 +58,7 @@ class CheckAdultContent implements ShouldQueue
                     $this->photo->User->notify(new PhotoRevisionNotification($this->photo));
                 }
             }
-            else throw new Exception('error checking adult content');
+            //else throw new Exception('error checking adult content');
         }
 
     }
@@ -89,7 +89,7 @@ class CheckAdultContent implements ShouldQueue
                 break;
 
             default:
-                throw new Exception('header response error '.$response->getStatusCode().' in analyze()');
+                //throw new Exception('header response error '.$response->getStatusCode().' in analyze()');
                 break;
         }
     }

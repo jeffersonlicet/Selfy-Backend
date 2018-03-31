@@ -174,9 +174,15 @@ class Photo extends Model
     public static function recent(User $user, $limit, $offset)
     {
 
-        return Photo::recentDefinition($user)->filterReportsDefinition()->where(['adult_content' => 0])->whereHas('User', function ($query) {
-            $query->where('account_private', '=',  0);
-        })->with('User')->offset($offset)->limit($limit)->orderBy('photo_id', 'desc')->get();
+        return Photo::recentDefinition($user)
+            ->filterReportsDefinition()
+            ->where(['adult_content' => 0])
+            ->whereHas('User', function ($query) {
+                $query->where('account_private', '=',  0);
+            })->with('User')
+            ->offset($offset)
+            ->limit($limit)
+            ->orderByRaw('RAND()')->get();
 
     }
 
