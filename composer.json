@@ -27,6 +27,7 @@
         "mgp25/instagram-php": "^2.0",
         "musonza/chat": "dev-fixsqlsrv",
         "php-http/guzzle6-adapter": "^1.1",
+        "predis/predis": "^1.1",
         "rap2hpoutre/laravel-log-viewer": "^0.10.3",
         "sammyk/laravel-facebook-sdk": "^3.4",
         "spatie/laravel-translation-loader": "^1.2",
