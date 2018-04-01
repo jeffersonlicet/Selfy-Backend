@@ -109,7 +109,7 @@ class PhotoController extends Controller
             }
 
             $result  = Photo::recent(\Auth::user(), $limit, $page * $limit);
-            $result2 = Photo::orderByRaw('RAND()')->take(10)->get();
+            $result2 = Photo::inRandomOrder()->limit(5)->get();
 
             $array1 = $result->isEmpty() ?  [] : $result->toArray();
             $array2 = $result2->isEmpty() ?  [] : $result2->toArray();
