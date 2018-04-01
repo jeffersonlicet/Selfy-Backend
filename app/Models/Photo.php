@@ -182,7 +182,7 @@ class Photo extends Model
             })->with('User')
             ->offset($offset)
             ->limit($limit)
-            ->orderByRaw('RAND()')->get();
+            ->orderBy('photo_id', 'desc')->get();
 
     }
 

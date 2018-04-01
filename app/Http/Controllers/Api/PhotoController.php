@@ -111,9 +111,11 @@ class PhotoController extends Controller
             $result  = Photo::recent(\Auth::user(), $limit, $page * $limit);
             $result2 = Photo::orderByRaw('RAND()')->take(10);
 
+            $result3 = $result->union($result2);
+
             return response()->json([
                 'status' => TRUE,
-                'photos' => $result->isEmpty() ?  [] : $result->toArray()
+                'photos' => $result3->isEmpty() ?  [] : $result3->toArray()
             ]);
 
         }
