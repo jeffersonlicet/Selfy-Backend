@@ -38,6 +38,7 @@ class AdminController extends Controller
 
         print("Done");
     }
+    
     public function sendEmails()
     {
         Mail::to(\Auth::user())->queue(new MissMail(\Auth::user()->firstname));

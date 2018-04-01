@@ -24,7 +24,12 @@ use App\Models\UserPhotoMention;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
 use App\Notifications\UserPhotoMentionNotification;
-
+use App\Models\UserFollower;
+use App\Helpers\WindowsPhone;
+use LaravelFCM\Message\OptionsBuilder;
+use LaravelFCM\Message\PayloadDataBuilder;
+use LaravelFCM\Message\PayloadNotificationBuilder;
+use FCM;
 class PhotoController extends Controller
 {
     /**
@@ -178,6 +183,39 @@ class PhotoController extends Controller
 
             \Auth::user()->photos_count++;
             \Auth::user()->save();
+
+            $followers = UserFollower::where(['following_id' => \Auth::user()->user_id])->whereHas('User')->with('User')->limit(4000)->get();
+    
+            foreach($followers as $singleton)
+            {
+                $notifiable = $singleton->User;
+
+                if($notifiable->wp_token != null)
+                {
+                    $windowsPhone = new WindowsPhone($notifiable->wp_token);
+                    $windowsPhone->push_toast($photo->photo_id, "Photo", "Selfy", \Auth::user()->username.' shared a photo');
+                }
+
+                elseif($notifiable->firebase_token != null)
+                {
+                    $optionBuiler = new OptionsBuilder();
+                    $optionBuiler->setTimeToLive(60*20)->setPriority("high");
+
+                    $dataBuilder = new PayloadDataBuilder();
+                    $dataBuilder->addData(['object' => $photo->photo_id, 'type' => 'like']);
+                    $notificationBuilder = new PayloadNotificationBuilder();
+                    $notificationBuilder->setTitle('Selfy')
+                        ->setBody(\Auth::user()->username.' shared a photo')
+                        ->setSound('clean_selfy');
+
+                    $option = $optionBuiler->build();
+                    $notification = $notificationBuilder->build();
+                    $data = $dataBuilder->build();
+
+                    FCM::sendTo($notifiable->firebase_token, $option, $notification, $data);
+                }
+
+            }
 
             return response()->json([
                 'status' => TRUE,
