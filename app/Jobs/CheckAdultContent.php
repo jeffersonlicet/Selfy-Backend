@@ -45,20 +45,28 @@ class CheckAdultContent implements ShouldQueue
      */
     public function handle()
     {
-        if(Photo::find($this->photo->photo_id))
-        {
-            $analyze = $this->check($this->photo->url);
-            if($analyze['status_code'] == 200)
+        try {
+            if(Photo::find($this->photo->photo_id))
             {
-                if($analyze['response'])
+                Log::info("Photo exists");
+                $analyze = $this->check($this->photo->url);
+                Log::info("Analyze estatus code". $analyze['status_code']);
+                if($analyze['status_code'] == 200)
                 {
-                    $this->photo->adult_content = 1;
-                    $this->photo->touch();
-                    $this->photo->save();
-                    $this->photo->User->notify(new PhotoRevisionNotification($this->photo));
+                    if($analyze['response'])
+                    {
+                        $this->photo->adult_content = 1;
+                        $this->photo->touch();
+                        $this->photo->save();
+                        $this->photo->User->notify(new PhotoRevisionNotification($this->photo));
+                    }
                 }
+                //else throw new Exception('error checking adult content');
             }
-            //else throw new Exception('error checking adult content');
+        }
+        catch(\Exception $e)
+        {                
+            Log::info($e->getMessage());
         }
 
     }
