@@ -27,9 +27,9 @@ class AdminController extends Controller
 {
     public function missu($page)
     {
-        $limit = 5000;
-        $offset = $page*$limit;
-        $users = User::limit($limit)->offset($offset+350)->orderBy('user_id', 'DESC')->get();
+        $limit = 1000;
+        $offset = ($page+5)*$limit;
+        $users = User::limit($limit)->offset($offset)->orderBy('user_id', 'ASC')->get();
 
         foreach($users as $user)
         {
@@ -42,6 +42,7 @@ class AdminController extends Controller
     {
         Mail::to(\Auth::user())->queue(new MissMail(\Auth::user()->firstname));
     }
+    
     public function seedPhotos()
     {
 

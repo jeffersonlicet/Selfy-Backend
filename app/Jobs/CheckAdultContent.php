@@ -49,9 +49,9 @@ class CheckAdultContent implements ShouldQueue
         try {
             if(Photo::find($this->photo->photo_id))
             {
-                Log::info("Photo exists");
+                //Log::info("Photo exists");
                 $analyze = $this->check($this->photo->url);
-                Log::info("Analyze estatus code". $analyze['status_code']);
+                //Log::info("Analyze estatus code". $analyze['status_code']);
                 if($analyze['status_code'] == 200)
                 {
                     if($analyze['response'])
@@ -67,7 +67,7 @@ class CheckAdultContent implements ShouldQueue
         }
         catch(\Exception $e)
         {                
-            Log::info($e->getMessage());
+            //Log::info($e->getMessage());
         }
 
     }
