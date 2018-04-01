@@ -22,7 +22,7 @@ class CheckAdultContent implements ShouldQueue
     protected $photo;
     protected $adapter;
     private $headers;
-
+    public $tries = 2;
 
     /**
      * Create a new job instance.
