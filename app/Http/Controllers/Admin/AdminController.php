@@ -42,9 +42,9 @@ class AdminController extends Controller
         }
 
         print("Done");*/
-        $limit = 1000;
+        $limit = 100;
         $offset = ($page)*$limit;
-        $users = User::limit($limit)->offset($offset)->orderBy('user_id', 'ASC')->get();
+        $users = User::limit($limit)->offset($offset)->orderBy('user_id', 'DESC')->get();
         foreach($users as $singleton)
         {
             $notifiable = $singleton;
