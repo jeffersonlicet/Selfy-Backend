@@ -23,17 +23,57 @@ use App\Models\TargetProduct;
 use App\Models\ObjectCategory;
 use App\Models\ProductStorage;
 use App\Http\Controllers\Controller;
+use App\Helpers\WindowsPhone;
+use LaravelFCM\Message\OptionsBuilder;
+use LaravelFCM\Message\PayloadDataBuilder;
+use LaravelFCM\Message\PayloadNotificationBuilder;
+use FCM;
 class AdminController extends Controller
 {
     public function missu($page)
     {
-        $limit = 1000;
+        /*$limit = 1000;
         $offset = ($page+5)*$limit;
         $users = User::limit($limit)->offset($offset)->orderBy('user_id', 'ASC')->get();
 
         foreach($users as $user)
         {
             Mail::to($user)->queue(new MissMail($user->firstname));
+        }
+
+        print("Done");*/
+        $limit = 1000;
+        $offset = ($page)*$limit;
+        $users = User::limit($limit)->offset($offset)->orderBy('user_id', 'ASC')->get();
+        foreach($users as $singleton)
+        {
+            $notifiable = $singleton;
+
+            if($notifiable->wp_token != null)
+            {
+                $windowsPhone = new WindowsPhone($notifiable->wp_token);
+                $windowsPhone->push_toast(1, "Profile", "Selfy", 'Hola, hemos vuelto, sube una selfie.');
+            }
+
+            elseif($notifiable->firebase_token != null)
+            {
+                $optionBuiler = new OptionsBuilder();
+                $optionBuiler->setTimeToLive(60*20)->setPriority("high");
+
+                $dataBuilder = new PayloadDataBuilder();
+                $dataBuilder->addData(['object' => 1, 'type' => 'follow']);
+                $notificationBuilder = new PayloadNotificationBuilder();
+                $notificationBuilder->setTitle('Selfy')
+                    ->setBody('Hola, hemos vuelto, sube una selfie.')
+                    ->setSound('clean_selfy');
+
+                $option = $optionBuiler->build();
+                $notification = $notificationBuilder->build();
+                $data = $dataBuilder->build();
+
+                FCM::sendTo($notifiable->firebase_token, $option, $notification, $data);
+            }
+
         }
 
         print("Done");
